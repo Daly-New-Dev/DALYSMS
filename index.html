@@ -843,12 +843,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${studentsInClass.map(student => `
+                        ${studentsInClass.map((student, index) => `
                             <tr>
-                                <td>${student.No}</td>
+                                <td>${index + 1}</td>
                                 <td>${student['Student Name']}</td>
                                 <td>${student.Gender}</td>
-                                <td>${new Date(student['Date of Birth']).toLocaleDateString('km-KH')}</td>
+                                <td>${student['Date of Birth']}</td>
                             </tr>
                         `).join('')}
                     </tbody>
