@@ -29,6 +29,9 @@
             --error-color: #e53e3e;
             --success-color: #10B981;
             --notification-color: #f56565;
+            --gold-color: #ffd700;
+            --silver-color: #c0c0c0;
+            --bronze-color: #cd7f32;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { height: 100%; }
@@ -425,7 +428,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
              // --- LIVE BACKEND URL ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrvaSYgVE1yQck5OWc-i6Cade14BkYyOJ3GfAKVwQdxWCUbCFA5poOIHLN6e7EBEsryA/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxm5RDn8kYfLDdU0zR8qZJSDY2JY1tOwbMljEpkeZE1SG8S66pxSgwmP6bAZIa_bGY_aQ/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -836,14 +839,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${studentsInClass.map((student, index) => `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${student['Student Name']}</td>
-                                <td>${student.Gender}</td>
-                                <td>${student['Date of Birth']}</td>
-                            </tr>
-                        `).join('')}
+                        ${studentsInClass.map((student, index) => {
+                            const dob = new Date(student['Date of Birth']);
+                            const day = String(dob.getDate()).padStart(2, '0');
+                            const month = String(dob.getMonth() + 1).padStart(2, '0');
+                            const year = dob.getFullYear();
+                            const formattedDate = `${day}-${month}-${year}`;
+                            return `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${student['Student Name']}</td>
+                                    <td>${student.Gender}</td>
+                                    <td>${formattedDate}</td>
+                                </tr>
+                            `;
+                        }).join('')}
                     </tbody>
                 `;
                 container.appendChild(table);
