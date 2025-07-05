@@ -86,15 +86,31 @@
             text-align: center; font-weight: 600; padding: 0.75rem; border-radius: 8px;
         }
         #login-button {
-            width: 100%; padding: 1rem; border: none; background-color: #fff; color: var(--primary-color);
+            width: 100%; height: 50px; padding: 1rem; border: none; background-color: #fff; color: var(--primary-color);
             font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer;
             transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0, 0.2);
+            position: relative;
         }
-        #login-button:disabled { background-color: #a0aec0; color: #fff; cursor: not-allowed; box-shadow: none; }
+        #login-button.loading {
+            border-radius: 50px;
+            width: 50px;
+            color: transparent;
+        }
+        #login-button .spinner {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #login-button.loading .spinner {
+            opacity: 1;
+        }
+        #login-button.loading #login-button-text {
+            opacity: 0;
+        }
         .login-footer { position: absolute; bottom: 2rem; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); }
         .spinner {
-            width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 24px; height: 24px; border: 3px solid rgba(57, 99, 222, 0.3);
+            border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -135,7 +151,7 @@
 
         .user-profile-bar {
             background-color: var(--secondary-color); display: flex; align-items: center;
-            justify-content: space-between; padding: 1rem 1.25rem; gap: 1rem;
+            justify-content: space-between; padding: 1.25rem; gap: 1rem;
             border-radius: 12px; cursor: pointer; flex-shrink: 0; border: 1px solid var(--primary-color);
         }
         .user-info { display: flex; align-items: center; gap: 0.75rem; }
@@ -145,7 +161,7 @@
             color: var(--text-secondary); flex-shrink: 0; overflow: hidden; border: 1px solid var(--primary-color);
         }
         .user-photo img { width: 100%; height: 100%; object-fit: cover; }
-        .user-details h2 { font-size: clamp(1.1rem, 2.8vh, 1.2rem); font-weight: 600; color: var(--primary-color); }
+        .user-details h2 { font-size: clamp(1.1rem, 2.8vh, 1.2rem); font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; }
         .user-details p { font-size: clamp(0.85rem, 2.2vh, 0.9rem); color: var(--text-secondary); }
         .teacher-stats { display: flex; gap: 1.25rem; text-align: center; }
         .stat-item .count { font-size: clamp(1.2rem, 3vh, 1.3rem); font-weight: 700; color: var(--primary-color); display: block; }
@@ -284,7 +300,7 @@
                     <div id="login-error" class="hidden"></div>
                     <button id="login-button" type="submit">
                         <span id="login-button-text">ចូលប្រើ</span>
-                        <div id="login-spinner" class="spinner hidden"></div>
+                        <div class="spinner hidden"></div>
                     </button>
                 </form>
             </div>
@@ -402,7 +418,7 @@
             const loginForm = document.getElementById('login-form');
             const loginButton = document.getElementById('login-button');
             const loginButtonText = document.getElementById('login-button-text');
-            const loginSpinner = document.getElementById('login-spinner');
+            const loginSpinner = loginButton.querySelector('.spinner');
             const loginError = document.getElementById('login-error');
             const fullPageLoader = document.getElementById('full-page-loader');
             const loaderSubText = document.getElementById('loader-sub-text');
@@ -496,7 +512,7 @@
                 const password = document.getElementById('password').value;
 
                 loginButton.disabled = true;
-                loginButtonText.classList.add('hidden');
+                loginButton.classList.add('loading');
                 loginSpinner.classList.remove('hidden');
                 loginError.classList.add('hidden');
                 
@@ -512,7 +528,7 @@
                     loginError.classList.remove('hidden');
                 } finally {
                     loginButton.disabled = false;
-                    loginButtonText.classList.remove('hidden');
+                    loginButton.classList.remove('loading');
                     loginSpinner.classList.add('hidden');
                 }
             });
@@ -582,6 +598,7 @@
                     document.getElementById('female-students').textContent = data.FemaleStudents || '-';
                     await checkNewAnnouncements();
                 }
+                 history.replaceState({ page: 'dashboard' }, 'Dashboard', '#dashboard');
             }
 
             // --- Notification Logic ---
@@ -632,7 +649,7 @@
                 document.getElementById('page-title-block').classList.remove('hidden');
                 backButton.classList.remove('hidden');
             }
-            backButton.addEventListener('click', showDashboard);
+            backButton.addEventListener('click', () => history.back());
 
             // --- QR Scanner Logic ---
             const onScanSuccess = (decodedText, decodedResult) => {
@@ -695,37 +712,15 @@
                             pageTitle = 'សេចក្តីជូនដំណឹង';
                             if (userData.Role === 'teacher') markAnnouncementsAsRead();
                             break;
-                        case 'Homework':
-                            const { data: homework } = await apiFetch('getHomework');
-                            pageContent = createHomeworkPage(homework);
-                            pageTitle = 'កិច្ចការផ្ទះ';
-                            break;
-                        case 'Month Ranking':
-                            const { data: rankings } = await apiFetch('getMonthRanking');
-                            pageContent = createMonthRankingPage(rankings);
-                            pageTitle = 'ចំណាត់ថ្នាក់ប្រចាំខែ';
-                            break;
-                        case 'Report':
-                             const { data: reports } = await apiFetch('getReports');
-                             pageContent = createReportPage(reports);
-                             pageTitle = 'របាយការណ៍';
-                             break;
-                        case 'Timetable':
-                             const { data: timetable } = await apiFetch('getTimetable', { params: { classGrade: userData.ClassGrade } });
-                             pageContent = createTimetablePage(timetable);
-                             pageTitle = `កាលវិភាគថ្នាក់ ${userData.ClassGrade}`;
-                             break;
-                        case 'Settings':
-                             const { data: settings } = await apiFetch('getSchoolSettings');
-                             pageContent = createSchoolSettingsPage(settings);
-                             pageTitle = 'ការកំណត់';
-                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
                             pageTitle = feature;
                             break;
                     }
-                    if(pageContent) showFeaturePage(pageTitle, pageContent);
+                    if(pageContent) {
+                        showFeaturePage(pageTitle, pageContent);
+                        history.pushState({ page: 'feature', featureName: feature }, pageTitle, `#${feature.replace(/\s+/g, '')}`);
+                    }
                 } catch (error) {
                     showToast('Failed to load feature.', 'error');
                     showDashboard();
@@ -799,77 +794,6 @@
                 }
                 return container;
             }
-            
-            function createHomeworkPage(homeworks) {
-                const container = document.createElement('div');
-                container.className = 'feature-page item-list';
-                if (!homeworks || homeworks.length === 0) {
-                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-book-open"></i><h3>មិនមានកិច្ចការផ្ទះ</h3></div>`;
-                    return container;
-                }
-                homeworks.forEach(hw => {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `
-                        <div class="item-icon"><i class="fa-solid fa-book-medical"></i></div>
-                        <div class="item-details">
-                            <div class="item-title">${hw.title}</div>
-                            <div class="item-subtitle">${hw.subject} | កំណត់ส่ง: ${new Date(hw.dueDate).toLocaleDateString('km-KH')}</div>
-                        </div>`;
-                    container.appendChild(item);
-                });
-                return container;
-            }
-            
-            function createMonthRankingPage(rankings) {
-                const container = document.createElement('div');
-                container.className = 'feature-page item-list';
-                 if (!rankings || rankings.length === 0) {
-                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-chart-bar"></i><h3>មិនមានទិន្នន័យ</h3></div>`;
-                    return container;
-                }
-                rankings.forEach(student => {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    let rankHTML;
-                    if (student.rank <= 3) {
-                        rankHTML = `<div class="ranking-badge rank-${student.rank}"><i class="fa-solid fa-medal"></i></div>`;
-                    } else {
-                        rankHTML = `<div class="ranking-badge">${student.rank}</div>`;
-                    }
-                    item.innerHTML = `
-                        ${rankHTML}
-                        <div class="item-icon"><img src="${student.photo}" alt="Photo"></div>
-                        <div class="item-details">
-                            <div class="item-title">${student.name}</div>
-                            <div class="item-subtitle">ពិន្ទុសរុប: ${student.score}</div>
-                        </div>`;
-                    container.appendChild(item);
-                });
-                return container;
-            }
-
-            function createReportPage(reports) {
-                 const container = document.createElement('div');
-                container.className = 'feature-page item-list';
-                 if (!reports || reports.length === 0) {
-                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-file-excel"></i><h3>មិនមានរបាយការណ៍</h3></div>`;
-                    return container;
-                }
-                reports.forEach(report => {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `
-                        <div class="item-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                        <div class="item-details">
-                            <div class="item-title">${report.title}</div>
-                            <div class="item-subtitle">${report.description}</div>
-                        </div>
-                        <i class="fa-solid fa-download" style="color: var(--primary-color);"></i>`;
-                    container.appendChild(item);
-                });
-                return container;
-            }
 
             async function saveAnnouncement(event) {
                 event.preventDefault();
@@ -906,7 +830,7 @@
                     element.classList.add('active');
                     const navAction = element.dataset.nav;
                     switch(navAction) {
-                        case 'home': showDashboard(); break;
+                        case 'home': showDashboard(); history.pushState({page: 'dashboard'}, 'Dashboard', '#dashboard'); break;
                         case 'notifications': handleFeatureClick('Announcements'); break;
                         case 'profile': handleFeatureClick('User Profile'); break;
                     }
@@ -925,6 +849,14 @@
                 }
             });
             
+            window.addEventListener('popstate', (event) => {
+                if (event.state && event.state.page === 'feature') {
+                    handleFeatureClick(event.state.featureName);
+                } else {
+                    showDashboard();
+                }
+            });
+
             // --- Initial Load ---
             checkSession();
         });
