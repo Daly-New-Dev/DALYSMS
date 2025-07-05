@@ -27,7 +27,7 @@
             --text-light: #ffffff;
             --border-color: #e0eaf3;
             --error-color: #e53e3e;
-            --success-color: #48bb78;
+            --success-color: #10B981;
             --notification-color: #f56565;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,31 +87,24 @@
         }
         .login-button-wrapper { display: flex; justify-content: center; }
         #login-button {
-            width: 100%; height: 50px; padding: 1rem; border: 1px solid white; background-color: var(--primary-color); color: #fff;
+            width: 100%; height: 56px; padding: 1rem; border: none; background-color: var(--primary-color); color: #fff;
             font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 4px 15px rgba(0,0,0, 0.2);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px rgba(0,0,0, 0.2);
             position: relative;
         }
         #login-button.loading {
-            border-radius: 50px;
-            width: 50px;
-            color: transparent;
-            background-color: #fff;
+            width: 56px;
+            border-radius: 9999px;
+            pointer-events: none;
         }
-        #login-button .spinner {
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        #login-button.loading .spinner {
-            opacity: 1;
-        }
-        #login-button.loading #login-button-text {
-            opacity: 0;
-        }
+        #login-button .btn-text { transition: opacity 0.2s ease, transform 0.2s ease; }
+        #login-button.loading .btn-text { opacity: 0; transform: scale(0.8); }
+        #login-button .spinner { opacity: 0; transform: scale(0); transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s; }
+        #login-button.loading .spinner { opacity: 1; transform: scale(1); }
         .login-footer { position: absolute; bottom: 2rem; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); }
         .spinner {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 24px; height: 24px; border: 3px solid rgba(57, 99, 222, 0.3);
+            width: 28px; height: 28px; border: 3px solid rgba(57, 99, 222, 0.3);
             border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
