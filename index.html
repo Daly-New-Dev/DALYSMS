@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#3963de">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/appicon.PNG">
+    <link rel="apple-touch-icon" href="icons/appicon.PNG">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <style>
+        :root {
+            --primary-color: #3963de;
+            --secondary-color: #ffffff;
+            --background-color: #f0f2f5;
+            --text-dark: #0A192F;
+            --text-secondary: #5A677B;
+            --text-light: #ffffff;
+            --border-color: #e0eaf3;
+            --error-color: #e53e3e;
+            --success-color: #48bb78;
+            --notification-color: #f56565;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--background-color);
+            color: var(--text-dark);
+            height: 100dvh;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .hidden { display: none !important; }
+
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px); display: flex; justify-content: center;
+            align-items: center; z-index: 3000; transition: opacity 0.3s ease;
+        }
+        .loader-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .loader-spinner { display: flex; gap: 0.75rem; }
+        .loader-spinner div {
+            width: 15px; height: 15px; background-color: var(--primary-color);
+            border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loader-spinner .dot1 { animation-delay: -0.32s; }
+        .loader-spinner .dot2 { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        .loader-text-main { font-size: 1.2rem; font-weight: 600; color: var(--primary-color); }
+        .loader-text-sub { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .login-container {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: linear-gradient(160deg, #4e75f2, #2a52be);
+            padding: 2rem; color: var(--text-light);
+        }
+        .login-header { text-align: center; margin-bottom: 3rem; }
+        .login-logo { width: 120px; height: 120px; border-radius: 24px; object-fit: cover; margin: 0 auto 1.5rem auto; }
+        .login-school-name { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
+        .login-app-title { font-size: 1.6rem; font-weight: 700; margin-top: 0.25rem; }
+        .login-form-container { width: 100%; max-width: 350px; }
+        .login-prompt { font-size: 1rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; text-align: center; }
+        .input-group { position: relative; margin-bottom: 1.25rem; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        .login-form input {
+            width: 100%; padding: 1rem 1rem 1rem 2.75rem; border-radius: 10px;
+            border: 1px solid transparent; font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 1rem; background-color: rgba(255, 255, 255, 0.9); color: var(--text-dark);
+        }
+        #login-error {
+            background-color: rgba(255, 82, 82, 0.2); color: #ff5252; margin-bottom: 1rem;
+            text-align: center; font-weight: 600; padding: 0.75rem; border-radius: 8px;
+        }
+        #login-button {
+            width: 100%; padding: 1rem; border: none; background-color: #fff; color: var(--primary-color);
+            font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0, 0.2);
+        }
+        #login-button:disabled { background-color: #a0aec0; color: #fff; cursor: not-allowed; box-shadow: none; }
+        .login-footer { position: absolute; bottom: 2rem; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); }
+        .spinner {
+            width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .page-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; overflow: hidden;
+            background-color: var(--background-color); position: relative;
+        }
+        .page { width: 100%; height: 100%; display: flex; flex-direction: column; }
+
+        .header {
+            background-color: var(--primary-color); color: var(--text-light); padding: 0.75rem 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0; min-height: 85px;
+        }
+        .header-side { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; width: 70px; }
+        .header-side:first-child { justify-content: flex-start; }
+        .header-side:last-child { justify-content: flex-end; }
+        .header-side .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: var(--text-light); }
+        .header-side i { font-size: 1.45rem; cursor: pointer; }
+        #back-button { font-size: 1.6rem; }
+        .school-title-block {
+            flex-grow: 1; min-width: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; margin: 0 0.5rem;
+        }
+        .school-title-block h1 { font-size: clamp(0.9rem, 4vw, 1.1rem); font-weight: 700; line-height: 1.2; }
+        #page-title { font-size: 1.2rem; font-weight: 700; }
+        .school-title-block p { font-size: 0.8rem; color: rgba(255, 255, 255, 0.8); margin-top: 0.15rem; white-space: nowrap; }
+
+        main {
+            flex-grow: 1; display: flex; flex-direction: column;
+            overflow-y: auto; overflow-x: hidden; padding: 1rem;
+            position: relative; -webkit-overflow-scrolling: touch;
+        }
+        main::-webkit-scrollbar { display: none; }
+        main { -ms-overflow-style: none; scrollbar-width: none; }
+        #dashboard-content { display: flex; flex-direction: column; gap: 1rem; height: 100%; }
+
+        .user-profile-bar {
+            background-color: var(--secondary-color); display: flex; align-items: center;
+            justify-content: space-between; padding: 1rem 1.25rem; gap: 1rem;
+            border-radius: 12px; cursor: pointer; flex-shrink: 0; border: 1px solid var(--primary-color);
+        }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; }
+        .user-photo {
+            width: 60px; height: 60px; border-radius: 50%; background-color: var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
+            color: var(--text-secondary); flex-shrink: 0; overflow: hidden; border: 1px solid var(--primary-color);
+        }
+        .user-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .user-details h2 { font-size: clamp(1.1rem, 2.8vh, 1.2rem); font-weight: 600; color: var(--primary-color); }
+        .user-details p { font-size: clamp(0.85rem, 2.2vh, 0.9rem); color: var(--text-secondary); }
+        .teacher-stats { display: flex; gap: 1.25rem; text-align: center; }
+        .stat-item .count { font-size: clamp(1.2rem, 3vh, 1.3rem); font-weight: 700; color: var(--primary-color); display: block; }
+        .stat-item span:not(.count) { font-size: clamp(0.7rem, 1.7vh, 0.75rem); color: var(--text-secondary); }
+
+        .feature-menu {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .menu-item {
+            background: var(--secondary-color); border-radius: 12px; border: 1px solid var(--primary-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 1rem 0.5rem;
+            aspect-ratio: 1 / 1;
+        }
+        .menu-item:hover { transform: translateY(-4px); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .menu-item i { font-size: clamp(1.8rem, 4vh, 2.2rem); color: var(--primary-color); margin-bottom: 0.75rem; }
+        .menu-item span { font-size: clamp(0.7rem, 1.8vh, 0.75rem); font-weight: 600; color: var(--text-secondary); }
+        
+        .feature-page { padding: 0.5rem; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .placeholder-page {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; height: 100%; color: var(--text-secondary);
+        }
+        .placeholder-page i { font-size: 4rem; margin-bottom: 1rem; color: var(--border-color); }
+        .placeholder-page h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        
+        .bottom-nav {
+            background: var(--secondary-color); display: flex; justify-content: space-around;
+            align-items: center;
+            padding: 0.5rem 0; border-top: 1px solid var(--primary-color); z-index: 100; flex-shrink: 0;
+            height: 65px;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; color: var(--text-secondary);
+            text-decoration: none; padding: 0.2rem; flex-grow: 1; cursor: pointer; position: relative;
+        }
+        .nav-item.active, .nav-item:hover { color: var(--primary-color); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 0.25rem; }
+        .nav-item span { font-size: 0.7rem; font-weight: 600; }
+        
+        #qr-scan-button-nav {
+            width: 60px; height: 60px; background: linear-gradient(45deg, var(--primary-color), #4a70e0);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.8rem;
+            cursor: pointer; transform: translateY(-20px);
+            border: 4px solid var(--background-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+        }
+        #qr-scan-button-nav:hover { transform: translateY(-23px) scale(1.05); }
+
+        .notification-badge {
+            position: absolute; top: -2px; right: 15px; background-color: var(--notification-color);
+            color: white; border-radius: 50%; width: 20px; height: 20px;
+            font-size: 12px; font-weight: bold; display: flex; align-items: center;
+            justify-content: center; border: 2px solid var(--secondary-color);
+        }
+
+        .toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            padding: 0.8rem 1.5rem; border-radius: 10px; color: white;
+            font-weight: 600; z-index: 4000; opacity: 0;
+            transition: opacity 0.4s, bottom 0.4s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; bottom: 110px; }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--error-color); }
+        
+        .update-banner {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .update-banner.show {
+            opacity: 1;
+        }
+        .update-banner button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-wrapper" class="page-container">
+        <div id="full-page-loader" class="loader-overlay hidden">
+            <div class="loader-content">
+                <div class="loader-spinner">
+                    <div class="dot1"></div>
+                    <div class="dot2"></div>
+                    <div class="dot3"></div>
+                </div>
+                <p class="loader-text-main">សូមមេត្តារង់ចាំ</p>
+                <p id="loader-sub-text" class="loader-text-sub">ប្រព័ន្ធកំពុងទាញយកទិន្នន័យ...</p>
+            </div>
+        </div>
+
+        <div id="login-container" class="login-container">
+            <div class="login-header">
+                <img src="icons/appicon.PNG" alt="School Logo" class="login-logo">
+                <h1 class="login-school-name">វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
+                <h2 class="login-app-title">ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</h2>
+            </div>
+            <div class="login-form-container">
+                <p class="login-prompt">សូមចូលគណនីរបស់អ្នកដើម្បីបន្ត</p>
+                <form id="login-form" class="login-form" onsubmit="return false;">
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input id="username" type="text" placeholder="ឈ្មោះគណនី" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input id="password" type="password" placeholder="ពាក្យសម្ងាត់" required>
+                    </div>
+                    <div id="login-error" class="hidden"></div>
+                    <button id="login-button" type="submit">
+                        <span id="login-button-text">ចូលប្រើ</span>
+                        <div id="login-spinner" class="spinner hidden"></div>
+                    </button>
+                </form>
+            </div>
+            <footer class="login-footer">
+                <p>បង្កើតកម្មវិធីដោយ: លោកគ្រូ ទឿន ដាលី</p>
+            </footer>
+        </div>
+
+        <div id="app-container" class="page-container hidden">
+            <div id="main-page" class="page center">
+                <header class="header">
+                    <div class="header-side">
+                        <i id="back-button" class="fa-solid fa-arrow-left hidden"></i>
+                        <img id="school-logo-img" src="icons/appicon.PNG" alt="School Logo" class="logo">
+                    </div>
+                    <div class="school-title-block">
+                        <div id="main-title-block">
+                            <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
+                            <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
+                        </div>
+                        <div id="page-title-block" class="hidden">
+                            <h1 id="page-title"></h1>
+                        </div>
+                    </div>
+                    <div class="header-side">
+                        <i id="refresh-button" class="fa-solid fa-rotate-right"></i>
+                        <i id="qr-scan-button-header" class="fa-solid fa-qrcode"></i>
+                    </div>
+                </header>
+
+                <main id="main-content">
+                    <div id="pull-to-refresh"></div>
+                    <div id="dashboard-content">
+                        <div id="user-profile-bar" class="user-profile-bar" data-feature="User Profile">
+                            <div class="user-info">
+                                <div id="user-photo" class="user-photo"></div>
+                                <div class="user-details">
+                                    <h2 id="user-name"></h2>
+                                    <p id="user-role"></p>
+                                </div>
+                            </div>
+                            <div id="teacher-stats" class="teacher-stats">
+                                <div class="stat-item">
+                                    <span id="total-students" class="count"></span>
+                                    <span>សិស្សសរុប</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span id="female-students" class="count"></span>
+                                    <span>សិស្សស្រី</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Teacher Menu -->
+                        <div id="teacher-menu" class="feature-menu hidden">
+                            <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
+                            <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
+                            <div class="menu-item" data-feature="Score Input"><i class="fa-solid fa-file-pen"></i><span>បញ្ចូលពិន្ទុ</span></div>
+                            <div class="menu-item" data-feature="Homework"><i class="fa-solid fa-book-medical"></i><span>កិច្ចការផ្ទះ</span></div>
+                            <div class="menu-item" data-feature="Month Ranking"><i class="fa-solid fa-trophy"></i><span>ចំណាត់ថ្នាក់</span></div>
+                            <div class="menu-item" data-feature="Report"><i class="fa-solid fa-file-invoice"></i><span>របាយការណ៍</span></div>
+                            <div class="menu-item" data-feature="Timetable"><i class="fa-solid fa-calendar-days"></i><span>កាលវិភាគ</span></div>
+                            <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
+                            <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
+                        </div>
+                        <!-- Admin Menu -->
+                        <div id="admin-menu" class="feature-menu hidden">
+                            <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
+                            <div class="menu-item" data-feature="Manage Teachers"><i class="fa-solid fa-user-gear"></i><span>គ្រប់គ្រងគ្រូ</span></div>
+                            <div class="menu-item" data-feature="Manage Students"><i class="fa-solid fa-users-gear"></i><span>គ្រប់គ្រងសិស្ស</span></div>
+                            <div class="menu-item" data-feature="Class Management"><i class="fa-solid fa-school"></i><span>គ្រប់គ្រងថ្នាក់</span></div>
+                            <div class="menu-item" data-feature="School Settings"><i class="fa-solid fa-sliders"></i><span>ការកំណត់សាលា</span></div>
+                            <div class="menu-item" data-feature="System Logs"><i class="fa-solid fa-file-waveform"></i><span>កំណត់ត្រាប្រព័ន្ធ</span></div>
+                        </div>
+                    </div>
+                    <div id="feature-page-content"></div>
+                </main>
+
+                <nav class="bottom-nav">
+                    <a class="nav-item active" data-nav="home"> <i class="fa-solid fa-house"></i> <span>ទំព័រដើម</span> </a>
+                    <a id="logout-button-nav" class="nav-item"> <i class="fa-solid fa-right-from-bracket"></i> <span>ចាកចេញ</span> </a>
+                    <div id="qr-scan-button-nav">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <a class="nav-item" data-nav="notifications"> 
+                        <i class="fa-regular fa-bell"></i> 
+                        <span>ការជូនដំណឹង</span>
+                        <div id="notification-badge" class="notification-badge hidden"></div>
+                    </a>
+                    <a class="nav-item" data-nav="profile"> <i class="fa-solid fa-user"></i> <span>គណនី</span> </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- QR Scanner UI -->
+        <div id="qr-scanner-container" class="hidden">
+            <div id="qr-reader"></div>
+            <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast"></div>
+    <div id="update-notification" class="update-banner hidden">
+        <span>កំណែថ្មីបានត្រៀមរួចរាល់</span>
+        <button id="reload-button">ធ្វើបច្ចុប្បន្នភាព</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             // --- LIVE BACKEND URL ---
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxnHheU1NVchg56n35Y3U1HHgKWupnw5eerVUTPIKKIC_HWY8cALpdcodfbyRtf-nUnqg/exec";
+
+             // --- UI Elements ---
+            const loginContainer = document.getElementById('login-container');
+            const appContainer = document.getElementById('app-container');
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const loginButtonText = document.getElementById('login-button-text');
+            const loginSpinner = document.getElementById('login-spinner');
+            const loginError = document.getElementById('login-error');
+            const fullPageLoader = document.getElementById('full-page-loader');
+            const loaderSubText = document.getElementById('loader-sub-text');
+            
+            const mainContent = document.getElementById('main-content');
+            const dashboardContent = document.getElementById('dashboard-content');
+            const featurePageContent = document.getElementById('feature-page-content');
+            const backButton = document.getElementById('back-button');
+            const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
+            
+            const userProfileBar = document.getElementById('user-profile-bar');
+            const userPhotoContainer = document.getElementById('user-photo');
+            const userNameEl = document.getElementById('user-name');
+            const userRoleEl = document.getElementById('user-role');
+            const teacherStats = document.getElementById('teacher-stats');
+            const teacherMenu = document.getElementById('teacher-menu');
+            const adminMenu = document.getElementById('admin-menu');
+            const notificationBadge = document.getElementById('notification-badge');
+
+            // --- QR Scanner Elements ---
+            const qrScannerContainer = document.getElementById('qr-scanner-container');
+            const closeQrScannerButton = document.getElementById('close-qr-scanner');
+            let html5QrCode;
+
+            // --- PWA Update Elements ---
+            let newWorker;
+            const updateNotification = document.getElementById('update-notification');
+            const reloadButton = document.getElementById('reload-button');
+
+            // --- Toast Notification ---
+            const toast = document.getElementById('toast-notification');
+            function showToast(message, type = 'success') {
+                toast.textContent = message;
+                toast.className = `toast show ${type}`;
+                setTimeout(() => { toast.className = 'toast'; }, 4000);
+            }
+
+            // --- API Fetch Utility ---
+            async function apiFetch(action, options = {}) {
+                const url = new URL(SCRIPT_URL);
+                url.searchParams.set('action', action);
+                url.searchParams.set('t', new Date().getTime()); // Prevent caching
+
+                if (options.params) {
+                    for (const key in options.params) {
+                        url.searchParams.set(key, options.params[key]);
+                    }
+                }
+                
+                const fetchOptions = {
+                    method: 'GET', // All requests are GET for simplicity with Apps Script
+                    mode: 'cors',
+                };
+                
+                if (options.method === 'POST') {
+                   // Apps Script doPost requires a different handling which is more complex.
+                   // For this project, we'll stick to GET requests for simplicity.
+                   // In a real-world scenario, you'd use a proper POST request.
+                   console.warn("POST actions are simulated via GET for this demo.");
+                }
+
+                try {
+                    const response = await fetch(url, fetchOptions);
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    const result = await response.json();
+                    if (result.status === 'error') throw new Error(result.message);
+                    return result;
+                } catch (error) {
+                    console.error(`API Fetch Error (${action}):`, error);
+                    showToast(error.message || 'Network error', 'error');
+                    throw error;
+                }
+            }
+
+
+            // --- Session & Login/Logout Logic ---
+            async function checkSession() {
+                const userCredentials = localStorage.getItem('schoolAppCredentials');
+                if (userCredentials) {
+                    const { username, password } = JSON.parse(userCredentials);
+                    await refreshAndShowDashboard(username, password);
+                } else {
+                    loginContainer.classList.remove('hidden');
+                    appContainer.classList.add('hidden');
+                }
+            }
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                loginButton.disabled = true;
+                loginButtonText.classList.add('hidden');
+                loginSpinner.classList.remove('hidden');
+                loginError.classList.add('hidden');
+                
+                try {
+                    const result = await apiFetch('login', { params: { username, password } });
+                    localStorage.setItem('schoolAppCredentials', JSON.stringify({ username, password }));
+                    localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
+                    await setupDashboard(result.data);
+                    loginContainer.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                } catch (error) {
+                    loginError.textContent = 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ';
+                    loginError.classList.remove('hidden');
+                } finally {
+                    loginButton.disabled = false;
+                    loginButtonText.classList.remove('hidden');
+                    loginSpinner.classList.add('hidden');
+                }
+            });
+            
+            function handleLogout() {
+                localStorage.removeItem('schoolAppUser');
+                localStorage.removeItem('schoolAppCredentials');
+                localStorage.removeItem('lastSeenAnnouncement');
+                appContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                loginError.classList.add('hidden');
+            }
+            
+            async function refreshAndShowDashboard(username, password) {
+                fullPageLoader.classList.remove('hidden');
+                loginContainer.classList.add('hidden');
+                try {
+                    const result = await apiFetch('login', { params: { username, password } });
+                    localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
+                    await setupDashboard(result.data);
+                    appContainer.classList.remove('hidden');
+                } catch(error) {
+                    handleLogout();
+                } finally {
+                    fullPageLoader.classList.add('hidden');
+                }
+            }
+
+            async function setupDashboard(data) {
+                userNameEl.textContent = data.FullName;
+                userPhotoContainer.innerHTML = '';
+                notificationBadge.classList.add('hidden');
+
+                if (data.Role === 'admin') {
+                    userRoleEl.textContent = "អ្នកគ្រប់គ្រងប្រព័ន្ធ";
+                    teacherStats.classList.add('hidden');
+                    teacherMenu.classList.add('hidden');
+                    adminMenu.classList.remove('hidden');
+                    if (data.PhotoURL) {
+                        const img = document.createElement('img');
+                        img.src = data.PhotoURL;
+                        img.alt = "Profile Photo";
+                        userPhotoContainer.appendChild(img);
+                    } else {
+                        const icon = document.createElement('i');
+                        icon.className = 'fa-solid fa-user-shield';
+                        userPhotoContainer.appendChild(icon);
+                    }
+                } else { // Teacher role
+                    userRoleEl.textContent = `ថ្នាក់: ${data.ClassGrade}`;
+                    teacherStats.classList.remove('hidden');
+                    teacherMenu.classList.remove('hidden');
+                    adminMenu.classList.add('hidden');
+                    if (data.PhotoURL) {
+                        const img = document.createElement('img');
+                        img.src = data.PhotoURL;
+                        img.alt = "Profile Photo";
+                        userPhotoContainer.appendChild(img);
+                    } else {
+                        const icon = document.createElement('i');
+                        icon.className = 'fa-solid fa-user-tie';
+                        userPhotoContainer.appendChild(icon);
+                    }
+                    document.getElementById('total-students').textContent = data.TotalStudents || '-';
+                    document.getElementById('female-students').textContent = data.FemaleStudents || '-';
+                    await checkNewAnnouncements();
+                }
+            }
+
+            // --- Notification Logic ---
+            async function checkNewAnnouncements() {
+                try {
+                    const { data: announcements } = await apiFetch('getAnnouncements');
+                    if (!announcements || announcements.length === 0) return;
+                    const lastSeenTimestamp = localStorage.getItem('lastSeenAnnouncement') || 0;
+                    const newAnnouncements = announcements.filter(ann => new Date(ann.timestamp).getTime() > lastSeenTimestamp);
+                    if (newAnnouncements.length > 0) {
+                        notificationBadge.textContent = newAnnouncements.length;
+                        notificationBadge.classList.remove('hidden');
+                    } else {
+                        notificationBadge.classList.add('hidden');
+                    }
+                } catch (error) { console.error("Could not check for new announcements:", error); }
+            }
+
+            function markAnnouncementsAsRead() {
+                apiFetch('getAnnouncements').then(({data: announcements}) => {
+                    if (announcements && announcements.length > 0) {
+                        const latestTimestamp = new Date(announcements[0].timestamp).getTime();
+                        localStorage.setItem('lastSeenAnnouncement', latestTimestamp);
+                        notificationBadge.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- Page Navigation ---
+            function showDashboard() {
+                dashboardContent.classList.remove('hidden');
+                featurePageContent.innerHTML = '';
+                featurePageContent.classList.add('hidden');
+                document.getElementById('main-title-block').classList.remove('hidden');
+                document.getElementById('page-title-block').classList.add('hidden');
+                backButton.classList.add('hidden');
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                document.querySelector('.nav-item[data-nav="home"]').classList.add('active');
+            }
+            
+            function showFeaturePage(title, content) {
+                document.getElementById('page-title').textContent = title;
+                featurePageContent.innerHTML = '';
+                featurePageContent.appendChild(content);
+                dashboardContent.classList.add('hidden');
+                featurePageContent.classList.remove('hidden');
+                document.getElementById('main-title-block').classList.add('hidden');
+                document.getElementById('page-title-block').classList.remove('hidden');
+                backButton.classList.remove('hidden');
+            }
+            backButton.addEventListener('click', showDashboard);
+
+            // --- QR Scanner Logic ---
+            const onScanSuccess = (decodedText, decodedResult) => {
+                stopQrScanner();
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                showToast(`វត្តមានសម្រាប់ ${decodedText} បានកត់ត្រាម៉ោង ${timeString}`, 'success');
+                apiFetch('recordAttendance', {
+                    method: 'POST',
+                    body: { userId: decodedText, timestamp: now.toISOString() }
+                });
+            };
+
+            const onScanFailure = (error) => {};
+
+            function startQrScanner() {
+                qrScannerContainer.classList.remove('hidden');
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("qr-reader");
+                }
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    onScanSuccess,
+                    onScanFailure
+                ).catch(err => {
+                    showToast('មិនអាចបើកកាមេរ៉ាបានទេ។', 'error');
+                    console.error("Cannot start QR scanner", err);
+                    stopQrScanner();
+                });
+            }
+
+            function stopQrScanner() {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {}).catch(err => {});
+                }
+                qrScannerContainer.classList.add('hidden');
+            }
+            
+            closeQrScannerButton.addEventListener('click', stopQrScanner);
+
+
+            // --- Feature Implementations ---
+            async function handleFeatureClick(feature) {
+                const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
+                if (!userData) return;
+
+                fullPageLoader.classList.remove('hidden');
+                try {
+                    let pageContent, pageTitle;
+                    loaderSubText.textContent = `កំពុងទាញយក ${feature}...`;
+                    switch (feature) {
+                        case 'User Profile':
+                            pageContent = createProfilePage(userData);
+                            pageTitle = 'ข้อมูลส่วนตัว';
+                            break;
+                        case 'Announcements':
+                            const { data: announcements } = await apiFetch('getAnnouncements');
+                            pageContent = createAnnouncementsPage(announcements, userData.Role);
+                            pageTitle = 'សេចក្តីជូនដំណឹង';
+                            if (userData.Role === 'teacher') markAnnouncementsAsRead();
+                            break;
+                        case 'Homework':
+                            const { data: homework } = await apiFetch('getHomework');
+                            pageContent = createHomeworkPage(homework);
+                            pageTitle = 'កិច្ចការផ្ទះ';
+                            break;
+                        case 'Month Ranking':
+                            const { data: rankings } = await apiFetch('getMonthRanking');
+                            pageContent = createMonthRankingPage(rankings);
+                            pageTitle = 'ចំណាត់ថ្នាក់ប្រចាំខែ';
+                            break;
+                        case 'Report':
+                             const { data: reports } = await apiFetch('getReports');
+                             pageContent = createReportPage(reports);
+                             pageTitle = 'របាយការណ៍';
+                             break;
+                        case 'Timetable':
+                             const { data: timetable } = await apiFetch('getTimetable', { params: { classGrade: userData.ClassGrade } });
+                             pageContent = createTimetablePage(timetable);
+                             pageTitle = `កាលវិភាគថ្នាក់ ${userData.ClassGrade}`;
+                             break;
+                        case 'Settings':
+                             const { data: settings } = await apiFetch('getSchoolSettings');
+                             pageContent = createSchoolSettingsPage(settings);
+                             pageTitle = 'ការកំណត់';
+                             break;
+                        default:
+                            pageContent = createPlaceholderPage(feature);
+                            pageTitle = feature;
+                            break;
+                    }
+                    if(pageContent) showFeaturePage(pageTitle, pageContent);
+                } catch (error) {
+                    showToast('Failed to load feature.', 'error');
+                    showDashboard();
+                } finally {
+                    fullPageLoader.classList.add('hidden');
+                    loaderSubText.textContent = "ប្រព័ន្ធកំពុងទាញយកទិន្នន័យ...";
+                }
+            }
+            
+            function createPlaceholderPage(featureName) {
+                const container = document.createElement('div');
+                container.className = 'feature-page placeholder-page';
+                container.innerHTML = `
+                    <i class="fa-solid fa-person-digging"></i>
+                    <h3>មុខងារ "${featureName}"</h3>
+                    <p>កំពុងតែត្រូវបានបង្កើតឡើង។ សូមអរគុណ!</p>
+                `;
+                return container;
+            }
+
+            function createProfilePage(userData) {
+                const container = document.createElement('div');
+                container.className = 'feature-page profile-page-container';
+                const photoHTML = userData.PhotoURL ? `<img src="${userData.PhotoURL}" alt="Profile Photo">` : `<i class="fa-solid ${userData.Role === 'admin' ? 'fa-user-shield' : 'fa-user-tie'}"></i>`;
+                let detailsHTML = `<div class="profile-detail-item"><span>ឈ្មោះពេញ</span><div>${userData.FullName}</div></div><div class="profile-detail-item"><span>តួនាទី</span><div>${userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រង' : 'គ្រូបង្រៀន'}</div></div>`;
+                if (userData.Role === 'teacher') {
+                    detailsHTML += `<div class="profile-detail-item"><span>ថ្នាក់បង្រៀន</span><div>${userData.ClassGrade}</div></div><div class="profile-detail-item"><span>សិស្សសរុប</span><div>${userData.TotalStudents}</div></div><div class="profile-detail-item"><span>សិស្សស្រី</span><div>${userData.FemaleStudents}</div></div>`;
+                }
+                detailsHTML += `<div class="profile-detail-item"><span>Email</span><div>${userData.Role === 'admin' ? 'admin' : 'teacher'}@school.com</div></div><div class="profile-detail-item"><span>កាលបរិច្ឆេទចូលทำงาน</span><div>01 មករា 2020</div></div>`;
+                container.innerHTML = `<div class="profile-header"><div class="profile-photo-large">${photoHTML}</div><h2>${userData.FullName}</h2><p>${userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ' : `គ្រូបង្រៀនថ្នាក់ ${userData.ClassGrade}`}</p></div><div class="profile-details-list">${detailsHTML}</div>`;
+                return container;
+            }
+
+            function createAnnouncementsPage(announcements, role) {
+                const container = document.createElement('div');
+                container.className = 'feature-page';
+                if (role === 'admin') {
+                    const form = document.createElement('form');
+                    form.className = 'announcement-form';
+                    form.onsubmit = saveAnnouncement;
+                    form.innerHTML = `
+                        <h3><i class="fa-solid fa-plus-circle"></i> បង្កើតសេចក្តីជូនដំណឹងថ្មី</h3>
+                        <div class="input-group-modern">
+                            <i class="fa-solid fa-heading"></i>
+                            <input type="text" id="announcement-subject" placeholder="ប្រធានបទ" required>
+                        </div>
+                        <div class="input-group-modern">
+                             <i class="fa-solid fa-envelope-open-text"></i>
+                            <textarea id="announcement-message" placeholder="ខ្លឹមសារ..." required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit">
+                                <i class="fa-solid fa-paper-plane"></i> ផ្ញើសេចក្តីជូនដំណឹង
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(form);
+                }
+                const listContainer = document.createElement('div');
+                container.appendChild(listContainer);
+                if (!announcements || announcements.length === 0) {
+                    listContainer.textContent = 'មិនមានសេចក្តីជូនដំណឹងថ្មីទេ។';
+                } else {
+                    announcements.forEach(ann => {
+                        const item = document.createElement('div');
+                        item.className = 'announcement-item';
+                        const date = new Date(ann.timestamp).toLocaleDateString('km-KH', { year: 'numeric', month: 'long', day: 'numeric' });
+                        item.innerHTML = `<div class="announcement-subject">${ann.subject}</div><p class="announcement-message">${ann.message}</p><div class="announcement-meta">ដោយ: ${ann.sender} - ${date}</div>`;
+                        listContainer.appendChild(item);
+                    });
+                }
+                return container;
+            }
+            
+            function createHomeworkPage(homeworks) {
+                const container = document.createElement('div');
+                container.className = 'feature-page item-list';
+                if (!homeworks || homeworks.length === 0) {
+                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-book-open"></i><h3>មិនមានកិច្ចការផ្ទះ</h3></div>`;
+                    return container;
+                }
+                homeworks.forEach(hw => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
+                        <div class="item-icon"><i class="fa-solid fa-book-medical"></i></div>
+                        <div class="item-details">
+                            <div class="item-title">${hw.title}</div>
+                            <div class="item-subtitle">${hw.subject} | កំណត់ส่ง: ${new Date(hw.dueDate).toLocaleDateString('km-KH')}</div>
+                        </div>`;
+                    container.appendChild(item);
+                });
+                return container;
+            }
+            
+            function createMonthRankingPage(rankings) {
+                const container = document.createElement('div');
+                container.className = 'feature-page item-list';
+                 if (!rankings || rankings.length === 0) {
+                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-chart-bar"></i><h3>មិនមានទិន្នន័យ</h3></div>`;
+                    return container;
+                }
+                rankings.forEach(student => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    let rankHTML;
+                    if (student.rank <= 3) {
+                        rankHTML = `<div class="ranking-badge rank-${student.rank}"><i class="fa-solid fa-medal"></i></div>`;
+                    } else {
+                        rankHTML = `<div class="ranking-badge">${student.rank}</div>`;
+                    }
+                    item.innerHTML = `
+                        ${rankHTML}
+                        <div class="item-icon"><img src="${student.photo}" alt="Photo"></div>
+                        <div class="item-details">
+                            <div class="item-title">${student.name}</div>
+                            <div class="item-subtitle">ពិន្ទុសរុប: ${student.score}</div>
+                        </div>`;
+                    container.appendChild(item);
+                });
+                return container;
+            }
+
+            function createReportPage(reports) {
+                 const container = document.createElement('div');
+                container.className = 'feature-page item-list';
+                 if (!reports || reports.length === 0) {
+                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-file-excel"></i><h3>មិនមានរបាយការណ៍</h3></div>`;
+                    return container;
+                }
+                reports.forEach(report => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
+                        <div class="item-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div class="item-details">
+                            <div class="item-title">${report.title}</div>
+                            <div class="item-subtitle">${report.description}</div>
+                        </div>
+                        <i class="fa-solid fa-download" style="color: var(--primary-color);"></i>`;
+                    container.appendChild(item);
+                });
+                return container;
+            }
+
+            async function saveAnnouncement(event) {
+                event.preventDefault();
+                const button = event.target.querySelector('button');
+                const subjectInput = document.getElementById('announcement-subject');
+                const messageInput = document.getElementById('announcement-message');
+                const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
+                button.disabled = true;
+                button.textContent = 'កំពុងផ្ញើ...';
+                try {
+                    await apiFetch('saveAnnouncement', {
+                        method: 'POST',
+                        body: { subject: subjectInput.value, message: messageInput.value, sender: userData.FullName }
+                    });
+                    showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!');
+                    handleFeatureClick('Announcements');
+                } catch (error) {
+                    showToast('ការផ្ញើបានបរាជ័យ។', 'error');
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ផ្ញើសេចក្តីជូនដំណឹង';
+                }
+            }
+
+            // --- Event Listeners ---
+            document.querySelectorAll('.menu-item, #user-profile-bar').forEach(element => {
+                element.addEventListener('click', () => handleFeatureClick(element.dataset.feature));
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(element => {
+                 if(element.id === 'logout-button-nav') return;
+                element.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    element.classList.add('active');
+                    const navAction = element.dataset.nav;
+                    switch(navAction) {
+                        case 'home': showDashboard(); break;
+                        case 'notifications': handleFeatureClick('Announcements'); break;
+                        case 'profile': handleFeatureClick('User Profile'); break;
+                    }
+                });
+            });
+
+            document.getElementById('logout-button-nav').addEventListener('click', handleLogout);
+            document.getElementById('qr-scan-button-nav').addEventListener('click', startQrScanner);
+            document.getElementById('qr-scan-button-header').addEventListener('click', startQrScanner);
+
+            document.getElementById('refresh-button').addEventListener('click', async () => {
+                const userCredentials = localStorage.getItem('schoolAppCredentials');
+                if (userCredentials) {
+                    const { username, password } = JSON.parse(userCredentials);
+                    await refreshAndShowDashboard(username, password);
+                }
+            });
+            
+            // --- Initial Load ---
+            checkSession();
+        });
+    </script>
+</body>
+</html>
