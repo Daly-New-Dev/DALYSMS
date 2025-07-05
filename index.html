@@ -568,7 +568,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Teacher Menu -->
                         <div id="teacher-menu" class="feature-menu hidden">
                             <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
                             <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
@@ -580,7 +579,6 @@
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
                         </div>
-                        <!-- Admin Menu -->
                         <div id="admin-menu" class="feature-menu hidden">
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Manage Teachers"><i class="fa-solid fa-user-gear"></i><span>គ្រប់គ្រងគ្រូ</span></div>
@@ -609,7 +607,6 @@
             </div>
         </div>
         
-        <!-- QR Scanner UI -->
         <div id="qr-scanner-container" class="hidden">
             <div id="qr-reader"></div>
             <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
@@ -626,7 +623,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // REPLACE THIS URL WITH THE NEW URL YOU GET AFTER DEPLOYING THE GOOGLE APPS SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVn_hJkv2dMeHa6KT79TVSO_c5Qj79D19r7pVWZzz8oxmcIvLgHJOi4C7DvAmagILSQg/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKSSwqOOMSqg9YyNzwghpMn_y1I1tOVXTM-ZGktae1TlE6p7D3AdWFWycEIQrwkCJIaQ/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -915,7 +912,7 @@
                     switch (feature) {
                         case 'User Profile':
                             pageContent = createProfilePage(userData);
-                            pageTitle = 'ព័ត៌មានផ្ទាល់ខ្លួន'; // <-- Translation updated
+                            pageTitle = 'ព័ត៌មានផ្ទាល់ខ្លួន';
                             break;
                         case 'Announcements':
                             const { data: announcements } = await apiFetch('getAnnouncements');
@@ -928,7 +925,6 @@
                              pageContent = createStudentListPage(students, userData.ClassGrade);
                              pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
                              break;
-                        // --- NEW: Attendance Feature Case ---
                         case 'Attendance':
                              const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
                              pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
@@ -1161,7 +1157,6 @@
                 return container;
             }
 
-            // --- NEW: Attendance Page Function ---
             function createAttendancePage(students, classGrade) {
                 const container = document.createElement('div');
                 container.className = 'feature-page attendance-page';
@@ -1180,13 +1175,11 @@
                     students.forEach((student, index) => {
                         const card = document.createElement('div');
                         card.className = 'student-attendance-card';
-                        // Use a unique identifier for the student, like their name or an ID if available
                         card.dataset.studentId = student['Student Name']; 
                         
                         const dayOfMonth = today.getDate();
-                        const todayStatus = student[dayOfMonth.toString()] || ''; // Get status from column '1', '2', etc.
+                        const todayStatus = student[dayOfMonth.toString()] || '';
 
-                        // Set initial card border color based on status
                         if (todayStatus === 'មក') card.classList.add('status-present');
                         else if (todayStatus === 'អវត្តមាន') card.classList.add('status-absent');
                         else if (todayStatus === 'ច្បាប់') card.classList.add('status-leave');
@@ -1218,7 +1211,6 @@
                     const studentId = card.dataset.studentId;
                     const status = button.dataset.status;
 
-                    // Visually update the UI immediately
                     const controls = button.parentElement;
                     controls.querySelectorAll('.attendance-btn').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
@@ -1228,7 +1220,6 @@
                     else if (status === 'អវត្តមាន') card.classList.add('status-absent');
                     else if (status === 'ច្បាប់') card.classList.add('status-leave');
 
-                    // Save the data in the background
                     saveAttendanceStatus(studentId, status, classGrade);
                 });
 
@@ -1241,8 +1232,6 @@
                         method: 'POST',
                         body: { studentId, status, classGrade }
                     });
-                    // Optional: show a subtle success toast
-                    // showToast(`បានកត់ត្រា "${status}" សម្រាប់ ${studentId}`);
                 } catch (error) {
                     showToast(`Error saving for ${studentId}`, 'error');
                 }
