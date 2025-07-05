@@ -427,8 +427,9 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             // --- LIVE BACKEND URL ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyBFt-kZmQARueEIy6xL56e0p4r23wjjuwnoqYKDQBRVgEF1QSxiDgEA0UOGsEGQQjVg/exec";
+             // !!! IMPORTANT !!! 
+             // REPLACE THIS URL WITH THE NEW URL YOU GET AFTER DEPLOYING THE GOOGLE APPS SCRIPT
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBQILQul1dChvllIIZeq8LIdYc_UFDZMwCi--ch5t78WrRy7f2yG8Cew4dVE1viLg27A/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -479,17 +480,21 @@
                 try {
                     let response;
                     if (options.method === 'POST') {
-                        const postPayload = { action: action, ...options.body };
+                        // For POST, send a POST request with a JSON body
                         response = await fetch(SCRIPT_URL, {
                             method: 'POST',
-                            mode: 'cors',
-                            body: JSON.stringify(postPayload),
-                             headers: { 'Content-Type': 'application/json' },
+                            mode: 'cors', // Important for cross-origin requests
+                            headers: {
+                                'Content-Type': 'text/plain;charset=utf-8', // Required header for Apps Script
+                            },
+                            body: JSON.stringify({ action: action, ...options.body }), // Send action in the body
+                            redirect: 'follow' // Follow redirects from Apps Script
                         });
                     } else {
+                        // For GET, append parameters to the URL
                         const url = new URL(SCRIPT_URL);
                         url.searchParams.set('action', action);
-                        url.searchParams.set('t', new Date().getTime());
+                        url.searchParams.set('t', new Date().getTime()); // Cache buster
                         if (options.params) {
                             for (const key in options.params) {
                                 url.searchParams.set(key, options.params[key]);
@@ -498,13 +503,17 @@
                         response = await fetch(url, { method: 'GET', mode: 'cors' });
                     }
 
-                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok. Status: ${response.status}`);
+                    }
                     const result = await response.json();
-                    if (result.status === 'error') throw new Error(result.message);
+                    if (result.status === 'error') {
+                        throw new Error(result.message);
+                    }
                     return result;
                 } catch (error) {
                     console.error(`API Fetch Error (${action}):`, error);
-                    showToast(error.message || 'Network error', 'error');
+                    showToast(error.message || 'Failed to fetch. Check console for details.', 'error');
                     throw error;
                 }
             }
