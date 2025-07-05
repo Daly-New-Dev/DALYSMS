@@ -136,9 +136,9 @@
             flex-grow: 1; min-width: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center; margin: 0 0.5rem;
         }
-        .school-title-block h1 { font-size: clamp(1.1rem, 4vw, 1.3rem); font-weight: 700; line-height: 1.3; }
+        .school-title-block h1 { font-size: clamp(1rem, 3.5vw, 1.2rem); font-weight: 700; line-height: 1.3; }
         #page-title { font-size: 1.2rem; font-weight: 700; }
-        .school-title-block p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-top: 0.2rem; white-space: nowrap; }
+        .school-title-block p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.8); margin-top: 0.2rem; white-space: nowrap; }
 
         main {
             flex-grow: 1; display: flex; flex-direction: column;
@@ -190,6 +190,29 @@
         }
         .placeholder-page i { font-size: 4rem; margin-bottom: 1rem; color: var(--border-color); }
         .placeholder-page h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        
+        .profile-page-container { padding: 1rem; }
+        .profile-header {
+            text-align: center; padding: 1.5rem; background-color: var(--secondary-color);
+            border-radius: 12px; margin-bottom: 1.5rem;
+        }
+        .profile-photo-large {
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1rem auto;
+            background-color: var(--border-color); display: flex; align-items: center;
+            justify-content: center; font-size: 4rem; color: var(--text-secondary);
+            overflow: hidden; border: 4px solid var(--primary-color);
+        }
+        .profile-photo-large img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-header h2 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.25rem; }
+        .profile-header p { color: var(--text-secondary); }
+        .profile-details-list { background-color: var(--secondary-color); border-radius: 12px; padding: 0.5rem 1rem; }
+        .profile-detail-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 0.5rem; border-bottom: 1px solid var(--border-color);
+        }
+        .profile-detail-item:last-child { border-bottom: none; }
+        .profile-detail-item span { color: var(--text-secondary); font-weight: 500; }
+        .profile-detail-item div { color: var(--text-dark); font-weight: 600; }
         
         #qr-scanner-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
