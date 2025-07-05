@@ -193,29 +193,12 @@
         .placeholder-page i { font-size: 4rem; margin-bottom: 1rem; color: var(--border-color); }
         .placeholder-page h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-dark); }
         
-        .profile-page-container { padding: 1rem; }
-        .profile-header {
-            text-align: center; padding: 1.5rem; background-color: var(--secondary-color);
-            border-radius: 12px; margin-bottom: 1.5rem;
-        }
-        .profile-photo-large {
-            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1rem auto;
-            background-color: var(--border-color); display: flex; align-items: center;
-            justify-content: center; font-size: 4rem; color: var(--text-secondary);
-            overflow: hidden; border: 4px solid var(--primary-color);
-        }
-        .profile-photo-large img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-header h2 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.25rem; }
-        .profile-header p { color: var(--text-secondary); }
-        .profile-details-list { background-color: var(--secondary-color); border-radius: 12px; padding: 0.5rem 1rem; }
-        .profile-detail-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 0.5rem; border-bottom: 1px solid var(--border-color);
-        }
-        .profile-detail-item:last-child { border-bottom: none; }
-        .profile-detail-item span { color: var(--text-secondary); font-weight: 500; }
-        .profile-detail-item div { color: var(--text-dark); font-weight: 600; }
-        
+        .student-table { width: 100%; border-collapse: collapse; background: var(--secondary-color); border-radius: 12px; overflow: hidden; }
+        .student-table th, .student-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .student-table th { background-color: var(--primary-color); color: var(--text-light); font-weight: 600; }
+        .student-table tr:nth-child(even) { background-color: #f9fafb; }
+        .student-table td:first-child { text-align: center; }
+
         #qr-scanner-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.8); z-index: 3000;
@@ -515,7 +498,6 @@
                 if (options.method === 'POST') {
                    // Apps Script doPost requires a different handling which is more complex.
                    // For this project, we'll stick to GET requests for simplicity.
-                   // In a real-world scenario, you'd use a proper POST request.
                    console.warn("POST actions are simulated via GET for this demo.");
                 }
 
@@ -751,6 +733,11 @@
                             pageTitle = 'សេចក្តីជូនដំណឹង';
                             if (userData.Role === 'teacher') markAnnouncementsAsRead();
                             break;
+                        case 'Student List':
+                             const { data: students } = await apiFetch('getStudentInfo');
+                             pageContent = createStudentListPage(students, userData.ClassGrade);
+                             pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
+                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
                             pageTitle = feature;
@@ -831,6 +818,42 @@
                         listContainer.appendChild(item);
                     });
                 }
+                return container;
+            }
+            
+            function createStudentListPage(allStudents, teacherClassGrade) {
+                const container = document.createElement('div');
+                container.className = 'feature-page';
+                
+                const studentsInClass = allStudents.filter(s => s.ClassGrade === teacherClassGrade);
+
+                if (!studentsInClass || studentsInClass.length === 0) {
+                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
+                    return container;
+                }
+                const table = document.createElement('table');
+                table.className = 'student-table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>ល.រ.</th>
+                            <th>ឈ្មោះសិស្ស</th>
+                            <th>ភេទ</th>
+                            <th>ថ្ងៃខែឆ្នាំកំណើត</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${studentsInClass.map(student => `
+                            <tr>
+                                <td>${student.No}</td>
+                                <td>${student['Student Name']}</td>
+                                <td>${student.Gender}</td>
+                                <td>${new Date(student['Date of Birth']).toLocaleDateString('km-KH')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+                container.appendChild(table);
                 return container;
             }
 
