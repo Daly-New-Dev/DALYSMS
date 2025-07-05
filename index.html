@@ -90,13 +90,12 @@
         }
         .login-button-wrapper { display: flex; justify-content: center; }
         
-        /* --- NEW: Beautiful Login Button Style --- */
         #login-button {
             width: 100%; height: 56px; padding: 1rem; border: none;
             background: linear-gradient(45deg, #fff, #f9f9f9);
             color: var(--primary-color);
             font-size: 1.1rem; font-weight: 700; border-radius: 12px; cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy effect */
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
             position: relative;
             overflow: hidden;
@@ -107,9 +106,9 @@
         }
         #login-button.loading {
             width: 56px;
-            border-radius: 50%; /* Perfect circle */
+            border-radius: 50%;
             pointer-events: none;
-            color: transparent; /* Hide text during animation */
+            color: transparent;
         }
 
         #login-button .btn-text { transition: opacity 0.2s ease, transform 0.2s ease; }
@@ -290,6 +289,103 @@
             font-family: 'Kantumruy Pro', sans-serif;
             font-weight: 600;
             cursor: pointer;
+        }
+
+        /* --- NEW: Professional Profile Page Styles --- */
+        .profile-page-v2 {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .profile-card {
+            background-color: var(--secondary-color);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .profile-card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #5477e8 100%);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            color: var(--text-light);
+        }
+        .profile-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--secondary-color);
+            margin: 0 auto 1rem auto;
+            background-color: var(--background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--primary-color);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-card-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .profile-card-header p {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+        .profile-card-body {
+            padding: 1.5rem;
+        }
+        .details-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+        @media (min-width: 640px) {
+            .profile-details-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        .detail-item .icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 40px;
+            text-align: center;
+        }
+        .detail-item .text-content span {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+        }
+        .detail-item .text-content div {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
     </style>
 </head>
@@ -772,16 +868,62 @@
                 return container;
             }
 
+            // --- NEW: Redesigned Professional Profile Page Function ---
             function createProfilePage(userData) {
                 const container = document.createElement('div');
-                container.className = 'feature-page profile-page-container';
-                const photoHTML = userData.PhotoURL ? `<img src="${userData.PhotoURL}" alt="Profile Photo">` : `<i class="fa-solid ${userData.Role === 'admin' ? 'fa-user-shield' : 'fa-user-tie'}"></i>`;
-                let detailsHTML = `<div class="profile-detail-item"><span>ឈ្មោះពេញ</span><div>${userData.FullName}</div></div><div class="profile-detail-item"><span>តួនាទី</span><div>${userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រង' : 'គ្រូបង្រៀន'}</div></div>`;
+                container.className = 'feature-page profile-page-v2';
+
+                const photoHTML = userData.PhotoURL 
+                    ? `<img src="${userData.PhotoURL}" alt="Profile Photo">` 
+                    : `<i class="fa-solid ${userData.Role === 'admin' ? 'fa-user-shield' : 'fa-user-tie'}"></i>`;
+
+                const roleText = userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ' : `គ្រូបង្រៀនថ្នាក់ ${userData.ClassGrade}`;
+
+                let teacherDetails = '';
                 if (userData.Role === 'teacher') {
-                    detailsHTML += `<div class="profile-detail-item"><span>ថ្នាក់បង្រៀន</span><div>${userData.ClassGrade}</div></div><div class="profile-detail-item"><span>សិស្សសរុប</span><div>${userData.TotalStudents}</div></div><div class="profile-detail-item"><span>សិស្សស្រី</span><div>${userData.FemaleStudents}</div></div>`;
+                    teacherDetails = `
+                        <div class="detail-item">
+                            <i class="icon fa-solid fa-chalkboard-user"></i>
+                            <div class="text-content"><span>ថ្នាក់បង្រៀន</span><div>${userData.ClassGrade || 'N/A'}</div></div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="icon fa-solid fa-users"></i>
+                            <div class="text-content"><span>សិស្សសរុប</span><div>${userData.TotalStudents || 0} នាក់</div></div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="icon fa-solid fa-venus"></i>
+                            <div class="text-content"><span>សិស្សស្រី</span><div>${userData.FemaleStudents || 0} នាក់</div></div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="icon fa-solid fa-book-open-reader"></i>
+                            <div class="text-content"><span>មុខវិជ្ជា</span><div>${userData.Subject || 'N/A'}</div></div>
+                        </div>
+                    `;
                 }
-                detailsHTML += `<div class="profile-detail-item"><span>Email</span><div>${userData.Role === 'admin' ? 'admin' : 'teacher'}@school.com</div></div><div class="profile-detail-item"><span>កាលបរិច្ឆេទចូលทำงาน</span><div>01 មករា 2020</div></div>`;
-                container.innerHTML = `<div class="profile-header"><div class="profile-photo-large">${photoHTML}</div><h2>${userData.FullName}</h2><p>${userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ' : `គ្រូបង្រៀនថ្នាក់ ${userData.ClassGrade}`}</p></div><div class="profile-details-list">${detailsHTML}</div>`;
+
+                container.innerHTML = `
+                    <div class="profile-card">
+                        <div class="profile-card-header">
+                            <div class="profile-avatar">${photoHTML}</div>
+                            <h2>${userData.FullName}</h2>
+                            <p>${roleText}</p>
+                        </div>
+                        <div class="profile-card-body">
+                            <h3 class="details-section-title">ព័ត៌មានលម្អិត</h3>
+                            <div class="profile-details-grid">
+                                <div class="detail-item">
+                                    <i class="icon fa-solid fa-id-card"></i>
+                                    <div class="text-content"><span>ឈ្មោះគណនី</span><div>${userData.Username}</div></div>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="icon fa-solid fa-envelope"></i>
+                                    <div class="text-content"><span>អ៊ីមែល</span><div>${userData.Email || 'មិនមាន'}</div></div>
+                                </div>
+                                ${teacherDetails}
+                            </div>
+                        </div>
+                    </div>
+                `;
                 return container;
             }
 
@@ -806,11 +948,10 @@
                         outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(57, 99, 222, 0.2);
                     }
                     .form-group textarea { min-height: 120px; resize: vertical; }
-                    /* --- NEW: Centered and beautiful button --- */
                     .form-actions { text-align: center; margin-top: 1.5rem; }
                     .form-actions button {
                         background: linear-gradient(45deg, var(--primary-color), #4a70e0); color: white;
-                        border: none; padding: 0.8rem 2.5rem; border-radius: 50px; /* Pill shape */
+                        border: none; padding: 0.8rem 2.5rem; border-radius: 50px;
                         cursor: pointer; font-weight: 700; font-size: 1rem;
                         transition: transform 0.2s, box-shadow 0.2s;
                         display: inline-flex; align-items: center; gap: 0.75rem;
@@ -863,14 +1004,18 @@
                         const item = document.createElement('div');
                         item.className = 'announcement-item';
                         
-                        // --- FIX: Handle potential capitalization differences in sheet headers ---
                         const subject = ann.subject || ann.Subject || 'គ្មានប្រធានបទ';
                         const message = ann.message || ann.Message || '';
                         const sender = ann.sender || ann.Sender || 'មិនស្គាល់';
                         const timestamp = ann.timestamp || ann.Timestamp;
 
-                        const date = new Date(timestamp).toLocaleDateString('km-KH', { year: 'numeric', month: 'long', day: 'numeric' });
-                        item.innerHTML = `<div class="announcement-subject">${subject}</div><p class="announcement-message">${message}</p><div class="announcement-meta">ដោយ: ${sender} - ${date}</div>`;
+                        // --- UPDATE: Format with both date and time ---
+                        const dateTime = new Date(timestamp).toLocaleString('km-KH', {
+                            day: '2-digit', month: 'long', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit', hour12: true
+                        });
+                        
+                        item.innerHTML = `<div class="announcement-subject">${subject}</div><p class="announcement-message">${message}</p><div class="announcement-meta">ដោយ: ${sender} - ${dateTime}</div>`;
                         listContainer.appendChild(item);
                     });
                 }
