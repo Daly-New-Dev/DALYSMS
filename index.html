@@ -205,6 +205,19 @@
         .student-table th { background-color: var(--primary-color); color: var(--text-light); font-weight: 600; }
         .student-table tr:nth-child(even) { background-color: #f9fafb; }
         .student-table td:first-child { text-align: center; }
+        
+        /* --- NEW: Student List Footer --- */
+        .student-list-footer {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            font-weight: 600;
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
         #qr-scanner-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -423,7 +436,8 @@
             transition: border-left-color 0.3s;
         }
         .student-info-att {
-            display: flex;
+            display: grid; 
+            grid-template-columns: auto 1fr auto; 
             align-items: baseline;
             gap: 0.75rem;
             flex-grow: 1;
@@ -433,9 +447,6 @@
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-secondary);
-            width: 25px;
-            text-align: center;
-            flex-shrink: 0;
         }
         .student-name-att {
             font-weight: 600;
@@ -448,7 +459,7 @@
         .student-gender-att {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            flex-shrink: 0;
+            justify-self: center; /* <-- Center gender in its column */
         }
         .attendance-controls {
             display: flex;
@@ -485,6 +496,33 @@
         .student-attendance-card.status-present { border-left-color: var(--success-color); }
         .student-attendance-card.status-absent { border-left-color: var(--error-color); }
         .student-attendance-card.status-leave { border-left-color: #f6ad55; }
+        
+        .attendance-submit-container {
+            margin-top: 1rem;
+            padding: 0.5rem;
+        }
+        #submit-attendance-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--primary-color), #4a70e0);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(57, 99, 222, 0.3);
+            transition: all 0.2s ease-in-out;
+        }
+        #submit-attendance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(57, 99, 222, 0.4);
+        }
+        #submit-attendance-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
     </style>
 </head>
@@ -636,7 +674,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUM8CSzytgqA_0JMp0A3F54EO5m0lItjfenhKExmLdo694FrqnVSrCjBFb9ZTv1jTDCg/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTDlMDQzGGHgz2cV0lVl0fIhdW1cNwzVBiwrXmrtXNdWJ50jRWT-fU3ZK_V5_WSBuzEg/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -939,8 +977,10 @@
                              pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
                              break;
                         case 'Attendance':
-                             const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
-                             pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
+                             const { data: studentInfo } = await apiFetch('getStudentInfo');
+                             const { data: attendanceRecords } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
+                             const studentsForAttendance = studentInfo.filter(s => s.ClassGrade === userData.ClassGrade);
+                             pageContent = createAttendancePage(studentsForAttendance, attendanceRecords, userData.ClassGrade);
                              pageTitle = 'វត្តមាន';
                              break;
                         default:
@@ -1167,6 +1207,18 @@
                     </tbody>
                 `;
                 container.appendChild(table);
+
+                const totalStudents = studentsInClass.length;
+                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'Female' || String(s.Gender).trim() === 'ស្រី').length;
+
+                const footer = document.createElement('div');
+                footer.className = 'student-list-footer';
+                footer.innerHTML = `
+                    <span>សិស្សសរុប: ${totalStudents}នាក់</span>
+                    <span>សិស្សស្រី: ${femaleStudents}នាក់</span>
+                `;
+                container.appendChild(footer);
+
                 return container;
             }
 
@@ -1185,7 +1237,7 @@
                 return `ថ្ងៃ${dayOfWeek} ទី${dayOfMonth} ខែ${month} ឆ្នាំ${year}`;
             }
 
-            function createAttendancePage(students, classGrade) {
+            function createAttendancePage(students, attendanceRecords, classGrade) {
                 const container = document.createElement('div');
                 container.className = 'feature-page attendance-page';
 
@@ -1201,16 +1253,25 @@
                     list.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
                 } else {
                     students.forEach((student, index) => {
+                        if (!student || !student['Student Name']) {
+                            return; 
+                        }
+
                         const card = document.createElement('div');
                         card.className = 'student-attendance-card';
                         card.dataset.studentId = student['Student Name']; 
                         
                         const dayOfMonth = today.getDate();
-                        const todayStatus = student[dayOfMonth.toString()] || '';
-
-                        if (todayStatus === 'មក') card.classList.add('status-present');
-                        else if (todayStatus === 'អវ') card.classList.add('status-absent');
-                        else if (todayStatus === 'ច្បាប់') card.classList.add('status-leave');
+                        const record = attendanceRecords.find(r => r['Student Name'] === student['Student Name']);
+                        const statusFromServer = record ? record[dayOfMonth.toString()] : '';
+                        
+                        let activeStatus = 'មក'; // Default to present
+                        if (statusFromServer === 'A') activeStatus = 'អវ';
+                        else if (statusFromServer === 'L') activeStatus = 'ច្បាប់';
+                        
+                        if (activeStatus === 'មក') card.classList.add('status-present');
+                        else if (activeStatus === 'អវ') card.classList.add('status-absent');
+                        else if (activeStatus === 'ច្បាប់') card.classList.add('status-leave');
 
                         card.innerHTML = `
                             <div class="student-info-att">
@@ -1219,9 +1280,9 @@
                                 <div class="student-gender-att">${student.Gender}</div>
                             </div>
                             <div class="attendance-controls">
-                                <button class="attendance-btn present ${todayStatus === 'មក' ? 'active' : ''}" data-status="មក">មក</button>
-                                <button class="attendance-btn absent ${todayStatus === 'អវ' ? 'active' : ''}" data-status="អវ">អវ</button>
-                                <button class="attendance-btn leave ${todayStatus === 'ច្បាប់' ? 'active' : ''}" data-status="ច្បាប់">ច្បាប់</button>
+                                <button class="attendance-btn present ${activeStatus === 'មក' ? 'active' : ''}" data-status="មក">មក</button>
+                                <button class="attendance-btn absent ${activeStatus === 'អវ' ? 'active' : ''}" data-status="អវ">អវ</button>
+                                <button class="attendance-btn leave ${activeStatus === 'ច្បាប់' ? 'active' : ''}" data-status="ច្បាប់">ច្បាប់</button>
                             </div>
                         `;
                         list.appendChild(card);
@@ -1229,37 +1290,57 @@
                 }
                 container.appendChild(list);
 
+                const submitContainer = document.createElement('div');
+                submitContainer.className = 'attendance-submit-container';
+                submitContainer.innerHTML = `<button id="submit-attendance-btn">ចុះវត្តមាន</button>`;
+                container.appendChild(submitContainer);
+
                 list.addEventListener('click', (event) => {
                     const button = event.target.closest('.attendance-btn');
                     if (!button) return;
 
                     const card = button.closest('.student-attendance-card');
-                    const studentId = card.dataset.studentId;
-                    const status = button.dataset.status;
-
                     const controls = button.parentElement;
                     controls.querySelectorAll('.attendance-btn').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
                     
                     card.classList.remove('status-present', 'status-absent', 'status-leave');
-                    if (status === 'មក') card.classList.add('status-present');
-                    else if (status === 'អវ') card.classList.add('status-absent');
-                    else if (status === 'ច្បាប់') card.classList.add('status-leave');
+                    if (button.dataset.status === 'មក') card.classList.add('status-present');
+                    else if (button.dataset.status === 'អវ') card.classList.add('status-absent');
+                    else if (button.dataset.status === 'ច្បាប់') card.classList.add('status-leave');
+                });
 
-                    saveAttendanceStatus(studentId, status, classGrade);
+                container.querySelector('#submit-attendance-btn').addEventListener('click', (event) => {
+                    const submitBtn = event.target;
+                    submitBtn.textContent = 'កំពុងរក្សាទុក...';
+                    submitBtn.disabled = true;
+
+                    const attendanceData = [];
+                    container.querySelectorAll('.student-attendance-card').forEach(card => {
+                        const studentId = card.dataset.studentId;
+                        const activeBtn = card.querySelector('.attendance-btn.active');
+                        const status = activeBtn ? activeBtn.dataset.status : 'មក';
+                        attendanceData.push({ studentId, status });
+                    });
+                    
+                    saveBulkAttendance(attendanceData, classGrade, submitBtn);
                 });
 
                 return container;
             }
 
-            async function saveAttendanceStatus(studentId, status, classGrade) {
+            async function saveBulkAttendance(attendanceData, classGrade, submitBtn) {
                 try {
-                    await apiFetch('recordDailyAttendance', {
+                    await apiFetch('recordBulkAttendance', {
                         method: 'POST',
-                        body: { studentId, status, classGrade }
+                        body: { attendanceData, classGrade }
                     });
+                    showToast('បានរក្សាទុកវត្តមានដោយជោគជ័យ!', 'success');
                 } catch (error) {
-                    showToast(`Error saving for ${studentId}`, 'error');
+                    showToast('Error saving attendance.', 'error');
+                } finally {
+                    submitBtn.textContent = 'ចុះវត្តមាន';
+                    submitBtn.disabled = false;
                 }
             }
 
