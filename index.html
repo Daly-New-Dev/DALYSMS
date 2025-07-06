@@ -396,14 +396,15 @@
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 1rem 1.5rem;
+            padding: 1rem 0.75rem; /* <-- Reduced padding */
             border-radius: 12px;
             text-align: center;
             font-weight: 700;
-            font-size: 1rem; /* <-- Made date smaller */
+            font-size: 1rem;
             color: var(--primary-color);
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            white-space: nowrap; /* <-- Prevent wrapping */
         }
         .student-attendance-list {
             display: flex;
@@ -413,7 +414,7 @@
         .student-attendance-card {
             background-color: var(--secondary-color);
             border-radius: 12px;
-            padding: 0.75rem 1rem; /* <-- Reduced padding */
+            padding: 0.75rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -423,37 +424,39 @@
         }
         .student-info-att {
             display: flex;
-            align-items: center;
-            gap: 0.75rem; /* <-- Reduced gap */
-            flex-grow: 1; /* <-- Allow name to take more space */
-            min-width: 0; /* <-- Prevent overflow */
+            align-items: baseline; /* <-- Align text nicely */
+            gap: 0.75rem;
+            flex-grow: 1;
+            min-width: 0;
         }
         .student-no {
-            font-size: 0.9rem; /* <-- Smaller font */
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-secondary);
             width: 25px;
             text-align: center;
+            flex-shrink: 0;
         }
         .student-name-att {
             font-weight: 600;
-            font-size: 0.95rem; /* <-- Smaller font */
+            font-size: 0.95rem;
             color: var(--text-dark);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .student-gender-att {
-            font-size: 0.8rem; /* <-- Smaller font */
+            font-size: 0.8rem;
             color: var(--text-secondary);
+            flex-shrink: 0; /* <-- Prevent shrinking */
         }
         .attendance-controls {
             display: flex;
-            gap: 0.35rem; /* <-- Reduced gap */
-            flex-shrink: 0; /* <-- Prevent buttons from shrinking */
+            gap: 0.35rem;
+            flex-shrink: 0;
         }
         .attendance-btn {
-            padding: 0.4rem 0.7rem; /* <-- Smaller buttons */
+            padding: 0.4rem 0.7rem;
             border: 1px solid var(--border-color);
             background-color: var(--secondary-color);
             color: var(--text-secondary);
@@ -461,7 +464,7 @@
             cursor: pointer;
             font-family: 'Kantumruy Pro', sans-serif;
             font-weight: 600;
-            font-size: 0.85rem; /* <-- Smaller font */
+            font-size: 0.85rem;
             transition: all 0.2s ease-in-out;
         }
         .attendance-btn.present.active {
@@ -1200,7 +1203,7 @@
                 const today = new Date();
                 const dateString = toKhmerDateString(today);
 
-                container.innerHTML = `<div class="attendance-header">វត្តមានសម្រាប់: ${dateString}</div>`;
+                container.innerHTML = `<div class="attendance-header">វត្តមានសិស្ស: ${dateString}</div>`;
 
                 const list = document.createElement('div');
                 list.className = 'student-attendance-list';
@@ -1217,16 +1220,14 @@
                         const todayStatus = student[dayOfMonth.toString()] || '';
 
                         if (todayStatus === 'មក') card.classList.add('status-present');
-                        else if (todayStatus === 'អវ') card.classList.add('status-absent'); // <-- Updated status check
+                        else if (todayStatus === 'អវ') card.classList.add('status-absent');
                         else if (todayStatus === 'ច្បាប់') card.classList.add('status-leave');
 
                         card.innerHTML = `
                             <div class="student-info-att">
                                 <span class="student-no">${index + 1}</span>
-                                <div class="student-details-att">
-                                    <div class="student-name-att">${student['Student Name']}</div>
-                                    <div class="student-gender-att">${student.Gender}</div>
-                                </div>
+                                <div class="student-name-att">${student['Student Name']}</div>
+                                <div class="student-gender-att">${student.Gender}</div>
                             </div>
                             <div class="attendance-controls">
                                 <button class="attendance-btn present ${todayStatus === 'មក' ? 'active' : ''}" data-status="មក">មក</button>
@@ -1253,7 +1254,7 @@
                     
                     card.classList.remove('status-present', 'status-absent', 'status-leave');
                     if (status === 'មក') card.classList.add('status-present');
-                    else if (status === 'អវ') card.classList.add('status-absent'); // <-- Updated status check
+                    else if (status === 'អវ') card.classList.add('status-absent');
                     else if (status === 'ច្បាប់') card.classList.add('status-leave');
 
                     // MODIFICATION: Temporarily disable saving to the sheet
