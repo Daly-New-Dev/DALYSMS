@@ -388,7 +388,7 @@
             color: var(--text-dark);
         }
 
-        /* --- NEW: Attendance Page Styles --- */
+        /* --- Attendance Page Styles --- */
         .attendance-page {
             display: flex;
             flex-direction: column;
@@ -568,6 +568,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Teacher Menu -->
                         <div id="teacher-menu" class="feature-menu hidden">
                             <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
                             <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
@@ -579,6 +580,7 @@
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
                         </div>
+                        <!-- Admin Menu -->
                         <div id="admin-menu" class="feature-menu hidden">
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Manage Teachers"><i class="fa-solid fa-user-gear"></i><span>គ្រប់គ្រងគ្រូ</span></div>
@@ -607,6 +609,7 @@
             </div>
         </div>
         
+        <!-- QR Scanner UI -->
         <div id="qr-scanner-container" class="hidden">
             <div id="qr-reader"></div>
             <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
@@ -622,7 +625,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
-             // REPLACE THIS URL WITH THE NEW URL YOU GET AFTER DEPLOYING THE GOOGLE APPS SCRIPT
+             // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAMRCiT9Sdm8lnaGBLryH8NuZxogif-h_YreYDYFCGXVo3683I-57QcCerh4eEZHHIhA/exec";
 
              // --- UI Elements ---
@@ -926,9 +929,20 @@
                              pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
                              break;
                         case 'Attendance':
-                             const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
-                             pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
-                             pageTitle = 'វត្តមាន';
+                            // --- MODIFICATION: Using mock data to bypass sheet error ---
+                            const mockAttendanceData = [
+                                { "Student Name": "Sok Chan", "Gender": "Male" },
+                                { "Student Name": "Chan Keo", "Gender": "Female" },
+                                { "Student Name": "Bopha Lim", "Gender": "Female" },
+                                { "Student Name": "Vireak Chea", "Gender": "Male" },
+                            ];
+                            pageContent = createAttendancePage(mockAttendanceData, userData.ClassGrade);
+                            pageTitle = 'វត្តមាន';
+                            
+                            // --- Original code (commented out for now) ---
+                            // const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
+                            // pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
+                            // pageTitle = 'វត្តមាន';
                              break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -1157,14 +1171,30 @@
                 return container;
             }
 
+            // --- NEW: Helper function to format date in Khmer ---
+            function toKhmerDateString(date) {
+                const days = ['អាទិត្យ', 'ច័ន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
+                const months = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+                const khmerNumerals = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+
+                const toKhmerNumber = (num) => String(num).split('').map(digit => khmerNumerals[parseInt(digit)]).join('');
+
+                const dayOfWeek = days[date.getDay()];
+                const dayOfMonth = toKhmerNumber(date.getDate());
+                const month = months[date.getMonth()];
+                const year = toKhmerNumber(date.getFullYear());
+
+                return `ថ្ងៃ${dayOfWeek} ទី${dayOfMonth} ខែ${month} ឆ្នាំ${year}`;
+            }
+
             function createAttendancePage(students, classGrade) {
                 const container = document.createElement('div');
                 container.className = 'feature-page attendance-page';
 
                 const today = new Date();
-                const dateString = today.toLocaleDateString('km-KH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const dateString = toKhmerDateString(today);
 
-                container.innerHTML = `<div class="attendance-header">វត្តមានសម្រាប់ថ្ងៃ: ${dateString}</div>`;
+                container.innerHTML = `<div class="attendance-header">វត្តមានសម្រាប់: ${dateString}</div>`;
 
                 const list = document.createElement('div');
                 list.className = 'student-attendance-list';
@@ -1220,7 +1250,9 @@
                     else if (status === 'អវត្តមាន') card.classList.add('status-absent');
                     else if (status === 'ច្បាប់') card.classList.add('status-leave');
 
-                    saveAttendanceStatus(studentId, status, classGrade);
+                    // MODIFICATION: Temporarily disable saving to the sheet
+                    // saveAttendanceStatus(studentId, status, classGrade);
+                    console.log(`Visual Only: Marked ${studentId} as ${status}`);
                 });
 
                 return container;
@@ -1228,6 +1260,7 @@
 
             async function saveAttendanceStatus(studentId, status, classGrade) {
                 try {
+                    // This is currently disabled for visual testing.
                     await apiFetch('recordDailyAttendance', {
                         method: 'POST',
                         body: { studentId, status, classGrade }
