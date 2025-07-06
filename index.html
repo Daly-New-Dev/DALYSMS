@@ -396,7 +396,7 @@
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 1rem 0.75rem; /* <-- Reduced padding */
+            padding: 1rem 0.75rem;
             border-radius: 12px;
             text-align: center;
             font-weight: 700;
@@ -404,7 +404,7 @@
             color: var(--primary-color);
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            white-space: nowrap; /* <-- Prevent wrapping */
+            white-space: nowrap;
         }
         .student-attendance-list {
             display: flex;
@@ -424,7 +424,7 @@
         }
         .student-info-att {
             display: flex;
-            align-items: baseline; /* <-- Align text nicely */
+            align-items: baseline;
             gap: 0.75rem;
             flex-grow: 1;
             min-width: 0;
@@ -448,7 +448,7 @@
         .student-gender-att {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            flex-shrink: 0; /* <-- Prevent shrinking */
+            flex-shrink: 0;
         }
         .attendance-controls {
             display: flex;
@@ -636,7 +636,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAMRCiT9Sdm8lnaGBLryH8NuZxogif-h_YreYDYFCGXVo3683I-57QcCerh4eEZHHIhA/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUM8CSzytgqA_0JMp0A3F54EO5m0lItjfenhKExmLdo694FrqnVSrCjBFb9ZTv1jTDCg/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -939,20 +939,9 @@
                              pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
                              break;
                         case 'Attendance':
-                            // --- MODIFICATION: Using mock data to bypass sheet error ---
-                            const mockAttendanceData = [
-                                { "Student Name": "Sok Chan", "Gender": "Male" },
-                                { "Student Name": "Chan Keo", "Gender": "Female" },
-                                { "Student Name": "Bopha Lim", "Gender": "Female" },
-                                { "Student Name": "Vireak Chea", "Gender": "Male" },
-                            ];
-                            pageContent = createAttendancePage(mockAttendanceData, userData.ClassGrade);
-                            pageTitle = 'វត្តមាន';
-                            
-                            // --- Original code (commented out for now) ---
-                            // const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
-                            // pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
-                            // pageTitle = 'វត្តមាន';
+                             const { data: attendanceData } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
+                             pageContent = createAttendancePage(attendanceData, userData.ClassGrade);
+                             pageTitle = 'វត្តមាន';
                              break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -1257,9 +1246,7 @@
                     else if (status === 'អវ') card.classList.add('status-absent');
                     else if (status === 'ច្បាប់') card.classList.add('status-leave');
 
-                    // MODIFICATION: Temporarily disable saving to the sheet
-                    // saveAttendanceStatus(studentId, status, classGrade);
-                    console.log(`Visual Only: Marked ${studentId} as ${status}`);
+                    saveAttendanceStatus(studentId, status, classGrade);
                 });
 
                 return container;
@@ -1267,7 +1254,6 @@
 
             async function saveAttendanceStatus(studentId, status, classGrade) {
                 try {
-                    // This is currently disabled for visual testing.
                     await apiFetch('recordDailyAttendance', {
                         method: 'POST',
                         body: { studentId, status, classGrade }
