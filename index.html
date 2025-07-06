@@ -206,7 +206,6 @@
         .student-table tr:nth-child(even) { background-color: #f9fafb; }
         .student-table td:first-child { text-align: center; }
         
-        /* --- NEW: Student List Footer --- */
         .student-list-footer {
             margin-top: 1rem;
             padding: 1rem;
@@ -459,7 +458,8 @@
         .student-gender-att {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            justify-self: center; /* <-- Center gender in its column */
+            justify-self: center;
+            margin-right: 10px; /* <-- Added margin for spacing */
         }
         .attendance-controls {
             display: flex;
@@ -1209,7 +1209,7 @@
                 container.appendChild(table);
 
                 const totalStudents = studentsInClass.length;
-                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'Female' || String(s.Gender).trim() === 'ស្រី').length;
+                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'Female' || String(s.Gender).trim() === 'ស').length;
 
                 const footer = document.createElement('div');
                 footer.className = 'student-list-footer';
@@ -1263,7 +1263,7 @@
                         
                         const dayOfMonth = today.getDate();
                         const record = attendanceRecords.find(r => r['Student Name'] === student['Student Name']);
-                        const statusFromServer = record ? record[dayOfMonth.toString()] : '';
+                        let statusFromServer = record ? record[dayOfMonth.toString()] : 'P'; // Default to P (Present)
                         
                         let activeStatus = 'មក'; // Default to present
                         if (statusFromServer === 'A') activeStatus = 'អវ';
