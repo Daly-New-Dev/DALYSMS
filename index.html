@@ -400,7 +400,7 @@
             border-radius: 12px;
             text-align: center;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem; /* <-- Made date smaller */
             color: var(--primary-color);
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -413,7 +413,7 @@
         .student-attendance-card {
             background-color: var(--secondary-color);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0.75rem 1rem; /* <-- Reduced padding */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -424,10 +424,12 @@
         .student-info-att {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem; /* <-- Reduced gap */
+            flex-grow: 1; /* <-- Allow name to take more space */
+            min-width: 0; /* <-- Prevent overflow */
         }
         .student-no {
-            font-size: 1rem;
+            font-size: 0.9rem; /* <-- Smaller font */
             font-weight: 700;
             color: var(--text-secondary);
             width: 25px;
@@ -435,19 +437,23 @@
         }
         .student-name-att {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem; /* <-- Smaller font */
             color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .student-gender-att {
-            font-size: 0.85rem;
+            font-size: 0.8rem; /* <-- Smaller font */
             color: var(--text-secondary);
         }
         .attendance-controls {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.35rem; /* <-- Reduced gap */
+            flex-shrink: 0; /* <-- Prevent buttons from shrinking */
         }
         .attendance-btn {
-            padding: 0.5rem 0.9rem;
+            padding: 0.4rem 0.7rem; /* <-- Smaller buttons */
             border: 1px solid var(--border-color);
             background-color: var(--secondary-color);
             color: var(--text-secondary);
@@ -455,6 +461,7 @@
             cursor: pointer;
             font-family: 'Kantumruy Pro', sans-serif;
             font-weight: 600;
+            font-size: 0.85rem; /* <-- Smaller font */
             transition: all 0.2s ease-in-out;
         }
         .attendance-btn.present.active {
@@ -1171,7 +1178,6 @@
                 return container;
             }
 
-            // --- NEW: Helper function to format date in Khmer ---
             function toKhmerDateString(date) {
                 const days = ['អាទិត្យ', 'ច័ន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
                 const months = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
@@ -1211,7 +1217,7 @@
                         const todayStatus = student[dayOfMonth.toString()] || '';
 
                         if (todayStatus === 'មក') card.classList.add('status-present');
-                        else if (todayStatus === 'អវត្តមាន') card.classList.add('status-absent');
+                        else if (todayStatus === 'អវ') card.classList.add('status-absent'); // <-- Updated status check
                         else if (todayStatus === 'ច្បាប់') card.classList.add('status-leave');
 
                         card.innerHTML = `
@@ -1224,7 +1230,7 @@
                             </div>
                             <div class="attendance-controls">
                                 <button class="attendance-btn present ${todayStatus === 'មក' ? 'active' : ''}" data-status="មក">មក</button>
-                                <button class="attendance-btn absent ${todayStatus === 'អវត្តមាន' ? 'active' : ''}" data-status="អវត្តមាន">អវត្តមាន</button>
+                                <button class="attendance-btn absent ${todayStatus === 'អវ' ? 'active' : ''}" data-status="អវ">អវ</button>
                                 <button class="attendance-btn leave ${todayStatus === 'ច្បាប់' ? 'active' : ''}" data-status="ច្បាប់">ច្បាប់</button>
                             </div>
                         `;
@@ -1247,7 +1253,7 @@
                     
                     card.classList.remove('status-present', 'status-absent', 'status-leave');
                     if (status === 'មក') card.classList.add('status-present');
-                    else if (status === 'អវត្តមាន') card.classList.add('status-absent');
+                    else if (status === 'អវ') card.classList.add('status-absent'); // <-- Updated status check
                     else if (status === 'ច្បាប់') card.classList.add('status-leave');
 
                     // MODIFICATION: Temporarily disable saving to the sheet
