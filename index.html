@@ -535,7 +535,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             font-family: 'Kantumruy Pro', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem; /* <-- Adjusted font size */
             background-color: white;
         }
         .score-export-section button {
@@ -547,6 +547,7 @@
             font-family: 'Kantumruy Pro', sans-serif;
             font-weight: 600;
             cursor: pointer;
+            white-space: nowrap;
         }
         .score-input-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .score-input-card {
@@ -743,7 +744,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxp7eNpaqxs9ruBwBmalNDwyr9LX26CLXrHt630OhRHUSKf-tK8tDBFFAe7hUVYrfXUZQ/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHzp9wGT4xBY_Awp_mI5boxN-m85UMJpbyZth8zMj8F0v4O4DyY9Txqy7_B0YndBUZ0Q/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1423,20 +1424,21 @@
                     { value: 'S2_Final', text: 'ប្រឡងឆមាសទី២' },
                 ];
                 
-                const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
-
                 let selectorsHTML = `
                     <div class="score-export-section">
                          <select id="export-month-selector">
+                            <option value="" disabled selected>ជ្រើសរើសខែទាញយក</option>
                             ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
                         </select>
                         <button id="export-scores-btn">ទាញយក</button>
                     </div>
                     <div class="score-selectors">
                         <select id="month-selector">
-                            ${monthOptions.map(opt => `<option value="${opt.value}" ${opt.value === currentMonth ? 'selected' : ''}>${opt.text}</option>`).join('')}
+                            <option value="" disabled selected>ជ្រើសរើសខែ</option>
+                            ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
                         </select>
                         <select id="subject-selector">
+                            <option value="" disabled selected>ជ្រើសរើសមុខវិជ្ជា</option>
                             ${subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
                         </select>
                     </div>
@@ -1484,19 +1486,32 @@
                     saveScores(container, classGrade);
                 });
 
-                container.querySelector('#export-scores-btn').addEventListener('click', async () => {
+                container.querySelector('#export-scores-btn').addEventListener('click', async (event) => {
+                    const exportBtn = event.target;
                     const exportMonth = container.querySelector('#export-month-selector').value;
+                    if (!exportMonth) {
+                        showToast('សូមជ្រើសរើសខែសម្រាប់ទាញយក', 'error');
+                        return;
+                    }
+                    
+                    exportBtn.textContent = 'កំពុងទាញយក...';
+                    exportBtn.disabled = true;
+                    
                     const sheetName = `Scores_${exportMonth}`;
                     
                     try {
                         const { data } = await apiFetch('exportScoresByClass', { params: { sheetName, classGrade } });
                         if (data.url) {
                             window.open(data.url, '_blank');
+                            showToast('ទាញយកជោគជ័យ!', 'success');
                         } else {
                             showToast('Could not get export URL.', 'error');
                         }
                     } catch(e) {
                         // Error is already shown by apiFetch
+                    } finally {
+                        exportBtn.textContent = 'ទាញយក';
+                        exportBtn.disabled = false;
                     }
                 });
 
@@ -1527,6 +1542,13 @@
                 const scoresData = [];
                 const month = container.querySelector('#month-selector').value;
                 const subject = container.querySelector('#subject-selector').value;
+
+                if (!month || !subject) {
+                    showToast('សូមជ្រើសរើសខែ និងមុខវិជ្ជា', 'error');
+                    submitBtn.textContent = 'រក្សាទុកពិន្ទុ';
+                    submitBtn.disabled = false;
+                    return;
+                }
 
                 container.querySelectorAll('.score-input-card').forEach(card => {
                     const studentId = card.dataset.studentId;
