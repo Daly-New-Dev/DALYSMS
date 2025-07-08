@@ -400,7 +400,7 @@
             color: var(--text-dark);
         }
 
-        /* --- Attendance Page Styles --- */
+        /* --- Attendance Page Styles (Restored) --- */
         .attendance-page {
             display: flex;
             flex-direction: column;
@@ -435,8 +435,7 @@
             transition: border-left-color 0.3s;
         }
         .student-info-att {
-            display: grid; 
-            grid-template-columns: auto 1fr auto; 
+            display: flex;
             align-items: baseline;
             gap: 0.75rem;
             flex-grow: 1;
@@ -446,6 +445,9 @@
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-secondary);
+            width: 25px;
+            text-align: center;
+            flex-shrink: 0;
         }
         .student-name-att {
             font-weight: 600;
@@ -458,8 +460,8 @@
         .student-gender-att {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            justify-self: center;
-            margin-right: 10px; /* <-- Added margin for spacing */
+            flex-shrink: 0;
+            margin-right: 10px;
         }
         .attendance-controls {
             display: flex;
@@ -522,6 +524,73 @@
             background: #ccc;
             cursor: not-allowed;
             box-shadow: none;
+        }
+
+        /* --- Score Input Page Styles --- */
+        .score-input-page { display: flex; flex-direction: column; gap: 1rem; }
+        .score-selectors, .score-export-section { display: flex; gap: 1rem; }
+        .score-selectors select, .score-export-section select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 1rem;
+            background-color: white;
+        }
+        .score-export-section button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .score-input-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .score-input-card {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto; 
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .score-input-card .student-no { font-weight: 700; color: var(--text-secondary); }
+        .score-input-card .student-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .score-input-card .student-gender { 
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-right: 30px; 
+        }
+        .score-input-card .score-input {
+            width: 60px;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            font-family: 'Kantumruy Pro', sans-serif;
+        }
+        .score-submit-container {
+            margin-top: 1rem;
+            padding: 0.5rem;
+        }
+        #submit-scores-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--success-color), #10a971);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s ease-in-out;
         }
 
     </style>
@@ -674,7 +743,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTDlMDQzGGHgz2cV0lVl0fIhdW1cNwzVBiwrXmrtXNdWJ50jRWT-fU3ZK_V5_WSBuzEg/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxp7eNpaqxs9ruBwBmalNDwyr9LX26CLXrHt630OhRHUSKf-tK8tDBFFAe7hUVYrfXUZQ/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -983,6 +1052,16 @@
                              pageContent = createAttendancePage(studentsForAttendance, attendanceRecords, userData.ClassGrade);
                              pageTitle = 'វត្តមាន';
                              break;
+                        case 'Score Input':
+                             const { data: scoreStudentList } = await apiFetch('getStudentInfo');
+                             const studentsForScores = scoreStudentList.filter(s => s.ClassGrade === userData.ClassGrade);
+                             
+                             const defaultMonth = new Date().toLocaleString('en-US', { month: 'short' });
+                             const { data: subjectList } = await apiFetch('getSubjectListForMonth', { params: { month: defaultMonth } });
+                             
+                             pageContent = createScoreInputPage(studentsForScores, subjectList, userData.ClassGrade);
+                             pageTitle = 'បញ្ចូលពិន្ទុ';
+                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
                             pageTitle = feature;
@@ -1209,7 +1288,7 @@
                 container.appendChild(table);
 
                 const totalStudents = studentsInClass.length;
-                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'Female' || String(s.Gender).trim() === 'ស').length;
+                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'ស').length;
 
                 const footer = document.createElement('div');
                 footer.className = 'student-list-footer';
@@ -1263,9 +1342,9 @@
                         
                         const dayOfMonth = today.getDate();
                         const record = attendanceRecords.find(r => r['Student Name'] === student['Student Name']);
-                        let statusFromServer = record ? record[dayOfMonth.toString()] : 'P'; // Default to P (Present)
+                        let statusFromServer = record ? record[dayOfMonth.toString()] : 'P';
                         
-                        let activeStatus = 'មក'; // Default to present
+                        let activeStatus = 'មក';
                         if (statusFromServer === 'A') activeStatus = 'អវ';
                         else if (statusFromServer === 'L') activeStatus = 'ច្បាប់';
                         
@@ -1276,8 +1355,8 @@
                         card.innerHTML = `
                             <div class="student-info-att">
                                 <span class="student-no">${index + 1}</span>
-                                <div class="student-name-att">${student['Student Name']}</div>
-                                <div class="student-gender-att">${student.Gender}</div>
+                                <span class="student-name-att">${student['Student Name']}</span>
+                                <span class="student-gender-att">${student.Gender}</span>
                             </div>
                             <div class="attendance-controls">
                                 <button class="attendance-btn present ${activeStatus === 'មក' ? 'active' : ''}" data-status="មក">មក</button>
@@ -1328,6 +1407,102 @@
 
                 return container;
             }
+            
+            function createScoreInputPage(students, subjects, classGrade) {
+                const container = document.createElement('div');
+                container.className = 'feature-page score-input-page';
+
+                const monthOptions = [
+                    { value: 'Jan', text: 'មករា' }, { value: 'Feb', text: 'កុម្ភៈ' },
+                    { value: 'Mar', text: 'មីនា' }, { value: 'Apr', text: 'មេសា' },
+                    { value: 'May', text: 'ឧសភា' }, { value: 'Jun', text: 'មិថុនា' },
+                    { value: 'Jul', text: 'កក្កដា' }, { value: 'Aug', text: 'សីហា' },
+                    { value: 'Sep', text: 'កញ្ញា' }, { value: 'Oct', text: 'តុលា' },
+                    { value: 'Nov', text: 'វិច្ឆិកា' }, { value: 'Dec', text: 'ធ្នូ' },
+                    { value: 'S1_Final', text: 'ប្រឡងឆមាសទី១' },
+                    { value: 'S2_Final', text: 'ប្រឡងឆមាសទី២' },
+                ];
+                
+                const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
+
+                let selectorsHTML = `
+                    <div class="score-export-section">
+                         <select id="export-month-selector">
+                            ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+                        </select>
+                        <button id="export-scores-btn">ទាញយក</button>
+                    </div>
+                    <div class="score-selectors">
+                        <select id="month-selector">
+                            ${monthOptions.map(opt => `<option value="${opt.value}" ${opt.value === currentMonth ? 'selected' : ''}>${opt.text}</option>`).join('')}
+                        </select>
+                        <select id="subject-selector">
+                            ${subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+                
+                let studentListHTML = '<div class="score-input-list">';
+                students.forEach((student, index) => {
+                    studentListHTML += `
+                        <div class="score-input-card" data-student-id="${student['Student Name']}">
+                            <span class="student-no">${index + 1}</span>
+                            <span class="student-name">${student['Student Name']}</span>
+                            <span class="student-gender">${student.Gender}</span>
+                            <input type="number" class="score-input" placeholder="ពិន្ទុ">
+                        </div>
+                    `;
+                });
+                studentListHTML += '</div>';
+
+                const submitHTML = `
+                    <div class="score-submit-container">
+                        <button id="submit-scores-btn">រក្សាទុកពិន្ទុ</button>
+                    </div>
+                `;
+
+                container.innerHTML = selectorsHTML + studentListHTML + submitHTML;
+
+                const scoreList = container.querySelector('.score-input-list');
+                const submitBtn = container.querySelector('#submit-scores-btn');
+
+                scoreList.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        const inputs = Array.from(scoreList.querySelectorAll('.score-input'));
+                        const currentIndex = inputs.indexOf(event.target);
+                        const nextIndex = currentIndex + 1;
+                        if (nextIndex < inputs.length) {
+                            inputs[nextIndex].focus();
+                        } else {
+                            submitBtn.focus();
+                        }
+                    }
+                });
+
+                submitBtn.addEventListener('click', () => {
+                    saveScores(container, classGrade);
+                });
+
+                container.querySelector('#export-scores-btn').addEventListener('click', async () => {
+                    const exportMonth = container.querySelector('#export-month-selector').value;
+                    const sheetName = `Scores_${exportMonth}`;
+                    
+                    try {
+                        const { data } = await apiFetch('exportScoresByClass', { params: { sheetName, classGrade } });
+                        if (data.url) {
+                            window.open(data.url, '_blank');
+                        } else {
+                            showToast('Could not get export URL.', 'error');
+                        }
+                    } catch(e) {
+                        // Error is already shown by apiFetch
+                    }
+                });
+
+                return container;
+            }
+
 
             async function saveBulkAttendance(attendanceData, classGrade, submitBtn) {
                 try {
@@ -1343,6 +1518,39 @@
                     submitBtn.disabled = false;
                 }
             }
+            
+            async function saveScores(container, classGrade) {
+                const submitBtn = container.querySelector('#submit-scores-btn');
+                submitBtn.textContent = 'កំពុងរក្សាទុក...';
+                submitBtn.disabled = true;
+
+                const scoresData = [];
+                const month = container.querySelector('#month-selector').value;
+                const subject = container.querySelector('#subject-selector').value;
+
+                container.querySelectorAll('.score-input-card').forEach(card => {
+                    const studentId = card.dataset.studentId;
+                    const score = card.querySelector('.score-input').value;
+                    if (score) {
+                        scoresData.push({ studentId, score });
+                    }
+                });
+
+                try {
+                    await apiFetch('saveScores', {
+                        method: 'POST',
+                        body: { month, subject, classGrade, scores: scoresData }
+                    });
+                    showToast('ពិន្ទុត្រូវបានរក្សាទុកដោយជោគជ័យ!', 'success');
+                    container.querySelectorAll('.score-input').forEach(input => input.value = '');
+                } catch (error) {
+                    showToast('Error saving scores.', 'error');
+                } finally {
+                    submitBtn.textContent = 'រក្សាទុកពិន្ទុ';
+                    submitBtn.disabled = false;
+                }
+            }
+
 
             async function saveAnnouncement(event) {
                 event.preventDefault();
