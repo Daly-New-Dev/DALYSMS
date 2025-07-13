@@ -535,7 +535,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             font-family: 'Kantumruy Pro', sans-serif;
-            font-size: 0.9rem; /* <-- Adjusted font size */
+            font-size: 0.9rem;
             background-color: white;
         }
         .score-export-section button {
@@ -593,6 +593,41 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             transition: all 0.2s ease-in-out;
         }
+        
+        /* --- Ranking Page Styles --- */
+        .ranking-page { display: flex; flex-direction: column; gap: 1rem; }
+        .ranking-selectors { display: flex; gap: 1rem; }
+        .ranking-selectors select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+        .ranking-list { width: 100%; border-collapse: collapse; background: var(--secondary-color); border-radius: 12px; overflow: hidden; }
+        .ranking-list th, .ranking-list td { padding: 0.75rem 0.5rem; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .ranking-list th { background-color: var(--primary-color); color: var(--text-light); font-weight: 600; }
+        .ranking-list tr:nth-child(even) { background-color: #f9fafb; }
+        .ranking-list tr.student-rank-row { cursor: pointer; }
+        .ranking-list td.student-name-cell { text-align: left; }
+        .ranking-list td.total-score-cell { color: var(--primary-color); font-weight: bold; }
+        .ranking-list td.rank-cell { color: var(--error-color); font-weight: bold; }
+        
+        .score-details-row { display: none; }
+        .score-details-row.active { display: table-row; }
+        .score-details-cell { padding: 1rem !important; background-color: #f0f2f5; text-align: left; }
+        .score-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.25rem 1rem; /* Reduced vertical gap */
+            font-size: 0.9rem;
+        }
+        .score-details-grid .detail-item { color: var(--text-secondary); }
+        .score-details-grid .detail-item strong { color: var(--text-dark); }
+        .score-details-grid .rank { color: var(--error-color); }
+        .score-details-grid .total, .score-details-grid .average { color: var(--primary-color); }
 
     </style>
 </head>
@@ -744,7 +779,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHzp9wGT4xBY_Awp_mI5boxN-m85UMJpbyZth8zMj8F0v4O4DyY9Txqy7_B0YndBUZ0Q/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhcxMe8Q5YCVP-P0P_EA-kyEUO_kQrzzvrWFwglTcmPBiYncnwl0lVGGmzAlPFGK0d9A/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1057,11 +1092,17 @@
                              const { data: scoreStudentList } = await apiFetch('getStudentInfo');
                              const studentsForScores = scoreStudentList.filter(s => s.ClassGrade === userData.ClassGrade);
                              
-                             const defaultMonth = new Date().toLocaleString('en-US', { month: 'short' });
-                             const { data: subjectList } = await apiFetch('getSubjectListForMonth', { params: { month: defaultMonth } });
+                             const defaultMonthForScore = new Date().toLocaleString('en-US', { month: 'short' });
+                             const { data: subjectList } = await apiFetch('getSubjectListForMonth', { params: { month: defaultMonthForScore } });
                              
                              pageContent = createScoreInputPage(studentsForScores, subjectList, userData.ClassGrade);
                              pageTitle = 'បញ្ចូលពិន្ទុ';
+                             break;
+                        case 'Month Ranking':
+                             const defaultMonthForRank = new Date().toLocaleString('en-US', { month: 'short' });
+                             const { data: rankingData } = await apiFetch('getRankingData', { params: { classGrade: userData.ClassGrade, month: defaultMonthForRank } });
+                             pageContent = createRankingPage(rankingData.students, rankingData.subjects, userData.ClassGrade);
+                             pageTitle = 'ចំណាត់ថ្នាក់ប្រចាំខែ';
                              break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -1438,7 +1479,7 @@
                             ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
                         </select>
                         <select id="subject-selector">
-                            <option value="" disabled selected>ជ្រើសរើសមុខវិជ្ជា</option>
+                             <option value="" disabled selected>ជ្រើសរើសមុខវិជ្ជា</option>
                             ${subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
                         </select>
                     </div>
@@ -1517,6 +1558,118 @@
 
                 return container;
             }
+            
+            function createRankingPage(students, subjects, classGrade) {
+                const container = document.createElement('div');
+                container.className = 'feature-page ranking-page';
+                
+                const monthOptions = [
+                    { value: 'Jan', text: 'មករា' }, { value: 'Feb', text: 'កុម្ភៈ' },
+                    { value: 'Mar', text: 'មីនា' }, { value: 'Apr', text: 'មេសា' },
+                    { value: 'May', text: 'ឧសភា' }, { value: 'Jun', text: 'មិថុនា' },
+                    { value: 'Jul', text: 'កក្កដា' }, { value: 'Aug', text: 'សីហា' },
+                    { value: 'Sep', text: 'កញ្ញា' }, { value: 'Oct', text: 'តុលា' },
+                    { value: 'Nov', text: 'វិច្ឆិកា' }, { value: 'Dec', text: 'ធ្នូ' },
+                    { value: 'S1_Final', text: 'ឆមាសទី១' },
+                    { value: 'S2_Final', text: 'ឆមាសទី២' },
+                ];
+                
+                const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
+
+                let selectorsHTML = `
+                    <div class="ranking-selectors">
+                        <select id="ranking-month-selector">
+                            ${monthOptions.map(opt => `<option value="${opt.value}" ${opt.value === currentMonth ? 'selected' : ''}>${opt.text}</option>`).join('')}
+                        </select>
+                        <select id="ranking-sort-selector">
+                            <option value="rank">តម្រៀបតាមចំណាត់ថ្នាក់</option>
+                            <option value="name">តម្រៀបតាមឈ្មោះ</option>
+                        </select>
+                    </div>
+                `;
+
+                const tableContainer = document.createElement('div');
+                tableContainer.innerHTML = `
+                    <table class="ranking-list">
+                        <thead>
+                            <tr>
+                                <th>ល.រ</th>
+                                <th style="text-align: left;">ឈ្មោះសិស្ស</th>
+                                <th>ភេទ</th>
+                                <th>សរុប</th>
+                                <th>ចំណាត់ថ្នាក់</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                `;
+                const tableBody = tableContainer.querySelector('tbody');
+                
+                function renderList(data) {
+                    tableBody.innerHTML = '';
+                     if (!data || data.length === 0) {
+                        const row = tableBody.insertRow();
+                        const cell = row.insertCell();
+                        cell.colSpan = 5;
+                        cell.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>No Ranking Data</h3><p>No scores have been entered for this month.</p></div>`;
+                        return;
+                    }
+
+                    data.forEach((student, index) => {
+                        const mainRow = tableBody.insertRow();
+                        mainRow.className = 'student-rank-row';
+
+                        mainRow.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td class="student-name-cell">${student['Student Name']}</td>
+                            <td>${student.Gender}</td>
+                            <td class="total-score-cell">${student.Total || '-'}</td>
+                            <td class="rank-cell">${student.Rank || '-'}</td>
+                        `;
+
+                        const detailsRow = tableBody.insertRow();
+                        detailsRow.className = 'score-details-row';
+                        const detailsCell = detailsRow.insertCell();
+                        detailsCell.colSpan = 5;
+                        
+                        let scoreDetailsHTML = '<div class="score-details-grid">';
+                        scoreDetailsHTML += `<div class="detail-item total">ពិន្ទុសរុប: <strong>${student.Total || '-'}</strong></div>`;
+                        scoreDetailsHTML += `<div class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></div>`;
+                        scoreDetailsHTML += `<div class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></div>`;
+                        
+                        subjects.forEach(subject => {
+                            const score = student.Scores[subject] || '-';
+                            scoreDetailsHTML += `<div class="detail-item">${subject}: <strong>${score}</strong></div>`;
+                        });
+                        scoreDetailsHTML += '</div>';
+                        detailsCell.innerHTML = scoreDetailsHTML;
+
+                        mainRow.addEventListener('click', () => {
+                            detailsRow.classList.toggle('active');
+                        });
+                    });
+                }
+
+                renderList(students);
+                container.innerHTML = selectorsHTML;
+                container.appendChild(tableContainer);
+                
+                async function updateRankingView() {
+                    const month = container.querySelector('#ranking-month-selector').value;
+                    const sortBy = container.querySelector('#ranking-sort-selector').value;
+                    try {
+                        const { data } = await apiFetch('getRankingData', { params: { classGrade, month, sortBy } });
+                        renderList(data.students);
+                    } catch (e) {
+                         tableBody.innerHTML = `<tr><td colspan="5"><div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>No Ranking Data</h3><p>${e.message}</p></div></td></tr>`;
+                    }
+                }
+
+                container.querySelector('#ranking-month-selector').addEventListener('change', updateRankingView);
+                container.querySelector('#ranking-sort-selector').addEventListener('change', updateRankingView);
+
+                return container;
+            }
 
 
             async function saveBulkAttendance(attendanceData, classGrade, submitBtn) {
@@ -1591,7 +1744,7 @@
                             sender: userData.FullName 
                         }
                     });
-                    showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!');
+                    showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!', 'success');
                     subjectInput.value = '';
                     messageInput.value = '';
                     handleFeatureClick('Announcements');
