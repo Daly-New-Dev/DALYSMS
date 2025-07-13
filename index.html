@@ -400,6 +400,132 @@
             color: var(--text-dark);
         }
 
+        /* --- Attendance Page Styles (Restored) --- */
+        .attendance-page {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .attendance-header {
+            background-color: var(--secondary-color);
+            padding: 1rem 0.75rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            white-space: nowrap;
+        }
+        .student-attendance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .student-attendance-card {
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid transparent;
+            transition: border-left-color 0.3s;
+        }
+        .student-info-att {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .student-no {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            width: 25px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .student-name-att {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .student-gender-att {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .attendance-controls {
+            display: flex;
+            gap: 0.35rem;
+            flex-shrink: 0;
+        }
+        .attendance-btn {
+            padding: 0.4rem 0.7rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .attendance-btn.present.active {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+        .attendance-btn.absent.active {
+            background-color: var(--error-color);
+            color: white;
+            border-color: var(--error-color);
+        }
+        .attendance-btn.leave.active {
+            background-color: #f6ad55; /* Orange */
+            color: white;
+            border-color: #f6ad55;
+        }
+        .student-attendance-card.status-present { border-left-color: var(--success-color); }
+        .student-attendance-card.status-absent { border-left-color: var(--error-color); }
+        .student-attendance-card.status-leave { border-left-color: #f6ad55; }
+        
+        .attendance-submit-container {
+            margin-top: 1rem;
+            padding: 0.5rem;
+        }
+        #submit-attendance-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--primary-color), #4a70e0);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(57, 99, 222, 0.3);
+            transition: all 0.2s ease-in-out;
+        }
+        #submit-attendance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(57, 99, 222, 0.4);
+        }
+        #submit-attendance-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         /* --- Score Input Page Styles --- */
         .score-input-page { display: flex; flex-direction: column; gap: 1rem; }
         .score-selectors, .score-export-section { display: flex; gap: 1rem; }
@@ -493,10 +619,10 @@
         .score-details-row.active { display: table-row; }
         .score-details-cell { padding: 1rem !important; background-color: #f0f2f5; text-align: left; }
         .score-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 5px 1rem;
-            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* <-- Reduced spacing */
+            font-size: 1rem; /* <-- Increased font size */
         }
         .score-details-grid span { display: block; }
         .score-details-grid strong { color: var(--text-dark); }
