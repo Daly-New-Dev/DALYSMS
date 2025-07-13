@@ -621,13 +621,13 @@
         .score-details-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 0.25rem 1rem; /* Reduced vertical gap */
+            gap: 5px 1rem; /* <-- Reduced vertical spacing */
             font-size: 0.9rem;
         }
-        .score-details-grid .detail-item { color: var(--text-secondary); }
-        .score-details-grid .detail-item strong { color: var(--text-dark); }
-        .score-details-grid .rank { color: var(--error-color); }
-        .score-details-grid .total, .score-details-grid .average { color: var(--primary-color); }
+        .score-details-grid span { display: block; }
+        .score-details-grid strong { color: var(--text-dark); }
+        .score-details-grid .rank strong { color: var(--error-color); }
+        .score-details-grid .average strong { color: var(--primary-color); }
 
     </style>
 </head>
@@ -1633,13 +1633,12 @@
                         detailsCell.colSpan = 5;
                         
                         let scoreDetailsHTML = '<div class="score-details-grid">';
-                        scoreDetailsHTML += `<div class="detail-item total">ពិន្ទុសរុប: <strong>${student.Total || '-'}</strong></div>`;
-                        scoreDetailsHTML += `<div class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></div>`;
-                        scoreDetailsHTML += `<div class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></div>`;
+                        scoreDetailsHTML += `<span class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
+                        scoreDetailsHTML += `<span class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
                         
                         subjects.forEach(subject => {
                             const score = student.Scores[subject] || '-';
-                            scoreDetailsHTML += `<div class="detail-item">${subject}: <strong>${score}</strong></div>`;
+                            scoreDetailsHTML += `<span>${subject}: <strong>${score}</strong></span>`;
                         });
                         scoreDetailsHTML += '</div>';
                         detailsCell.innerHTML = scoreDetailsHTML;
@@ -1744,7 +1743,7 @@
                             sender: userData.FullName 
                         }
                     });
-                    showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!', 'success');
+                    showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!');
                     subjectInput.value = '';
                     messageInput.value = '';
                     handleFeatureClick('Announcements');
