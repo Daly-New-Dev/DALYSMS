@@ -517,17 +517,17 @@
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: 12px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
         .student-attendance-list {
             display: flex;
@@ -564,8 +564,8 @@
             justify-self: center;
         }
         .attendance-btn {
-            padding: 0.25rem;
-            width: 40px;
+            padding: 0.3rem;
+            width: 45px;
             font-size: 0.8rem;
             text-align: center;
             border: 1px solid var(--border-color);
@@ -763,7 +763,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHot7nsaa409-nxcAiVYsjCrN3tNy8MWkkFhY61-vTFZ7xXNX9T0bOIj5wk0yM8qXf1A/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPDdMtvIu0oJCuvtsjMImlUKdpylidq7dZsh0OTtilxX8SbLfBz6cYzVVipVQ9iFYpHQ/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1028,13 +1028,50 @@
             // --- QR Scanner Logic ---
             const onScanSuccess = (decodedText, decodedResult) => {
                 stopQrScanner();
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                showToast(`វត្តមានសម្រាប់ ${decodedText} បានកត់ត្រាម៉ោង ${timeString}`, 'success');
-                apiFetch('recordAttendance', {
-                    method: 'POST',
-                    body: { userId: decodedText, timestamp: now.toISOString() }
-                });
+
+                if (decodedText.startsWith('TEACHER_ATTENDANCE:')) {
+                    const qrSecret = decodedText.split(':')[1];
+                    
+                    showToast('Verifying location...', 'success');
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+                            const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
+                            
+                            apiFetch('recordTeacherAttendance', {
+                                method: 'POST',
+                                body: {
+                                    qrSecret: qrSecret,
+                                    userId: userData.Username,
+                                    latitude: latitude,
+                                    longitude: longitude
+                                }
+                            }).then(result => {
+                                showToast(result.message, 'success');
+                            }).catch(error => {
+                                // Error toast is already shown by apiFetch
+                            });
+                        },
+                        (error) => {
+                            showToast('Could not get location. Please enable location services.', 'error');
+                            console.error("Geolocation error:", error);
+                        },
+                        { enableHighAccuracy: true }
+                    );
+
+                } else {
+                    // Fallback for student QR codes (or other types)
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    showToast(`វត្តមានសម្រាប់ ${decodedText} បានកត់ត្រាម៉ោង ${timeString}`, 'success');
+                    // This part remains as it was, potentially for student QR codes.
+                    // Note: 'recordAttendance' is not a valid POST action in the provided code.gs
+                    apiFetch('recordAttendance', {
+                        method: 'POST',
+                        body: { userId: decodedText, timestamp: now.toISOString() }
+                    });
+                }
             };
 
             const onScanFailure = (error) => {};
@@ -1775,7 +1812,7 @@
                 container.innerHTML = `
                     <div style="text-align: center; padding: 2rem;">
                         <h3>QR Code សម្រាប់វត្តមានគ្រូ</h3>
-                        <div id="teacher-qrcode" style="margin: 2rem auto; width: 256px; height: 256px; background: #eee; display:flex; align-items:center; justify-content:center;">
+                        <div id="teacher-qrcode" style="margin: 2rem auto; width: 256px; height: 256px; background: #eee; display:flex; align-items:center; justify-content:center; border-radius: 12px; padding: 1rem; background: white;">
                            <p>សូមមេត្តារង់ចាំ...</p>
                         </div>
                         <button id="print-qr-btn" class="menu-item" style="width: 100%; max-width: 300px; margin: 0 auto 1rem auto; padding: 1rem;">
@@ -1788,17 +1825,34 @@
                     </div>
                 `;
 
-                apiFetch('getTeacherQRSettings').then(response => {
-                    const qrContainer = container.querySelector('#teacher-qrcode');
+                const qrContainer = container.querySelector('#teacher-qrcode');
+                
+                function generateQR(secret) {
                     qrContainer.innerHTML = '';
                     new QRCode(qrContainer, {
-                        text: `TEACHER_ATTENDANCE:${response.data.secret}`,
-                        width: 256,
-                        height: 256,
+                        text: `TEACHER_ATTENDANCE:${secret}`,
+                        width: 240,
+                        height: 240,
                         colorDark : "#000000",
                         colorLight : "#ffffff",
                         correctLevel : QRCode.CorrectLevel.H
                     });
+                }
+
+                apiFetch('getTeacherQRSettings').then(response => {
+                    generateQR(response.data.secret);
+                });
+
+                container.querySelector('#regen-qr-btn').addEventListener('click', async () => {
+                   if (confirm('Are you sure you want to generate a new QR code? The old one will no longer work.')) {
+                       try {
+                           const response = await apiFetch('regenerateTeacherQRSecret');
+                           generateQR(response.data.newSecret);
+                           showToast('New QR Code generated successfully!', 'success');
+                       } catch(e) {
+                           // error shown by apiFetch
+                       }
+                   }
                 });
 
                 return container;
