@@ -763,7 +763,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmOzOVSn6TJIzxEBs6i1tpy-bvPlVkx7WrCDr4o6Kv3HJ9mPGYZsIl2dgqnglSiwr6yQ/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbyVCnV-XkuaZcDGtz3TvbYNHWrlH_lX0zWQhCAh25saJcdd7tF4hwnEwdiZaHIz_3Hw/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1670,7 +1670,7 @@
                         mainRow.className = 'student-rank-row';
 
                         mainRow.innerHTML = `
-                            <td>${student.Rank || index + 1}</td>
+                            <td>${index + 1}</td>
                             <td class="student-name-cell">${student['Student Name']}</td>
                             <td>${student.Gender}</td>
                             <td class="total-score-cell">${student.Total || '-'}</td>
