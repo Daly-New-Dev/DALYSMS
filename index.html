@@ -515,17 +515,17 @@
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: 12px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
         .student-attendance-list {
             display: flex;
@@ -562,9 +562,9 @@
             justify-self: center;
         }
         .attendance-btn {
-            padding: 0.4rem;
-            width: 50px;
-            font-size: 0.9rem;
+            padding: 0.3rem;
+            width: 45px;
+            font-size: 0.8rem;
             text-align: center;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -994,6 +994,21 @@
                 document.getElementById('page-title-block').classList.remove('hidden');
                 backButton.classList.remove('hidden');
             }
+            
+            async function navigateTo(page, push = true) {
+                if (push) {
+                    history.pushState({ page: page }, '', `#${page}`);
+                }
+
+                if (page === 'dashboard' || page === null) {
+                    showDashboard();
+                    return;
+                }
+                
+                await handleFeatureClick(page);
+            }
+
+
             backButton.addEventListener('click', () => history.back());
 
             // --- QR Scanner Logic ---
@@ -1092,7 +1107,6 @@
                     }
                     if(pageContent) {
                         showFeaturePage(pageTitle, pageContent);
-                        history.pushState({ page: 'feature', featureName: feature }, pageTitle, `#${feature.replace(/\s+/g, '')}`);
                     }
                 } catch (error) {
                     showToast('Failed to load feature.', 'error');
@@ -1739,19 +1753,21 @@
 
             // --- Event Listeners ---
             document.querySelectorAll('.menu-item, #user-profile-bar').forEach(element => {
-                element.addEventListener('click', () => handleFeatureClick(element.dataset.feature));
+                element.addEventListener('click', () => navigateTo(element.dataset.feature));
             });
             
             document.querySelectorAll('.nav-item').forEach(element => {
                  if(element.id === 'logout-button-nav') return;
-                element.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                    element.classList.add('active');
-                    const navAction = element.dataset.nav;
-                    switch(navAction) {
-                        case 'home': showDashboard(); history.pushState({page: 'dashboard'}, 'Dashboard', '#dashboard'); break;
-                        case 'notifications': handleFeatureClick('Announcements'); break;
-                        case 'profile': handleFeatureClick('User Profile'); break;
+                element.addEventListener('click', (e) => {
+                    const navAction = e.currentTarget.dataset.nav;
+                     let page;
+                     switch(navAction) {
+                        case 'home': page = 'dashboard'; break;
+                        case 'notifications': page = 'Announcements'; break;
+                        case 'profile': page = 'User Profile'; break;
+                    }
+                    if (page) {
+                       navigateTo(page);
                     }
                 });
             });
@@ -1769,11 +1785,7 @@
             });
             
             window.addEventListener('popstate', (event) => {
-                if (event.state && event.state.page === 'feature') {
-                    handleFeatureClick(event.state.featureName);
-                } else {
-                    showDashboard();
-                }
+                navigateTo(event.state ? event.state.page : 'dashboard', false);
             });
 
             // --- Initial Load ---
@@ -1781,17 +1793,19 @@
         });
     </script>
 </body>
-</ht" code between  and  in the most up-to-date Canvas "School Management System - index.html" document above and am asking a query about/based on this code below.
-Instructions to follow:
-  * Don't output/edit the document if the query is Direct/Simple. For example, if the query asks for a simple explanation, output a direct answer.
-  * Make sure to **edit** the document if the query shows the intent of editing the document, in which case output the entire edited document, **not just that section or the edits**.
-    * Don't output the same document/empty document and say that you have edited it.
-    * Don't change unrelated code in the document.
-  * Don't output  and  in your final response.
-  * Any references like "this" or "selected code" refers to the code between  and  tags.
-  * Just acknowledge my request in the introduction.
-  * Make sure to refer to the document as "Canvas" in your response.
+</html>Certainly. I have implemented the requested changes to the attendance page and the navigation logic.
 
+Here is a summary of the adjustments made in the Canvas:
+* **Attendance Page:**
+    * The date header section is now slightly larger.
+    * The "Present," "Absent," and "Leave" buttons are smaller.
+* **Navigation:**
+    * The back button and browser navigation have been refactored to ensure smooth and correct transitions between pages without getting stuck in a loop.
+
+Please feel free to preview the updated application.
+
+
+```html
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -1805,11 +1819,11 @@ Instructions to follow:
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icons/appicon.PNG">
     <link rel="apple-touch-icon" href="icons/appicon.PNG">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap](https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css)">
+    <script src="[https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode)" type="text/javascript"></script>
 
     <style>
         :root {
@@ -2309,17 +2323,17 @@ Instructions to follow:
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: 12px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
         .student-attendance-list {
             display: flex;
@@ -2356,9 +2370,9 @@ Instructions to follow:
             justify-self: center;
         }
         .attendance-btn {
-            padding: 0.4rem;
-            width: 50px;
-            font-size: 0.9rem;
+            padding: 0.3rem;
+            width: 45px;
+            font-size: 0.8rem;
             text-align: center;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -2554,7 +2568,7 @@ Instructions to follow:
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhcxMe8Q5YCVP-P0P_EA-kyEUO_kQrzzvrWFwglTcmPBiYncnwl0lVGGmzAlPFGK0d9A/exec";
+            const SCRIPT_URL = "[https://script.google.com/macros/s/AKfycbwhcxMe8Q5YCVP-P0P_EA-kyEUO_kQrzzvrWFwglTcmPBiYncnwl0lVGGmzAlPFGK0d9A/exec](https://script.google.com/macros/s/AKfycbwhcxMe8Q5YCVP-P0P_EA-kyEUO_kQrzzvrWFwglTcmPBiYncnwl0lVGGmzAlPFGK0d9A/exec)";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -2775,7 +2789,8 @@ Instructions to follow:
                 document.getElementById('page-title-block').classList.add('hidden');
                 backButton.classList.add('hidden');
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                document.querySelector('.nav-item[data-nav="home"]').classList.add('active');
+                const homeNav = document.querySelector('.nav-item[data-nav="home"]');
+                if(homeNav) homeNav.classList.add('active');
             }
             
             function showFeaturePage(title, content) {
@@ -2788,6 +2803,31 @@ Instructions to follow:
                 document.getElementById('page-title-block').classList.remove('hidden');
                 backButton.classList.remove('hidden');
             }
+            
+            async function navigateTo(page, push = true) {
+                if (push) {
+                     history.pushState({ page: page }, '', `#${page}`);
+                }
+
+                // Update nav-item active state
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                let targetNav = 'home';
+                if (page === 'Announcements') targetNav = 'notifications';
+                else if (page === 'User Profile') targetNav = 'profile';
+                
+                const activeNavItem = document.querySelector(`.nav-item[data-nav="${targetNav}"]`);
+                if(activeNavItem) activeNavItem.classList.add('active');
+
+
+                if (page === 'dashboard' || page === null) {
+                    showDashboard();
+                    return;
+                }
+                
+                await handleFeatureClick(page);
+            }
+
+
             backButton.addEventListener('click', () => history.back());
 
             // --- QR Scanner Logic ---
@@ -2886,7 +2926,6 @@ Instructions to follow:
                     }
                     if(pageContent) {
                         showFeaturePage(pageTitle, pageContent);
-                        history.pushState({ page: 'feature', featureName: feature }, pageTitle, `#${feature.replace(/\s+/g, '')}`);
                     }
                 } catch (error) {
                     showToast('Failed to load feature.', 'error');
@@ -3533,19 +3572,21 @@ Instructions to follow:
 
             // --- Event Listeners ---
             document.querySelectorAll('.menu-item, #user-profile-bar').forEach(element => {
-                element.addEventListener('click', () => handleFeatureClick(element.dataset.feature));
+                element.addEventListener('click', () => navigateTo(element.dataset.feature));
             });
             
             document.querySelectorAll('.nav-item').forEach(element => {
                  if(element.id === 'logout-button-nav') return;
-                element.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                    element.classList.add('active');
-                    const navAction = element.dataset.nav;
-                    switch(navAction) {
-                        case 'home': showDashboard(); history.pushState({page: 'dashboard'}, 'Dashboard', '#dashboard'); break;
-                        case 'notifications': handleFeatureClick('Announcements'); break;
-                        case 'profile': handleFeatureClick('User Profile'); break;
+                element.addEventListener('click', (e) => {
+                    const navAction = e.currentTarget.dataset.nav;
+                     let page;
+                     switch(navAction) {
+                        case 'home': page = 'dashboard'; break;
+                        case 'notifications': page = 'Announcements'; break;
+                        case 'profile': page = 'User Profile'; break;
+                    }
+                    if (page) {
+                       navigateTo(page);
                     }
                 });
             });
@@ -3563,11 +3604,7 @@ Instructions to follow:
             });
             
             window.addEventListener('popstate', (event) => {
-                if (event.state && event.state.page === 'feature') {
-                    handleFeatureClick(event.state.featureName);
-                } else {
-                    showDashboard();
-                }
+                navigateTo(event.state ? event.state.page : 'dashboard', false);
             });
 
             // --- Initial Load ---
