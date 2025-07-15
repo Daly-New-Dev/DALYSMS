@@ -1680,6 +1680,9 @@
                         detailsCell.colSpan = 5;
                         
                         let scoreDetailsHTML = '<div class="score-details-grid">';
+                        scoreDetailsHTML += `<span class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
+                        scoreDetailsHTML += `<span class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
+                        
                         subjects.forEach(subject => {
                             const score = student.Scores[subject] || '-';
                             scoreDetailsHTML += `<span>${subject}: <strong>${score}</strong></span>`;
