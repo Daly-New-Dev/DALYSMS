@@ -704,7 +704,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Teacher Menu -->
                         <div id="teacher-menu" class="feature-menu hidden">
                             <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
                             <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
@@ -716,7 +715,6 @@
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
                         </div>
-                        <!-- Admin Menu -->
                         <div id="admin-menu" class="feature-menu hidden">
                              <div class="menu-item" data-feature="Teacher QR Attendance"><i class="fa-solid fa-chalkboard-user"></i><span>QR វត្តមានគ្រូ</span></div>
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
@@ -746,7 +744,6 @@
             </div>
         </div>
         
-        <!-- QR Scanner UI -->
         <div id="qr-scanner-container" class="hidden">
             <div id="qr-reader"></div>
             <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
@@ -763,7 +760,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbyVCnV-XkuaZcDGtz3TvbYNHWrlH_lX0zWQhCAh25saJcdd7tF4hwnEwdiZaHIz_3Hw/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKipjxmuUDS2y2Bl9WBiZ80Wi2wz20NwnwHIBqJIlFK0_gNE2CNBeP3tyC22g7dkDw7g/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1683,9 +1680,6 @@
                         detailsCell.colSpan = 5;
                         
                         let scoreDetailsHTML = '<div class="score-details-grid">';
-                        scoreDetailsHTML += `<span class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
-                        scoreDetailsHTML += `<span class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
-                        
                         subjects.forEach(subject => {
                             const score = student.Scores[subject] || '-';
                             scoreDetailsHTML += `<span>${subject}: <strong>${score}</strong></span>`;
