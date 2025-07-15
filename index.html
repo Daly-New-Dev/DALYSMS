@@ -517,17 +517,17 @@
         }
         .attendance-header {
             background-color: var(--secondary-color);
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 12px;
             text-align: center;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
         .student-attendance-list {
             display: flex;
@@ -564,8 +564,8 @@
             justify-self: center;
         }
         .attendance-btn {
-            padding: 0.3rem;
-            width: 45px;
+            padding: 0.25rem;
+            width: 40px;
             font-size: 0.8rem;
             text-align: center;
             border: 1px solid var(--border-color);
@@ -1147,7 +1147,7 @@
                              break;
                         case 'Month Ranking':
                              const defaultMonthForRank = new Date().toLocaleString('en-US', { month: 'short' });
-                             const { data: rankingData } = await apiFetch('getRankingData', { params: { classGrade: userData.ClassGrade, month: defaultMonthForRank } });
+                             const { data: rankingData } = await apiFetch('getMonthRanking', { params: { classGrade: userData.ClassGrade, month: defaultMonthForRank } });
                              pageContent = createRankingPage(rankingData.students, rankingData.subjects, userData.ClassGrade);
                              pageTitle = 'ចំណាត់ថ្នាក់ប្រចាំខែ';
                              break;
@@ -1708,7 +1708,7 @@
                     const month = container.querySelector('#ranking-month-selector').value;
                     const sortBy = container.querySelector('#ranking-sort-selector').value;
                     try {
-                        const { data } = await apiFetch('getRankingData', { params: { classGrade, month, sortBy } });
+                        const { data } = await apiFetch('getMonthRanking', { params: { classGrade, month, sortBy } });
                         renderList(data.students);
                     } catch (e) {
                          tableBody.innerHTML = `<tr><td colspan="5"><div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>No Ranking Data</h3><p>${e.message}</p></div></td></tr>`;
