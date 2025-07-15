@@ -211,8 +211,8 @@
         .student-table tr:nth-child(even) { background-color: #f9fafb; }
         .student-table td:first-child { text-align: center; }
         
-        .student-list-footer {
-            margin-top: 1rem;
+        .student-list-summary {
+            margin-bottom: 1rem;
             padding: 1rem;
             background-color: var(--secondary-color);
             border-radius: 12px;
@@ -1336,9 +1336,19 @@
                 container.className = 'feature-page';
                 
                 const studentsInClass = allStudents.filter(s => s.ClassGrade === teacherClassGrade);
+                const totalStudents = studentsInClass.length;
+                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'ស').length;
+
+                const summary = document.createElement('div');
+                summary.className = 'student-list-summary';
+                summary.innerHTML = `
+                    <span>សិស្សសរុប: ${totalStudents}នាក់</span>
+                    <span>សិស្សស្រី: ${femaleStudents}នាក់</span>
+                `;
+                container.appendChild(summary);
 
                 if (!studentsInClass || studentsInClass.length === 0) {
-                    container.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
+                    container.innerHTML += `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
                     return container;
                 }
                 const table = document.createElement('table');
@@ -1374,17 +1384,6 @@
                     </tbody>
                 `;
                 container.appendChild(table);
-
-                const totalStudents = studentsInClass.length;
-                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'ស').length;
-
-                const footer = document.createElement('div');
-                footer.className = 'student-list-footer';
-                footer.innerHTML = `
-                    <span>សិស្សសរុប: ${totalStudents}នាក់</span>
-                    <span>សិស្សស្រី: ${femaleStudents}នាក់</span>
-                `;
-                container.appendChild(footer);
 
                 return container;
             }
@@ -1671,7 +1670,7 @@
                         mainRow.className = 'student-rank-row';
 
                         mainRow.innerHTML = `
-                            <td>${index + 1}</td>
+                            <td>${student.Rank || index + 1}</td>
                             <td class="student-name-cell">${student['Student Name']}</td>
                             <td>${student.Gender}</td>
                             <td class="total-score-cell">${student.Total || '-'}</td>
@@ -1684,6 +1683,9 @@
                         detailsCell.colSpan = 5;
                         
                         let scoreDetailsHTML = '<div class="score-details-grid">';
+                        scoreDetailsHTML += `<span class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
+                        scoreDetailsHTML += `<span class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
+                        
                         subjects.forEach(subject => {
                             const score = student.Scores[subject] || '-';
                             scoreDetailsHTML += `<span>${subject}: <strong>${score}</strong></span>`;
