@@ -196,6 +196,26 @@
         .menu-item i { font-size: clamp(1.8rem, 4vh, 2.2rem); color: var(--primary-color); margin-bottom: 0.75rem; }
         .menu-item span { font-size: clamp(0.7rem, 1.8vh, 0.75rem); font-weight: 600; color: var(--text-secondary); }
         
+        .qr-page-button {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 0.75rem auto;
+            padding: 0.9rem 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            border: 1px solid transparent;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+        .qr-page-button:hover {
+            opacity: 0.9;
+        }
+
         .feature-page { padding: 0.5rem; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -1812,11 +1832,11 @@
                         <div id="teacher-qrcode-display" style="margin: 2rem auto; width: 256px; height: 256px; background: white; padding: 1rem; border-radius: 12px; display:flex; align-items:center; justify-content:center;">
                            <p>សូមមេត្តារង់ចាំ...</p>
                         </div>
-                        <button id="save-qr-btn" class="menu-item" style="width: 100%; max-width: 300px; margin: 0 auto 1rem auto; padding: 1rem; background-color: var(--success-color); border-color: var(--success-color);">
-                            <i class="fa-solid fa-download" style="color: white;"></i> <span style="color: white;">រក្សាទុកជា​រូបភាព</span>
+                        <button id="save-qr-btn" class="qr-page-button" style="background-color: var(--success-color); color: white;">
+                            <i class="fa-solid fa-download"></i> <span>រក្សាទុកជា​រូបភាព</span>
                         </button>
-                        <button id="regen-qr-btn" class="menu-item" style="width: 100%; max-width: 300px; margin: 0 auto; padding: 1rem; background-color: #fff5f5; border-color: var(--error-color);">
-                            <i class="fa-solid fa-arrows-rotate" style="color: var(--error-color);"></i> <span style="color: var(--error-color);">បង្កើត QR Code ថ្មី</span>
+                        <button id="regen-qr-btn" class="qr-page-button" style="background-color: #fff5f5; color: var(--error-color); border: 1px solid var(--error-color);">
+                            <i class="fa-solid fa-arrows-rotate"></i> <span>បង្កើត QR Code ថ្មី</span>
                         </button>
                         <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">ការបង្កើត QR Code ថ្មីនឹងធ្វើឱ្យ QR Code ចាស់ប្រើការលែងកើត។</p>
                     </div>
@@ -1915,4 +1935,4 @@
         });
     </script>
 </body>
-</html>
+</ht
