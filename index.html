@@ -1090,7 +1090,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxntSV1a7fn_R5vzw-9qMkSBhs98shd9I-R8vc3pStsn7tak8gDxs9EVD7b0GFu4Oe7Sw/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_Xj5imhnqStnEMglwKLfwuuuqQR4xHQ-bROQjXAFSr_EQWN_WFRlSbyoL4jSZzWQUGg/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1491,6 +1491,11 @@
                             const { data: studentsForManage } = await apiFetch('getAllStudents');
                             pageContent = createManageStudentsPage(studentsForManage);
                             pageTitle = 'គ្រប់គ្រងសិស្ស';
+                            break;
+                        case 'Class Management':
+                            const { data: classes } = await apiFetch('getAllClasses');
+                            pageContent = createClassManagementPage(classes);
+                            pageTitle = 'គ្រប់គ្រងថ្នាក់';
                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
