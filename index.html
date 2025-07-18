@@ -57,7 +57,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(4px); display: flex; justify-content: center;
-            align-items: center; z-index: 3000; transition: opacity 0.3s ease;
+            align-items: center; z-index: 4000; transition: opacity 0.3s ease;
         }
         .loader-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
         .loader-spinner { display: flex; gap: 0.75rem; }
@@ -633,6 +633,197 @@
             cursor: not-allowed;
         }
 
+        /* --- Manage Teachers Page Styles --- */
+        .manage-teachers-page {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .manage-teachers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .search-input-container {
+            position: relative;
+            flex-grow: 1;
+        }
+        .search-input-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        #teacher-search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 0.9rem;
+        }
+        .add-teacher-btn {
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .teacher-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .teacher-card {
+            background: var(--secondary-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .teacher-card-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .teacher-card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .teacher-card-details {
+            flex-grow: 1;
+        }
+        .teacher-card-details h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .teacher-card-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .teacher-card-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .teacher-card-actions button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--background-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-header h3 {
+            font-size: 1.4rem;
+            color: var(--text-dark);
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .modal-body .form-group {
+            margin-bottom: 1rem;
+        }
+        .modal-body .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .modal-body .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        .modal-footer button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-footer .save-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .modal-footer .cancel-btn {
+            background-color: var(--background-color);
+            color: var(--text-secondary);
+        }
+
+
     </style>
 </head>
 <body>
@@ -769,6 +960,53 @@
             <div id="qr-reader"></div>
             <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
         </div>
+
+        <div id="teacher-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="teacher-modal-title">Add New Teacher</h3>
+                    <button class="modal-close-btn">&times;</button>
+                </div>
+                <form id="teacher-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="is-new-teacher" value="true">
+                         <div class="form-group">
+                            <label for="teacher-fullname">Full Name</label>
+                            <input type="text" id="teacher-fullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-username">Username</label>
+                            <input type="text" id="teacher-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-password">Password</label>
+                            <input type="password" id="teacher-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-subject">Subject</label>
+                            <input type="text" id="teacher-subject">
+                        </div>
+                         <div class="form-group">
+                            <label for="teacher-classgrade">Assigned Class</label>
+                            <input type="text" id="teacher-classgrade">
+                        </div>
+                         <div class="form-group">
+                            <label for="teacher-photourl">Photo URL (Optional)</label>
+                            <input type="text" id="teacher-photourl">
+                        </div>
+                         <div class="form-group">
+                            <label for="teacher-email">Email (Optional)</label>
+                            <input type="email" id="teacher-email">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <div id="toast-notification" class="toast"></div>
@@ -781,7 +1019,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUaAno3N9iHVCc901ySQ2eX7ZSzamB0YS_OEnWBoQup8XvtPP_h0xrhBFoUvTiKKj2Vw/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyTIFusYVKW0omSpISnW_YFABCXV4iiwk8BWU_U5ofLs6M1OsUsYYChQkJ2QRke9RY1g/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1173,6 +1411,11 @@
                              pageContent = createTeacherQrPage();
                              pageTitle = 'QR វត្តមានគ្រូ';
                              break;
+                        case 'Manage Teachers':
+                            const { data: teachers } = await apiFetch('getAllTeachers');
+                            pageContent = createManageTeachersPage(teachers);
+                            pageTitle = 'គ្រប់គ្រងគ្រូ';
+                            break;
                         default:
                             pageContent = createPlaceholderPage(feature);
                             pageTitle = feature;
@@ -1892,6 +2135,168 @@
                 return container;
             }
 
+            function createManageTeachersPage(teachers) {
+                const container = document.createElement('div');
+                container.className = 'feature-page manage-teachers-page';
+                
+                const header = document.createElement('div');
+                header.className = 'manage-teachers-header';
+                header.innerHTML = `
+                    <div class="search-input-container">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="teacher-search-input" placeholder="Search by name...">
+                    </div>
+                    <button class="add-teacher-btn"><i class="fa-solid fa-plus"></i> Add New</button>
+                `;
+                container.appendChild(header);
+
+                const teacherListContainer = document.createElement('div');
+                teacherListContainer.className = 'teacher-list';
+                container.appendChild(teacherListContainer);
+
+                let allTeachers = teachers;
+
+                function renderTeacherList(filteredTeachers) {
+                    teacherListContainer.innerHTML = '';
+                    if (!filteredTeachers || filteredTeachers.length === 0) {
+                        teacherListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chalkboard-user"></i><h3>No Teachers Found</h3></div>`;
+                        return;
+                    }
+                    filteredTeachers.forEach(teacher => {
+                        const card = document.createElement('div');
+                        card.className = 'teacher-card';
+                        card.dataset.username = teacher.Username;
+
+                        const photoHTML = teacher.PhotoURL 
+                            ? `<img src="${teacher.PhotoURL}" alt="Photo">`
+                            : `<i class="fa-solid fa-user-tie"></i>`;
+
+                        card.innerHTML = `
+                            <div class="teacher-card-photo">${photoHTML}</div>
+                            <div class="teacher-card-details">
+                                <h4>${teacher.FullName}</h4>
+                                <p>@${teacher.Username} &bull; Teaches: ${teacher.Subject || 'N/A'}, Class: ${teacher.ClassGrade || 'N/A'}</p>
+                            </div>
+                            <div class="teacher-card-actions">
+                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                        teacherListContainer.appendChild(card);
+                    });
+                }
+
+                renderTeacherList(allTeachers);
+
+                // Search functionality
+                container.querySelector('#teacher-search-input').addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filtered = allTeachers.filter(t => t.FullName.toLowerCase().includes(searchTerm));
+                    renderTeacherList(filtered);
+                });
+
+                // Modal Handling
+                const modal = document.getElementById('teacher-modal');
+                const modalTitle = document.getElementById('teacher-modal-title');
+                const teacherForm = document.getElementById('teacher-form');
+                
+                function showModal() { modal.classList.add('show'); }
+                function hideModal() { modal.classList.remove('show'); }
+
+                container.querySelector('.add-teacher-btn').addEventListener('click', () => {
+                    teacherForm.reset();
+                    document.getElementById('is-new-teacher').value = 'true';
+                    document.getElementById('teacher-username').readOnly = false;
+                    modalTitle.textContent = 'Add New Teacher';
+                    showModal();
+                });
+
+                modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
+                modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
+                
+                teacherListContainer.addEventListener('click', async (e) => {
+                    const editBtn = e.target.closest('.edit-btn');
+                    const deleteBtn = e.target.closest('.delete-btn');
+
+                    if (editBtn) {
+                        const username = editBtn.closest('.teacher-card').dataset.username;
+                        const teacher = allTeachers.find(t => t.Username === username);
+                        
+                        document.getElementById('is-new-teacher').value = 'false';
+                        modalTitle.textContent = 'Edit Teacher';
+                        
+                        document.getElementById('teacher-fullname').value = teacher.FullName || '';
+                        document.getElementById('teacher-username').value = teacher.Username || '';
+                        document.getElementById('teacher-username').readOnly = true;
+                        document.getElementById('teacher-password').value = '';
+                        document.getElementById('teacher-password').placeholder = 'Leave blank to keep current password';
+                        document.getElementById('teacher-subject').value = teacher.Subject || '';
+                        document.getElementById('teacher-classgrade').value = teacher.ClassGrade || '';
+                        document.getElementById('teacher-photourl').value = teacher.PhotoURL || '';
+                        document.getElementById('teacher-email').value = teacher.Email || '';
+
+                        showModal();
+                    }
+
+                    if (deleteBtn) {
+                        const username = deleteBtn.closest('.teacher-card').dataset.username;
+                        if (confirm(`Are you sure you want to delete teacher "${username}"? This action cannot be undone.`)) {
+                           fullPageLoader.classList.remove('hidden');
+                            try {
+                                await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
+                                showToast('Teacher deleted successfully.', 'success');
+                                const { data: updatedTeachers } = await apiFetch('getAllTeachers');
+                                allTeachers = updatedTeachers;
+                                renderTeacherList(allTeachers);
+                            } catch (error) {
+                                // Error toast is shown by apiFetch
+                            } finally {
+                                fullPageLoader.classList.add('hidden');
+                            }
+                        }
+                    }
+                });
+
+                teacherForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    fullPageLoader.classList.remove('hidden');
+
+                    const isNew = document.getElementById('is-new-teacher').value === 'true';
+                    const teacherData = {
+                        FullName: document.getElementById('teacher-fullname').value,
+                        Username: document.getElementById('teacher-username').value,
+                        Password: document.getElementById('teacher-password').value,
+                        Subject: document.getElementById('teacher-subject').value,
+                        ClassGrade: document.getElementById('teacher-classgrade').value,
+                        PhotoURL: document.getElementById('teacher-photourl').value,
+                        Email: document.getElementById('teacher-email').value,
+                        Role: 'teacher' // Always set role to teacher
+                    };
+
+                    if (isNew && !teacherData.Password) {
+                        showToast('Password is required for new teachers.', 'error');
+                        fullPageLoader.classList.add('hidden');
+                        return;
+                    }
+
+                    try {
+                        await apiFetch('saveTeacher', { method: 'POST', body: { teacherData, isNew } });
+                        showToast(`Teacher ${isNew ? 'added' : 'updated'} successfully.`, 'success');
+                        hideModal();
+                        const { data: updatedTeachers } = await apiFetch('getAllTeachers');
+                        allTeachers = updatedTeachers;
+                        renderTeacherList(allTeachers);
+                    } catch (error) {
+                       // Error toast is shown by apiFetch
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
+
+
+                return container;
+            }
+
 
             // --- Event Listeners ---
             document.querySelectorAll('.menu-item, #user-profile-bar').forEach(element => {
@@ -1935,4 +2340,4 @@
         });
     </script>
 </body>
-</ht
+</html>
