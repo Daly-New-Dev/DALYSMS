@@ -795,12 +795,13 @@
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
-        .modal-body .form-group input {
+        .modal-body .form-group input, .modal-body .form-group select {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
+            font-family: 'Kantumruy Pro', sans-serif;
         }
         .modal-footer {
             display: flex;
@@ -998,6 +999,47 @@
                          <div class="form-group">
                             <label for="teacher-email">អ៊ីមែល (ស្រេចចិត្ត)</label>
                             <input type="email" id="teacher-email">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn">បោះបង់</button>
+                        <button type="submit" class="save-btn">រក្សាទុក</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="student-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="student-modal-title"></h3>
+                    <button class="modal-close-btn">&times;</button>
+                </div>
+                <form id="student-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="is-new-student" value="true">
+                         <div class="form-group">
+                            <label for="student-id">អត្តលេខសិស្ស</label>
+                            <input type="text" id="student-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-fullname">ឈ្មោះពេញ</label>
+                            <input type="text" id="student-fullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-gender">ភេទ</label>
+                            <select id="student-gender">
+                                <option value="ប្រុស">ប្រុស</option>
+                                <option value="ស្រី">ស្រី</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-dob">ថ្ងៃខែឆ្នាំកំណើត</label>
+                            <input type="date" id="student-dob">
+                        </div>
+                         <div class="form-group">
+                            <label for="student-classgrade">ថ្នាក់</label>
+                            <input type="text" id="student-classgrade">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -2324,8 +2366,164 @@
 
              function createManageStudentsPage(students) {
                 const container = document.createElement('div');
-                // TODO: Build the Manage Students UI here
-                container.innerHTML = "Manage Students Page Placeholder";
+                container.className = 'feature-page manage-teachers-page'; // Reuse styles
+                
+                const header = document.createElement('div');
+                header.className = 'manage-teachers-header';
+                header.innerHTML = `
+                    <div class="search-input-container">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="student-search-input" placeholder="ស្វែងរកឈ្មោះសិស្ស...">
+                    </div>
+                    <button class="add-teacher-btn" id="add-student-btn"><i class="fa-solid fa-plus"></i> បន្ថែមសិស្ស</button>
+                `;
+                container.appendChild(header);
+
+                const studentListContainer = document.createElement('div');
+                studentListContainer.className = 'teacher-list'; // Reuse styles
+                container.appendChild(studentListContainer);
+
+                let allStudents = students;
+
+                function renderStudentList(filteredStudents) {
+                    studentListContainer.innerHTML = '';
+                    if (!filteredStudents || filteredStudents.length === 0) {
+                        studentListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-users"></i><h3>មិនមានទិន្នន័យសិស្សទេ</h3></div>`;
+                        return;
+                    }
+                    filteredStudents.forEach(student => {
+                        const card = document.createElement('div');
+                        card.className = 'teacher-card'; // Reuse styles
+                        card.dataset.studentId = student['Student ID'];
+
+                        card.innerHTML = `
+                            <div class="teacher-card-photo"><i class="fa-solid fa-user"></i></div>
+                            <div class="teacher-card-details">
+                                <h4 style="margin-bottom: 3px;">${student['Student Name']}</h4>
+                                <p>អត្តលេខ: ${student['Student ID']} &nbsp;&bull;&nbsp; ថ្នាក់: ${student.ClassGrade || 'មិនមាន'}</p>
+                            </div>
+                            <div class="teacher-card-actions">
+                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                        studentListContainer.appendChild(card);
+                    });
+                }
+
+                renderStudentList(allStudents);
+
+                 // Search functionality
+                container.querySelector('#student-search-input').addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filtered = allStudents.filter(s => s['Student Name'].toLowerCase().includes(searchTerm));
+                    renderStudentList(filtered);
+                });
+
+                // Modal Handling
+                const modal = document.getElementById('student-modal');
+                const modalTitle = document.getElementById('student-modal-title');
+                const studentForm = document.getElementById('student-form');
+                
+                function showModal() { modal.classList.add('show'); }
+                function hideModal() { modal.classList.remove('show'); }
+
+                container.querySelector('#add-student-btn').addEventListener('click', () => {
+                    studentForm.reset();
+                    document.getElementById('is-new-student').value = 'true';
+                    document.getElementById('student-id').readOnly = false;
+                    modalTitle.textContent = 'បន្ថែមសិស្សថ្មី';
+                    showModal();
+                });
+
+                modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
+                modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
+
+                studentListContainer.addEventListener('click', async (e) => {
+                    const editBtn = e.target.closest('.edit-btn');
+                    const deleteBtn = e.target.closest('.delete-btn');
+
+                    if (editBtn) {
+                        const studentId = editBtn.closest('.teacher-card').dataset.studentId;
+                        const student = allStudents.find(s => s['Student ID'] == studentId);
+                        
+                        document.getElementById('is-new-student').value = 'false';
+                        modalTitle.textContent = 'កែប្រែព័ត៌មានសិស្ស';
+                        
+                        document.getElementById('student-id').value = student['Student ID'] || '';
+                        document.getElementById('student-id').readOnly = true;
+                        document.getElementById('student-fullname').value = student['Student Name'] || '';
+                        document.getElementById('student-gender').value = student.Gender || 'ប្រុស';
+                        
+                        let dob = '';
+                        if (student['Date of Birth']) {
+                            try {
+                                const date = new Date(student['Date of Birth']);
+                                if (!isNaN(date.getTime())) {
+                                    dob = date.toISOString().split('T')[0];
+                                }
+                            } catch(err) {}
+                        }
+                        document.getElementById('student-dob').value = dob;
+                        document.getElementById('student-classgrade').value = student.ClassGrade || '';
+
+                        showModal();
+                    }
+
+                    if (deleteBtn) {
+                        const studentId = deleteBtn.closest('.teacher-card').dataset.studentId;
+                        const student = allStudents.find(s => s['Student ID'] == studentId);
+                        showConfirmModal(
+                            'បញ្ជាក់ការលុប',
+                            `តើអ្នកពិតជាចង់លុបសិស្សឈ្មោះ "${student['Student Name']}" មែនទេ? ទិន្នន័យពិន្ទុ និងវត្តមានទាំងអស់នឹងត្រូវលុបដែរ។`,
+                            async () => {
+                                fullPageLoader.classList.remove('hidden');
+                                try {
+                                    await apiFetch('deleteStudent', { method: 'POST', body: { studentId } });
+                                    showToast('បានលុបសិស្សដោយជោគជ័យ។', 'success');
+                                    const { data: updatedStudents } = await apiFetch('getAllStudents');
+                                    allStudents = updatedStudents;
+                                    renderStudentList(allStudents);
+                                } catch (error) {
+                                    // Error toast is shown by apiFetch
+                                } finally {
+                                    fullPageLoader.classList.add('hidden');
+                                }
+                            }
+                        );
+                    }
+                });
+
+                studentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    fullPageLoader.classList.remove('hidden');
+
+                    const isNew = document.getElementById('is-new-student').value === 'true';
+                    const dobValue = document.getElementById('student-dob').value;
+                    const studentData = {
+                        'Student ID': document.getElementById('student-id').value,
+                        'Student Name': document.getElementById('student-fullname').value,
+                        'Gender': document.getElementById('student-gender').value,
+                        'Date of Birth': dobValue ? new Date(dobValue) : '',
+                        'ClassGrade': document.getElementById('student-classgrade').value,
+                    };
+
+                    try {
+                        await apiFetch('saveStudent', { method: 'POST', body: { studentData, isNew } });
+                        const successMessage = isNew ? 'បានបន្ថែមសិស្សថ្មីដោយជោគជ័យ។' : 'បានកែប្រែព័ត៌មានសិស្សដោយជោគជ័យ។';
+                        showToast(successMessage, 'success');
+                        hideModal();
+                        const { data: updatedStudents } = await apiFetch('getAllStudents');
+                        allStudents = updatedStudents;
+                        renderStudentList(allStudents);
+                    } catch (error) {
+                       // Error toast is shown by apiFetch
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
+
+
                 return container;
             }
 
