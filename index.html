@@ -643,6 +643,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            align-items: center;
+        }
+        .manage-header.teacher-header {
+            flex-wrap: nowrap;
         }
         .search-input-container {
             position: relative;
@@ -2212,7 +2216,7 @@
                 container.className = 'feature-page manage-page';
                 
                 const header = document.createElement('div');
-                header.className = 'manage-header';
+                header.className = 'manage-header teacher-header';
                 header.innerHTML = `
                     <div class="search-input-container">
                         <i class="fa-solid fa-search"></i>
