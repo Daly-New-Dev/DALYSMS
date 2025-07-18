@@ -2247,7 +2247,7 @@
                             <div class="item-card-photo">${photoHTML}</div>
                             <div class="item-card-details">
                                 <h4 style="margin-bottom: 3px;">${teacher.FullName}</h4>
-                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'} &nbsp;&bull;&nbsp; ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
+                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'} &nbsp;&nbsp; ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="item-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
@@ -2381,7 +2381,7 @@
                 const header = document.createElement('div');
                 header.className = 'manage-header';
                 
-                const uniqueClasses = [...new Set(students.map(s => s.ClassGrade).filter(Boolean))];
+                const uniqueClasses = [...new Set(students.map(s => s.ClassGrade).filter(Boolean))].sort();
 
                 header.innerHTML = `
                     <div class="search-input-container">
@@ -2419,7 +2419,7 @@
                             <div class="item-card-photo"><i class="fa-solid fa-user"></i></div>
                             <div class="item-card-details">
                                 <h4 style="margin-bottom: 3px;">${student['Student Name']}</h4>
-                                <p>អត្តលេខ: ${student.No} &nbsp;&bull;&nbsp; ថ្នាក់: ${student.ClassGrade || 'មិនមាន'}</p>
+                                <p>ភេទ: ${student.Gender || 'មិនមាន'} &nbsp;&nbsp; ថ្នាក់: ${student.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="item-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
