@@ -1034,7 +1034,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyTIFusYVKW0omSpISnW_YFABCXV4iiwk8BWU_U5ofLs6M1OsUsYYChQkJ2QRke9RY1g/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGQtCSaA-6_ZpFXJLq-YTxHA9hniLVUw33jFTimEm-8RTwMNU3fPMs--4bxEa73FBjxg/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -1430,6 +1430,11 @@
                             const { data: teachers } = await apiFetch('getAllTeachers');
                             pageContent = createManageTeachersPage(teachers);
                             pageTitle = 'គ្រប់គ្រងគ្រូ';
+                            break;
+                        case 'Manage Students':
+                            const { data: studentsForManage } = await apiFetch('getAllStudents');
+                            pageContent = createManageStudentsPage(studentsForManage);
+                            pageTitle = 'គ្រប់គ្រងសិស្ស';
                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -2314,6 +2319,13 @@
                 });
 
 
+                return container;
+            }
+
+             function createManageStudentsPage(students) {
+                const container = document.createElement('div');
+                // TODO: Build the Manage Students UI here
+                container.innerHTML = "Manage Students Page Placeholder";
                 return container;
             }
 
