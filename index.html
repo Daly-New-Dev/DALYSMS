@@ -1008,6 +1008,20 @@
             </div>
         </div>
 
+        <div id="confirm-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 380px; text-align: center;">
+                <div class="modal-body">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--error-color); margin-bottom: 1rem;"></i>
+                    <h3 id="confirm-modal-title" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></h3>
+                    <p id="confirm-modal-text" style="color: var(--text-secondary);"></p>
+                </div>
+                <div class="modal-footer" style="justify-content: center;">
+                    <button type="button" class="cancel-btn">បោះបង់</button>
+                    <button type="button" class="save-btn" id="confirm-modal-btn" style="background-color: var(--error-color);">យល់ព្រមលុប</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div id="toast-notification" class="toast"></div>
@@ -2175,7 +2189,7 @@
                         card.innerHTML = `
                             <div class="teacher-card-photo">${photoHTML}</div>
                             <div class="teacher-card-details">
-                                <h4>${teacher.FullName}</h4>
+                                <h4 style="margin-bottom: 3px;">${teacher.FullName}</h4>
                                 <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'} &nbsp;&bull;&nbsp; ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="teacher-card-actions">
@@ -2241,20 +2255,24 @@
 
                     if (deleteBtn) {
                         const username = deleteBtn.closest('.teacher-card').dataset.username;
-                        if (confirm(`តើអ្នកប្រាកដទេថាចង់លុបគ្រូឈ្មោះ "${username}"? សកម្មភាពនេះមិនអាចមិនធ្វើវិញបានទេ។`)) {
-                           fullPageLoader.classList.remove('hidden');
-                            try {
-                                await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
-                                showToast('បានលុបគ្រូដោយជោគជ័យ។', 'success');
-                                const { data: updatedTeachers } = await apiFetch('getAllTeachers');
-                                allTeachers = updatedTeachers;
-                                renderTeacherList(allTeachers);
-                            } catch (error) {
-                                // Error toast is shown by apiFetch
-                            } finally {
-                                fullPageLoader.classList.add('hidden');
+                        showConfirmModal(
+                            'បញ្ជាក់ការលុប',
+                            `តើអ្នកពិតជាចង់លុបគណនីគ្រូឈ្មោះ "${username}" មែនទេ?`,
+                            async () => {
+                                fullPageLoader.classList.remove('hidden');
+                                try {
+                                    await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
+                                    showToast('បានលុបគ្រូដោយជោគជ័យ។', 'success');
+                                    const { data: updatedTeachers } = await apiFetch('getAllTeachers');
+                                    allTeachers = updatedTeachers;
+                                    renderTeacherList(allTeachers);
+                                } catch (error) {
+                                    // Error toast is shown by apiFetch
+                                } finally {
+                                    fullPageLoader.classList.add('hidden');
+                                }
                             }
-                        }
+                        );
                     }
                 });
 
@@ -2298,6 +2316,33 @@
 
                 return container;
             }
+
+            // --- Confirm Modal Logic ---
+            const confirmModal = document.getElementById('confirm-modal');
+            const confirmModalTitle = document.getElementById('confirm-modal-title');
+            const confirmModalText = document.getElementById('confirm-modal-text');
+            const confirmModalBtn = document.getElementById('confirm-modal-btn');
+            let confirmCallback = null;
+
+            function showConfirmModal(title, text, onConfirm) {
+                confirmModalTitle.textContent = title;
+                confirmModalText.textContent = text;
+                confirmCallback = onConfirm;
+                confirmModal.classList.add('show');
+            }
+
+            function hideConfirmModal() {
+                confirmModal.classList.remove('show');
+                confirmCallback = null;
+            }
+
+            confirmModal.querySelector('.cancel-btn').addEventListener('click', hideConfirmModal);
+            confirmModalBtn.addEventListener('click', () => {
+                if (confirmCallback) {
+                    confirmCallback();
+                }
+                hideConfirmModal();
+            });
 
 
             // --- Event Listeners ---
