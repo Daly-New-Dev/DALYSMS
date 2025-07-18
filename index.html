@@ -2144,9 +2144,9 @@
                 header.innerHTML = `
                     <div class="search-input-container">
                         <i class="fa-solid fa-search"></i>
-                        <input type="text" id="teacher-search-input" placeholder="Search by name...">
+                        <input type="text" id="teacher-search-input" placeholder="ស្វែងរកឈ្មោះគ្រូ...">
                     </div>
-                    <button class="add-teacher-btn"><i class="fa-solid fa-plus"></i> Add New</button>
+                    <button class="add-teacher-btn"><i class="fa-solid fa-plus"></i> បន្ថែមគ្រូ</button>
                 `;
                 container.appendChild(header);
 
@@ -2159,7 +2159,7 @@
                 function renderTeacherList(filteredTeachers) {
                     teacherListContainer.innerHTML = '';
                     if (!filteredTeachers || filteredTeachers.length === 0) {
-                        teacherListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chalkboard-user"></i><h3>No Teachers Found</h3></div>`;
+                        teacherListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chalkboard-user"></i><h3>មិនមានទិន្នន័យគ្រូទេ</h3></div>`;
                         return;
                     }
                     filteredTeachers.forEach(teacher => {
@@ -2175,7 +2175,7 @@
                             <div class="teacher-card-photo">${photoHTML}</div>
                             <div class="teacher-card-details">
                                 <h4>${teacher.FullName}</h4>
-                                <p>@${teacher.Username} &bull; Teaches: ${teacher.Subject || 'N/A'}, Class: ${teacher.ClassGrade || 'N/A'}</p>
+                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'}, ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="teacher-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
@@ -2207,7 +2207,7 @@
                     teacherForm.reset();
                     document.getElementById('is-new-teacher').value = 'true';
                     document.getElementById('teacher-username').readOnly = false;
-                    modalTitle.textContent = 'Add New Teacher';
+                    modalTitle.textContent = 'បន្ថែមគ្រូថ្មី';
                     showModal();
                 });
 
@@ -2223,13 +2223,13 @@
                         const teacher = allTeachers.find(t => t.Username === username);
                         
                         document.getElementById('is-new-teacher').value = 'false';
-                        modalTitle.textContent = 'Edit Teacher';
+                        modalTitle.textContent = 'កែប្រែព័ត៌មានគ្រូ';
                         
                         document.getElementById('teacher-fullname').value = teacher.FullName || '';
                         document.getElementById('teacher-username').value = teacher.Username || '';
                         document.getElementById('teacher-username').readOnly = true;
                         document.getElementById('teacher-password').value = '';
-                        document.getElementById('teacher-password').placeholder = 'Leave blank to keep current password';
+                        document.getElementById('teacher-password').placeholder = 'ទុកឱ្យនៅទំនេរដើម្បីរក្សាពាក្យសម្ងាត់ចាស់';
                         document.getElementById('teacher-subject').value = teacher.Subject || '';
                         document.getElementById('teacher-classgrade').value = teacher.ClassGrade || '';
                         document.getElementById('teacher-photourl').value = teacher.PhotoURL || '';
@@ -2240,11 +2240,11 @@
 
                     if (deleteBtn) {
                         const username = deleteBtn.closest('.teacher-card').dataset.username;
-                        if (confirm(`Are you sure you want to delete teacher "${username}"? This action cannot be undone.`)) {
+                        if (confirm(`តើអ្នកប្រាកដទេថាចង់លុបគ្រូឈ្មោះ "${username}"? សកម្មភាពនេះមិនអាចមិនធ្វើវិញបានទេ។`)) {
                            fullPageLoader.classList.remove('hidden');
                             try {
                                 await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
-                                showToast('Teacher deleted successfully.', 'success');
+                                showToast('បានលុបគ្រូដោយជោគជ័យ។', 'success');
                                 const { data: updatedTeachers } = await apiFetch('getAllTeachers');
                                 allTeachers = updatedTeachers;
                                 renderTeacherList(allTeachers);
@@ -2274,14 +2274,15 @@
                     };
 
                     if (isNew && !teacherData.Password) {
-                        showToast('Password is required for new teachers.', 'error');
+                        showToast('ត្រូវតែបញ្ចូលពាក្យសម្ងាត់សម្រាប់គ្រូថ្មី។', 'error');
                         fullPageLoader.classList.add('hidden');
                         return;
                     }
 
                     try {
                         await apiFetch('saveTeacher', { method: 'POST', body: { teacherData, isNew } });
-                        showToast(`Teacher ${isNew ? 'added' : 'updated'} successfully.`, 'success');
+                        const successMessage = isNew ? 'បានបន្ថែមគ្រូថ្មីដោយជោគជ័យ។' : 'បានកែប្រែព័ត៌មានគ្រូដោយជោគជ័យ។';
+                        showToast(successMessage, 'success');
                         hideModal();
                         const { data: updatedTeachers } = await apiFetch('getAllTeachers');
                         allTeachers = updatedTeachers;
