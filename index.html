@@ -676,6 +676,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
         .teacher-list {
             display: flex;
@@ -964,44 +965,44 @@
         <div id="teacher-modal" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="teacher-modal-title">Add New Teacher</h3>
+                    <h3 id="teacher-modal-title"></h3>
                     <button class="modal-close-btn">&times;</button>
                 </div>
                 <form id="teacher-form">
                     <div class="modal-body">
                         <input type="hidden" id="is-new-teacher" value="true">
                          <div class="form-group">
-                            <label for="teacher-fullname">Full Name</label>
+                            <label for="teacher-fullname">ឈ្មោះពេញ</label>
                             <input type="text" id="teacher-fullname" required>
                         </div>
                         <div class="form-group">
-                            <label for="teacher-username">Username</label>
+                            <label for="teacher-username">ឈ្មោះគណនី</label>
                             <input type="text" id="teacher-username" required>
                         </div>
                         <div class="form-group">
-                            <label for="teacher-password">Password</label>
+                            <label for="teacher-password">ពាក្យសម្ងាត់</label>
                             <input type="password" id="teacher-password">
                         </div>
                         <div class="form-group">
-                            <label for="teacher-subject">Subject</label>
+                            <label for="teacher-subject">មុខវិជ្ជា</label>
                             <input type="text" id="teacher-subject">
                         </div>
                          <div class="form-group">
-                            <label for="teacher-classgrade">Assigned Class</label>
+                            <label for="teacher-classgrade">ថ្នាក់ដែលបានចាត់តាំង</label>
                             <input type="text" id="teacher-classgrade">
                         </div>
                          <div class="form-group">
-                            <label for="teacher-photourl">Photo URL (Optional)</label>
+                            <label for="teacher-photourl">URL រូបថត (ស្រេចចិត្ត)</label>
                             <input type="text" id="teacher-photourl">
                         </div>
                          <div class="form-group">
-                            <label for="teacher-email">Email (Optional)</label>
+                            <label for="teacher-email">អ៊ីមែល (ស្រេចចិត្ត)</label>
                             <input type="email" id="teacher-email">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="cancel-btn">Cancel</button>
-                        <button type="submit" class="save-btn">Save Changes</button>
+                        <button type="button" class="cancel-btn">បោះបង់</button>
+                        <button type="submit" class="save-btn">រក្សាទុក</button>
                     </div>
                 </form>
             </div>
@@ -2175,7 +2176,7 @@
                             <div class="teacher-card-photo">${photoHTML}</div>
                             <div class="teacher-card-details">
                                 <h4>${teacher.FullName}</h4>
-                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'}, ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
+                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'} &nbsp;&bull;&nbsp; ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="teacher-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
