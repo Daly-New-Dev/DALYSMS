@@ -839,6 +839,53 @@
             color: var(--text-secondary);
         }
 
+        /* --- Class Management Styles --- */
+        .class-management-page {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .class-card {
+            background: var(--secondary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            display: flex;
+            flex-direction: column;
+        }
+        .class-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .class-card-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .class-card-details p {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .class-card-details p i {
+            width: 20px;
+            text-align: center;
+        }
+        .class-card-actions button {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
 
     </style>
 </head>
@@ -1054,6 +1101,28 @@
                          <div class="form-group">
                             <label for="student-classgrade">ថ្នាក់</label>
                             <input type="text" id="student-classgrade">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn">បោះបង់</button>
+                        <button type="submit" class="save-btn">រក្សាទុក</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="assign-teacher-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="assign-teacher-modal-title"></h3>
+                    <button class="modal-close-btn">&times;</button>
+                </div>
+                <form id="assign-teacher-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="assign-class-name">
+                        <div class="form-group">
+                            <label for="teacher-select">ជ្រើសរើសគ្រូ</label>
+                            <select id="teacher-select"></select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1494,7 +1563,8 @@
                             break;
                         case 'Class Management':
                             const { data: classes } = await apiFetch('getAllClasses');
-                            pageContent = createClassManagementPage(classes);
+                            const { data: allTeachers } = await apiFetch('getAllTeachers');
+                            pageContent = createClassManagementPage(classes, allTeachers);
                             pageTitle = 'គ្រប់គ្រងថ្នាក់';
                             break;
                         default:
@@ -2562,6 +2632,101 @@
                         applyFilters();
                     } catch (error) {
                        // Error toast is shown by apiFetch
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
+
+
+                return container;
+            }
+
+            function createClassManagementPage(classes, allTeachers) {
+                const container = document.createElement('div');
+                container.className = 'feature-page class-management-page';
+
+                if (!classes || classes.length === 0) {
+                    container.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-school"></i><h3>មិនមានទិន្នន័យថ្នាក់ទេ</h3></div>`;
+                    return container;
+                }
+
+                classes.forEach(cls => {
+                    const card = document.createElement('div');
+                    card.className = 'class-card';
+                    card.dataset.className = cls.name;
+                    card.dataset.teacherUsername = cls.teacherUsername || '';
+
+                    const teacherInfo = cls.teacher
+                        ? `<i class="fa-solid fa-chalkboard-user"></i> ${cls.teacher}`
+                        : `<i class="fa-solid fa-chalkboard-user"></i> <span style="color: var(--error-color);">មិនទាន់មានគ្រូប្រចាំថ្នាក់</span>`;
+
+                    card.innerHTML = `
+                        <h3>ថ្នាក់ទី ${cls.name}</h3>
+                        <div class="class-card-details">
+                            <p><i class="fa-solid fa-users"></i> ${cls.studentCount} សិស្ស</p>
+                            <p>${teacherInfo}</p>
+                        </div>
+                        <div class="class-card-actions">
+                            <button class="assign-teacher-btn">ចាត់តាំងគ្រូ</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                const modal = document.getElementById('assign-teacher-modal');
+                const modalTitle = document.getElementById('assign-teacher-modal-title');
+                const assignForm = document.getElementById('assign-teacher-form');
+                const teacherSelect = document.getElementById('teacher-select');
+
+                function showModal() { modal.classList.add('show'); }
+                function hideModal() { modal.classList.remove('show'); }
+                
+                modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
+                modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
+                
+                container.addEventListener('click', (e) => {
+                    const assignBtn = e.target.closest('.assign-teacher-btn');
+                    if (assignBtn) {
+                        const card = assignBtn.closest('.class-card');
+                        const className = card.dataset.className;
+                        const currentTeacher = card.dataset.teacherUsername;
+                        
+                        document.getElementById('assign-class-name').value = className;
+                        modalTitle.textContent = `ចាត់តាំងគ្រូប្រចាំថ្នាក់ ${className}`;
+                        
+                        teacherSelect.innerHTML = '<option value="">-- មិនចាត់តាំង --</option>';
+                        allTeachers.forEach(teacher => {
+                            const option = document.createElement('option');
+                            option.value = teacher.Username;
+                            option.textContent = teacher.FullName;
+                            if (teacher.Username === currentTeacher) {
+                                option.selected = true;
+                            }
+                            teacherSelect.appendChild(option);
+                        });
+                        
+                        showModal();
+                    }
+                });
+
+                assignForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    fullPageLoader.classList.remove('hidden');
+                    
+                    const classGrade = document.getElementById('assign-class-name').value;
+                    const teacherUsername = teacherSelect.value;
+
+                    try {
+                        await apiFetch('assignTeacherToClass', {
+                            method: 'POST',
+                            body: { classGrade, teacherUsername }
+                        });
+                        showToast('បានចាត់តាំងគ្រូដោយជោគជ័យ', 'success');
+                        hideModal();
+                        // Refresh the page to show new data
+                        handleFeatureClick('Class Management');
+                    } catch(error) {
+                        // error handled by apiFetch
                     } finally {
                         fullPageLoader.classList.add('hidden');
                     }
