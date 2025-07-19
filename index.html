@@ -886,6 +886,47 @@
             cursor: pointer;
         }
 
+        /* --- School Settings Styles --- */
+        .settings-page {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--secondary-color);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        }
+        .settings-page .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .settings-page .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .settings-page .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .settings-page .form-group small {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        .settings-page .save-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
 
     </style>
 </head>
@@ -1159,8 +1200,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2bXGyCA8iAWcLVauw4E0xVxorMVEVDC13e9D91QsSOdrMrVzWveAt3VccooH2LXPEpA/exec";
-
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0UyQj05KTRQ_WSounxxEUXIquAxVtf5qvAiCFT2xV2-Ts0xnWwOgfsouuyhaie6MAgw/exec"
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
             const appContainer = document.getElementById('app-container');
@@ -1566,6 +1606,11 @@
                             const { data: allTeachers } = await apiFetch('getAllTeachers');
                             pageContent = createClassManagementPage(classes, allTeachers);
                             pageTitle = 'គ្រប់គ្រងថ្នាក់';
+                            break;
+                         case 'School Settings':
+                            const { data: settings } = await apiFetch('getSchoolSettings');
+                            pageContent = createSchoolSettingsPage(settings);
+                            pageTitle = 'ការកំណត់សាលា';
                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -2749,6 +2794,62 @@
                     }
                 });
 
+
+                return container;
+            }
+
+            function createSchoolSettingsPage(settings) {
+                const container = document.createElement('div');
+                container.className = 'feature-page settings-page';
+
+                container.innerHTML = `
+                    <form id="school-settings-form">
+                        <div class="form-group">
+                            <label for="school-name">ឈ្មោះសាលា</label>
+                            <input type="text" id="school-name" value="${settings.SchoolName || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="academic-year">ឆ្នាំសិក្សា</label>
+                            <input type="text" id="academic-year" value="${settings.AcademicYear || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="school-lat">School Latitude</label>
+                            <input type="text" id="school-lat" value="${settings.SchoolLatitude || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="school-lon">School Longitude</label>
+                            <input type="text" id="school-lon" value="${settings.SchoolLongitude || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="qr-distance">ចម្ងាយស្កេន QR (ម៉ែត្រ)</label>
+                            <input type="number" id="qr-distance" value="${settings.QRScanDistance || '150'}">
+                            <small>ចម្ងាយដែលអនុញ្ញាតឱ្យគ្រូអាចចុះវត្តមានបាន</small>
+                        </div>
+                        <button type="submit" class="save-btn">រក្សាទុកការកំណត់</button>
+                    </form>
+                `;
+
+                container.querySelector('#school-settings-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    fullPageLoader.classList.remove('hidden');
+
+                    const settingsData = {
+                        SchoolName: document.getElementById('school-name').value,
+                        AcademicYear: document.getElementById('academic-year').value,
+                        SchoolLatitude: document.getElementById('school-lat').value,
+                        SchoolLongitude: document.getElementById('school-lon').value,
+                        QRScanDistance: document.getElementById('qr-distance').value
+                    };
+
+                    try {
+                        await apiFetch('saveSchoolSettings', { method: 'POST', body: { settingsData } });
+                        showToast('បានរក្សាទុកការកំណត់ដោយជោគជ័យ។', 'success');
+                    } catch (error) {
+                        // error handled by apiFetch
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
 
                 return container;
             }
