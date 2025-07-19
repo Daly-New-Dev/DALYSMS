@@ -232,7 +232,7 @@
         .student-table tr:nth-child(even) { background-color: #f9fafb; }
         .student-table td:first-child { text-align: center; }
         
-        .student-list-summary {
+        .student-list-summary, .management-summary {
             margin-bottom: 1rem;
             padding: 1rem;
             background-color: var(--secondary-color);
@@ -1159,7 +1159,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_Xj5imhnqStnEMglwKLfwuuuqQR4xHQ-bROQjXAFSr_EQWN_WFRlSbyoL4jSZzWQUGg/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2bXGyCA8iAWcLVauw4E0xVxorMVEVDC13e9D91QsSOdrMrVzWveAt3VccooH2LXPEpA/exec";
 
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
@@ -2301,6 +2301,13 @@
                 `;
                 container.appendChild(header);
 
+                const summary = document.createElement('div');
+                summary.className = 'management-summary';
+                const totalTeachers = teachers.length;
+                // Assuming no gender field for teachers for now
+                summary.innerHTML = `<span>គ្រូសរុប: ${totalTeachers}នាក់</span>`;
+                container.appendChild(summary);
+
                 const teacherListContainer = document.createElement('div');
                 teacherListContainer.className = 'item-list';
                 container.appendChild(teacherListContainer);
@@ -2477,6 +2484,10 @@
                 `;
                 container.appendChild(header);
 
+                const summary = document.createElement('div');
+                summary.className = 'management-summary';
+                container.appendChild(summary);
+
                 const studentListContainer = document.createElement('div');
                 studentListContainer.className = 'item-list';
                 container.appendChild(studentListContainer);
@@ -2485,10 +2496,16 @@
 
                 function renderStudentList(filteredStudents) {
                     studentListContainer.innerHTML = '';
+
+                    const totalStudents = filteredStudents.length;
+                    const femaleStudents = filteredStudents.filter(s => String(s.Gender).trim() === 'ស្រី').length;
+                    summary.innerHTML = `<span>សិស្សសរុប: ${totalStudents}នាក់</span><span>សិស្សស្រី: ${femaleStudents}នាក់</span>`;
+
                     if (!filteredStudents || filteredStudents.length === 0) {
                         studentListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-users"></i><h3>មិនមានទិន្នន័យសិស្សទេ</h3></div>`;
                         return;
                     }
+
                     filteredStudents.forEach(student => {
                         const card = document.createElement('div');
                         card.className = 'item-card';
@@ -2532,7 +2549,7 @@
                 searchInput.addEventListener('input', applyFilters);
                 classFilter.addEventListener('change', applyFilters);
 
-                renderStudentList(allStudents);
+                applyFilters(); // Initial render
 
                 // Modal Handling
                 const modal = document.getElementById('student-modal');
@@ -2664,6 +2681,7 @@
                         <h3>ថ្នាក់ទី ${cls.name}</h3>
                         <div class="class-card-details">
                             <p><i class="fa-solid fa-users"></i> ${cls.studentCount} សិស្ស</p>
+                            <p><i class="fa-solid fa-venus"></i> ${cls.femaleStudentCount} សិស្សស្រី</p>
                             <p>${teacherInfo}</p>
                         </div>
                         <div class="class-card-actions">
