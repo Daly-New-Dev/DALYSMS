@@ -2304,7 +2304,6 @@
                 const summary = document.createElement('div');
                 summary.className = 'management-summary';
                 const totalTeachers = teachers.length;
-                // Assuming no gender field for teachers for now
                 summary.innerHTML = `<span>គ្រូសរុប: ${totalTeachers}នាក់</span>`;
                 container.appendChild(summary);
 
@@ -2674,14 +2673,14 @@
                     card.dataset.teacherUsername = cls.teacherUsername || '';
 
                     const teacherInfo = cls.teacher
-                        ? `<i class="fa-solid fa-chalkboard-user"></i> ${cls.teacher}`
+                        ? `<i class="fa-solid fa-chalkboard-user"></i> គ្រូបន្ទុកថ្នាក់: ${cls.teacher}`
                         : `<i class="fa-solid fa-chalkboard-user"></i> <span style="color: var(--error-color);">មិនទាន់មានគ្រូប្រចាំថ្នាក់</span>`;
 
                     card.innerHTML = `
                         <h3>ថ្នាក់ទី ${cls.name}</h3>
                         <div class="class-card-details">
-                            <p><i class="fa-solid fa-users"></i> ${cls.studentCount} សិស្ស</p>
-                            <p><i class="fa-solid fa-venus"></i> ${cls.femaleStudentCount} សិស្សស្រី</p>
+                            <p><i class="fa-solid fa-users"></i> សិស្សសរុប: ${cls.studentCount} នាក់</p>
+                            <p><i class="fa-solid fa-venus"></i> សិស្សស្រី: ${cls.femaleStudentCount} នាក់</p>
                             <p>${teacherInfo}</p>
                         </div>
                         <div class="class-card-actions">
