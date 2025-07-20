@@ -1237,6 +1237,7 @@
             const reloadButton = document.getElementById('reload-button');
 
             // --- Toast Notification ---
+            const toast = document.getElementById('toast-notification');
             function showToast(message, type = 'success') {
                 toast.textContent = message;
                 toast.className = `toast show ${type}`;
@@ -1273,7 +1274,10 @@
                     return result;
                 } catch (error) {
                     console.error(`API Fetch Error (${action}):`, error);
-                    showToast(error.message || 'Failed to fetch data.', 'error');
+                    // Do not show toast here for recordTeacherAttendance, as it has custom handling
+                    if (action !== 'recordTeacherAttendance') {
+                        showToast(error.message || 'Failed to fetch data.', 'error');
+                    }
                     throw error;
                 }
             }
@@ -1504,7 +1508,7 @@
                             }).then(result => {
                                 showToast(result.message, 'success');
                             }).catch(error => {
-                                // Error toast is already shown by apiFetch, no extra handling needed
+                                showToast(error.message, 'error');
                             });
                         },
                         (error) => {
