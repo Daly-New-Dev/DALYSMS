@@ -940,6 +940,45 @@
             border-radius: 12px;
             cursor: pointer;
         }
+        .photo-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-upload-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .photo-upload-actions button {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        #teacher-setting-photo-upload {
+            display: none;
+        }
 
     </style>
 </head>
@@ -1200,6 +1239,28 @@
                 </div>
             </div>
         </div>
+        
+        <div id="password-confirm-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 380px;">
+                <div class="modal-header">
+                    <h3>បញ្ជាក់ពាក្យសម្ងាត់</h3>
+                    <button class="modal-close-btn">&times;</button>
+                </div>
+                <form id="password-confirm-form">
+                    <div class="modal-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">ដើម្បីរក្សាទុកការផ្លាស់ប្តូរ សូមបញ្ចូលពាក្យសម្ងាត់បច្ចុប្បន្នរបស់អ្នក។</p>
+                        <div class="form-group">
+                            <label for="password-confirm-input">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
+                            <input type="password" id="password-confirm-input" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn">បោះបង់</button>
+                        <button type="submit" class="save-btn">បញ្ជាក់</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     </div>
 
@@ -1213,7 +1274,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznurO8NILSuvKIE7aAT_zmL1pKnLjyA__B99m6j0j1zBCwFQTySh2W29krJUHkUtpOiA/exec"
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkRkVsOrw5Im4Hj66txWTmX7FdIzDKis3qb_GnxI48vu7Waitf9cecdcEydwq0ZQWmeg/exec"
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
             const appContainer = document.getElementById('app-container');
@@ -1632,11 +1693,11 @@
                             pageTitle = 'គ្រប់គ្រងថ្នាក់';
                             break;
                          case 'School Settings':
-                            const { data: schoolSettings } = await apiFetch('getSchoolSettings');
-                            pageContent = createSchoolSettingsPage(schoolSettings);
+                            const { data: settings } = await apiFetch('getSchoolSettings');
+                            pageContent = createSchoolSettingsPage(settings);
                             pageTitle = 'ការកំណត់សាលា';
                             break;
-                        case 'Settings': // For Teacher
+                        case 'Settings': // Teacher Settings
                             pageContent = createTeacherSettingsPage(userData);
                             pageTitle = 'ការកំណត់គណនី';
                             break;
@@ -2890,7 +2951,7 @@
 
                 return container;
             }
-
+            
             function createTeacherSettingsPage(userData) {
                 const container = document.createElement('div');
                 container.className = 'feature-page settings-page';
@@ -2899,6 +2960,19 @@
                     <div class="settings-card">
                         <form id="teacher-info-form">
                             <h3>ព័ត៌មានផ្ទាល់ខ្លួន</h3>
+                             <div class="form-group">
+                                <label>រូបថត Profile</label>
+                                <div class="photo-upload-container">
+                                    <div class="photo-preview" id="photo-preview">
+                                        ${userData.PhotoURL ? `<img src="${userData.PhotoURL}" alt="Preview">` : '<i class="fa-solid fa-user-tie"></i>'}
+                                    </div>
+                                    <div class="photo-upload-actions">
+                                        <input type="file" id="teacher-setting-photo-upload" accept="image/*">
+                                        <button type="button" id="upload-photo-btn">ជ្រើសរើសរូបភាព</button>
+                                        <button type="button" id="remove-photo-btn">លុបរូបភាព</button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="teacher-setting-fullname">ឈ្មោះពេញ</label>
                                 <input type="text" id="teacher-setting-fullname" value="${userData.FullName || ''}" required>
@@ -2906,10 +2980,6 @@
                             <div class="form-group">
                                 <label for="teacher-setting-subject">មុខវិជ្ជា</label>
                                 <input type="text" id="teacher-setting-subject" value="${userData.Subject || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="teacher-setting-photourl">URL រូបថត</label>
-                                <input type="text" id="teacher-setting-photourl" value="${userData.PhotoURL || ''}">
                             </div>
                             <button type="submit" class="save-btn">រក្សាទុកព័ត៌មាន</button>
                         </form>
@@ -2934,36 +3004,56 @@
                     </div>
                 `;
 
+                const photoUploadInput = container.querySelector('#teacher-setting-photo-upload');
+                const photoPreview = container.querySelector('#photo-preview');
+                let photoBase64 = null;
+
+                container.querySelector('#upload-photo-btn').addEventListener('click', () => photoUploadInput.click());
+                
+                container.querySelector('#remove-photo-btn').addEventListener('click', () => {
+                    photoBase64 = null;
+                    photoUploadInput.value = ''; // Clear the file input
+                    photoPreview.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+                });
+
+                photoUploadInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            photoBase64 = e.target.result;
+                            photoPreview.innerHTML = `<img src="${photoBase64}" alt="Preview">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
                 // Handle personal info update
-                container.querySelector('#teacher-info-form').addEventListener('submit', async (e) => {
+                container.querySelector('#teacher-info-form').addEventListener('submit', (e) => {
                     e.preventDefault();
-                    fullPageLoader.classList.remove('hidden');
-                    
-                    const currentPass = prompt("To save changes, please enter your current password:");
-                    if (!currentPass) {
-                        fullPageLoader.classList.add('hidden');
-                        return;
-                    }
+                    showPasswordConfirmModal(async (currentPassword) => {
+                        fullPageLoader.classList.remove('hidden');
+                        const settingsData = {
+                            username: userData.Username,
+                            currentPassword: currentPassword,
+                            fullName: document.getElementById('teacher-setting-fullname').value,
+                            subject: document.getElementById('teacher-setting-subject').value,
+                            photoBase64: photoBase64,
+                            photoURL: photoBase64 === null ? '' : undefined // Send empty string to clear, undefined to ignore
+                        };
 
-                    const payload = {
-                        username: userData.Username,
-                        currentPassword: currentPass,
-                        fullName: document.getElementById('teacher-setting-fullname').value,
-                        subject: document.getElementById('teacher-setting-subject').value,
-                        photoURL: document.getElementById('teacher-setting-photourl').value
-                    };
-
-                    try {
-                        await apiFetch('updateTeacherSettings', { method: 'POST', body: payload });
-                        showToast('ព័ត៌មានត្រូវបានរក្សាទុកដោយជោគជ័យ។', 'success');
-                        // Refresh user data in local storage
-                        const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
-                        await refreshAndShowDashboard(userCredentials.username, userCredentials.password);
-                    } catch (error) {
-                        showToast(error.message, 'error');
-                    } finally {
-                        fullPageLoader.classList.add('hidden');
-                    }
+                        try {
+                            await apiFetch('updateTeacherSettings', { method: 'POST', body: { settingsData } });
+                            showToast('ព័ត៌មានត្រូវបានរក្សាទុកដោយជោគជ័យ។', 'success');
+                            const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
+                            await refreshAndShowDashboard(userCredentials.username, userCredentials.password);
+                            showDashboard();
+                        } catch (error) {
+                            showToast(error.message, 'error');
+                        } finally {
+                            fullPageLoader.classList.add('hidden');
+                        }
+                    });
                 });
 
                 // Handle password change
@@ -2977,23 +3067,22 @@
                         showToast('ពាក្យសម្ងាត់ថ្មីមិនตรงគ្នាទេ។', 'error');
                         return;
                     }
-                    if (newPassword.length < 6) {
-                        showToast('ពាក្យសម្ងាត់ថ្មីត្រូវមានយ៉ាងតិច 6 តួអក្សរ។', 'error');
+                    if (newPassword.length < 1) {
+                        showToast('សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី។', 'error');
                         return;
                     }
 
                     fullPageLoader.classList.remove('hidden');
-                    const payload = {
+                    const settingsData = {
                         username: userData.Username,
                         currentPassword: currentPassword,
                         newPassword: newPassword
                     };
 
                     try {
-                        await apiFetch('updateTeacherSettings', { method: 'POST', body: payload });
+                        await apiFetch('updateTeacherSettings', { method: 'POST', body: { settingsData } });
                         showToast('ពាក្យសម្ងាត់ត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ។', 'success');
                         e.target.reset(); // Clear the form
-                        // Update credentials in local storage for auto-login
                         const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
                         userCredentials.password = newPassword;
                         localStorage.setItem('schoolAppCredentials', JSON.stringify(userCredentials));
@@ -3008,7 +3097,7 @@
             }
 
 
-            // --- Confirm Modal Logic ---
+            // --- Confirm & Password Modals ---
             const confirmModal = document.getElementById('confirm-modal');
             const confirmModalTitle = document.getElementById('confirm-modal-title');
             const confirmModalText = document.getElementById('confirm-modal-text');
@@ -3033,6 +3122,33 @@
                     confirmCallback();
                 }
                 hideConfirmModal();
+            });
+
+            const passwordConfirmModal = document.getElementById('password-confirm-modal');
+            const passwordConfirmForm = document.getElementById('password-confirm-form');
+            const passwordConfirmInput = document.getElementById('password-confirm-input');
+            let passwordConfirmCallback = null;
+
+            function showPasswordConfirmModal(onConfirm) {
+                passwordConfirmCallback = onConfirm;
+                passwordConfirmForm.reset();
+                passwordConfirmModal.classList.add('show');
+                setTimeout(() => passwordConfirmInput.focus(), 100);
+            }
+
+            function hidePasswordConfirmModal() {
+                passwordConfirmModal.classList.remove('show');
+                passwordConfirmCallback = null;
+            }
+            
+            passwordConfirmModal.querySelector('.modal-close-btn').addEventListener('click', hidePasswordConfirmModal);
+            passwordConfirmModal.querySelector('.cancel-btn').addEventListener('click', hidePasswordConfirmModal);
+            passwordConfirmForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (passwordConfirmCallback) {
+                    passwordConfirmCallback(passwordConfirmInput.value);
+                }
+                hidePasswordConfirmModal();
             });
 
 
