@@ -886,37 +886,50 @@
             cursor: pointer;
         }
 
-        /* --- School Settings Styles --- */
+        /* --- School Settings & Teacher Settings Styles --- */
         .settings-page {
             max-width: 600px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .settings-card {
             background: var(--secondary-color);
             padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.07);
         }
-        .settings-page .form-group {
+        .settings-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .settings-card .form-group {
             margin-bottom: 1.5rem;
         }
-        .settings-page .form-group label {
+        .settings-card .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-        .settings-page .form-group input {
+        .settings-card .form-group input {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
         }
-        .settings-page .form-group small {
+        .settings-card .form-group small {
             color: var(--text-secondary);
             font-size: 0.8rem;
             margin-top: 0.5rem;
             display: block;
         }
-        .settings-page .save-btn {
+        .settings-card .save-btn {
             width: 100%;
             padding: 1rem;
             font-size: 1.1rem;
@@ -1200,7 +1213,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjhRrqhVv-5dSdEse_ZntYu2d_3vrnOuIebiUXVP3gtQYJm-rLylNSV0cmHWmFKY-2hg/exec"
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznurO8NILSuvKIE7aAT_zmL1pKnLjyA__B99m6j0j1zBCwFQTySh2W29krJUHkUtpOiA/exec"
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
             const appContainer = document.getElementById('app-container');
@@ -1619,9 +1632,13 @@
                             pageTitle = 'គ្រប់គ្រងថ្នាក់';
                             break;
                          case 'School Settings':
-                            const { data: settings } = await apiFetch('getSchoolSettings');
-                            pageContent = createSchoolSettingsPage(settings);
+                            const { data: schoolSettings } = await apiFetch('getSchoolSettings');
+                            pageContent = createSchoolSettingsPage(schoolSettings);
                             pageTitle = 'ការកំណត់សាលា';
+                            break;
+                        case 'Settings': // For Teacher
+                            pageContent = createTeacherSettingsPage(userData);
+                            pageTitle = 'ការកំណត់គណនី';
                             break;
                         default:
                             pageContent = createPlaceholderPage(feature);
@@ -2067,7 +2084,7 @@
                             showToast('Could not get export URL.', 'error');
                         }
                     } catch(e) {
-                        // Error is already shown by apiFetch
+                        showToast(e.message, 'error');
                     } finally {
                         exportBtn.textContent = 'ទាញយក';
                         exportBtn.disabled = false;
@@ -2820,33 +2837,34 @@
             function createSchoolSettingsPage(settings) {
                 const container = document.createElement('div');
                 container.className = 'feature-page settings-page';
-
                 container.innerHTML = `
-                    <form id="school-settings-form">
-                        <div class="form-group">
-                            <label for="school-name">ឈ្មោះសាលា</label>
-                            <input type="text" id="school-name" value="${settings.SchoolName || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label for="academic-year">ឆ្នាំសិក្សា</label>
-                            <input type="text" id="academic-year" value="${settings.AcademicYear || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label for="school-lat">School Latitude</label>
-                            <input type="text" id="school-lat" value="${settings.SchoolLatitude || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label for="school-lon">School Longitude</label>
-                            <input type="text" id="school-lon" value="${settings.SchoolLongitude || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label for="qr-distance">ចម្ងាយស្កេន QR (ម៉ែត្រ)</label>
-                            <input type="number" id="qr-distance" value="${settings.QRScanDistance || '150'}">
-                            <small>ចម្ងាយដែលអនុញ្ញាតឱ្យគ្រូអាចចុះវត្តមានបាន</small>
-                        </div>
-                        <button type="submit" class="save-btn">រក្សាទុកការកំណត់</button>
-                    </form>
-                `;
+                    <div class="settings-card">
+                        <form id="school-settings-form">
+                            <h3>ការកំណត់សាលា</h3>
+                            <div class="form-group">
+                                <label for="school-name">ឈ្មោះសាលា</label>
+                                <input type="text" id="school-name" value="${settings.SchoolName || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="academic-year">ឆ្នាំសិក្សា</label>
+                                <input type="text" id="academic-year" value="${settings.AcademicYear || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="school-lat">School Latitude</label>
+                                <input type="text" id="school-lat" value="${settings.SchoolLatitude || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="school-lon">School Longitude</label>
+                                <input type="text" id="school-lon" value="${settings.SchoolLongitude || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-distance">ចម្ងាយស្កេន QR (ម៉ែត្រ)</label>
+                                <input type="number" id="qr-distance" value="${settings.QRScanDistance || '150'}">
+                                <small>ចម្ងាយដែលអនុញ្ញាតឱ្យគ្រូអាចចុះវត្តមានបាន</small>
+                            </div>
+                            <button type="submit" class="save-btn">រក្សាទុកការកំណត់</button>
+                        </form>
+                    </div>`;
 
                 container.querySelector('#school-settings-form').addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -2872,6 +2890,123 @@
 
                 return container;
             }
+
+            function createTeacherSettingsPage(userData) {
+                const container = document.createElement('div');
+                container.className = 'feature-page settings-page';
+
+                container.innerHTML = `
+                    <div class="settings-card">
+                        <form id="teacher-info-form">
+                            <h3>ព័ត៌មានផ្ទាល់ខ្លួន</h3>
+                            <div class="form-group">
+                                <label for="teacher-setting-fullname">ឈ្មោះពេញ</label>
+                                <input type="text" id="teacher-setting-fullname" value="${userData.FullName || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="teacher-setting-subject">មុខវិជ្ជា</label>
+                                <input type="text" id="teacher-setting-subject" value="${userData.Subject || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="teacher-setting-photourl">URL រូបថត</label>
+                                <input type="text" id="teacher-setting-photourl" value="${userData.PhotoURL || ''}">
+                            </div>
+                            <button type="submit" class="save-btn">រក្សាទុកព័ត៌មាន</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <form id="change-password-form">
+                            <h3>ផ្លាស់ប្តូរពាក្យសម្ងាត់</h3>
+                            <div class="form-group">
+                                <label for="current-password">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
+                                <input type="password" id="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">ពាក្យសម្ងាត់ថ្មី</label>
+                                <input type="password" id="new-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
+                                <input type="password" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="save-btn">ផ្លាស់ប្តូរពាក្យសម្ងាត់</button>
+                        </form>
+                    </div>
+                `;
+
+                // Handle personal info update
+                container.querySelector('#teacher-info-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    fullPageLoader.classList.remove('hidden');
+                    
+                    const currentPass = prompt("To save changes, please enter your current password:");
+                    if (!currentPass) {
+                        fullPageLoader.classList.add('hidden');
+                        return;
+                    }
+
+                    const payload = {
+                        username: userData.Username,
+                        currentPassword: currentPass,
+                        fullName: document.getElementById('teacher-setting-fullname').value,
+                        subject: document.getElementById('teacher-setting-subject').value,
+                        photoURL: document.getElementById('teacher-setting-photourl').value
+                    };
+
+                    try {
+                        await apiFetch('updateTeacherSettings', { method: 'POST', body: payload });
+                        showToast('ព័ត៌មានត្រូវបានរក្សាទុកដោយជោគជ័យ។', 'success');
+                        // Refresh user data in local storage
+                        const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
+                        await refreshAndShowDashboard(userCredentials.username, userCredentials.password);
+                    } catch (error) {
+                        showToast(error.message, 'error');
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
+
+                // Handle password change
+                container.querySelector('#change-password-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const currentPassword = document.getElementById('current-password').value;
+                    const newPassword = document.getElementById('new-password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+
+                    if (newPassword !== confirmPassword) {
+                        showToast('ពាក្យសម្ងាត់ថ្មីមិនตรงគ្នាទេ។', 'error');
+                        return;
+                    }
+                    if (newPassword.length < 6) {
+                        showToast('ពាក្យសម្ងាត់ថ្មីត្រូវមានយ៉ាងតិច 6 តួអក្សរ។', 'error');
+                        return;
+                    }
+
+                    fullPageLoader.classList.remove('hidden');
+                    const payload = {
+                        username: userData.Username,
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    };
+
+                    try {
+                        await apiFetch('updateTeacherSettings', { method: 'POST', body: payload });
+                        showToast('ពាក្យសម្ងាត់ត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ។', 'success');
+                        e.target.reset(); // Clear the form
+                        // Update credentials in local storage for auto-login
+                        const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
+                        userCredentials.password = newPassword;
+                        localStorage.setItem('schoolAppCredentials', JSON.stringify(userCredentials));
+                    } catch (error) {
+                        showToast(error.message, 'error');
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                });
+
+                return container;
+            }
+
 
             // --- Confirm Modal Logic ---
             const confirmModal = document.getElementById('confirm-modal');
