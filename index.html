@@ -948,8 +948,8 @@
         <div id="login-container" class="login-container">
             <div class="login-header">
                 <img src="icons/appicon.PNG" alt="School Logo" class="login-logo">
-                <h1 class="login-school-name">វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
-                <h2 class="login-app-title">ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</h2>
+                <h1 id="login-school-name" class="login-school-name">ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</h1>
+                <h2 class="login-app-title">សូមចូលគណនីរបស់អ្នក</h2>
             </div>
             <div class="login-form-container">
                 <p class="login-prompt">សូមចូលគណនីរបស់អ្នកដើម្បីបន្ត</p>
@@ -985,8 +985,8 @@
                     </div>
                     <div class="school-title-block">
                         <div id="main-title-block">
-                            <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
-                            <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
+                            <h1 id="header-school-name">School Management System</h1>
+                            <p id="header-academic-year">Loading...</p>
                         </div>
                         <div id="page-title-block" class="hidden">
                             <h1 id="page-title"></h1>
@@ -1200,7 +1200,7 @@
         document.addEventListener('DOMContentLoaded', () => {
              // !!! IMPORTANT !!! 
              // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0UyQj05KTRQ_WSounxxEUXIquAxVtf5qvAiCFT2xV2-Ts0xnWwOgfsouuyhaie6MAgw/exec"
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjhRrqhVv-5dSdEse_ZntYu2d_3vrnOuIebiUXVP3gtQYJm-rLylNSV0cmHWmFKY-2hg/exec"
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
             const appContainer = document.getElementById('app-container');
@@ -1237,7 +1237,6 @@
             const reloadButton = document.getElementById('reload-button');
 
             // --- Toast Notification ---
-            const toast = document.getElementById('toast-notification');
             function showToast(message, type = 'success') {
                 toast.textContent = message;
                 toast.className = `toast show ${type}`;
@@ -1287,6 +1286,15 @@
                     const { username, password } = JSON.parse(userCredentials);
                     await refreshAndShowDashboard(username, password);
                 } else {
+                    // Fetch settings to display on login page even when not logged in
+                    try {
+                        const { data: settings } = await apiFetch('getSchoolSettings');
+                        const schoolName = settings.SchoolName || 'ប្រព័ន្ធគ្រប់គ្រងសាលារៀន';
+                        document.getElementById('login-school-name').textContent = schoolName;
+                    } catch (e) {
+                        console.error("Could not fetch settings for login page:", e);
+                        document.getElementById('login-school-name').textContent = 'ប្រព័ន្ធគ្រប់គ្រងសាលារៀន';
+                    }
                     loginContainer.classList.remove('hidden');
                     appContainer.classList.add('hidden');
                 }
@@ -1326,6 +1334,7 @@
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 loginError.classList.add('hidden');
+                checkSession(); // Re-run to fetch school name for login page
             }
             
             async function refreshAndShowDashboard(username, password) {
@@ -1344,6 +1353,15 @@
             }
 
             async function setupDashboard(data) {
+                // Update school name and academic year from settings
+                if (data.schoolSettings) {
+                    const schoolName = data.schoolSettings.SchoolName || 'School Management System';
+                    const academicYear = data.schoolSettings.AcademicYear || '';
+                    document.getElementById('header-school-name').textContent = schoolName;
+                    document.getElementById('login-school-name').textContent = schoolName;
+                    document.getElementById('header-academic-year').textContent = academicYear ? `ឆ្នាំសិក្សា ${academicYear}` : '';
+                }
+
                 userNameEl.textContent = data.FullName;
                 userPhotoContainer.innerHTML = '';
                 notificationBadge.classList.add('hidden');
