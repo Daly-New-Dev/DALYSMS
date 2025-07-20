@@ -1274,10 +1274,7 @@
                     return result;
                 } catch (error) {
                     console.error(`API Fetch Error (${action}):`, error);
-                    // Do not show toast here for recordTeacherAttendance, as it has custom handling
-                    if (action !== 'recordTeacherAttendance') {
-                        showToast(error.message || 'Failed to fetch data.', 'error');
-                    }
+                    // Let the calling function handle showing the toast for more specific messages
                     throw error;
                 }
             }
@@ -2310,6 +2307,8 @@
 
                 apiFetch('getTeacherQRSettings').then(response => {
                     generateQR(response.data.secret);
+                }).catch(err => {
+                    showToast('Could not load QR settings.', 'error');
                 });
 
                 container.querySelector('#save-qr-btn').addEventListener('click', () => {
@@ -2340,7 +2339,7 @@
                                 generateQR(response.data.newSecret);
                                 showToast('បានបង្កើត QR Code ថ្មីដោយជោគជ័យ!', 'success');
                             } catch(e) {
-                                // error is already shown by apiFetch
+                                showToast(e.message, 'error');
                             } finally {
                                 fullPageLoader.classList.add('hidden');
                             }
@@ -2474,7 +2473,7 @@
                                     allTeachers = updatedTeachers;
                                     renderTeacherList(allTeachers);
                                 } catch (error) {
-                                    // Error toast is shown by apiFetch
+                                    showToast(error.message, 'error');
                                 } finally {
                                     fullPageLoader.classList.add('hidden');
                                 }
@@ -2514,7 +2513,7 @@
                         allTeachers = updatedTeachers;
                         renderTeacherList(allTeachers);
                     } catch (error) {
-                       // Error toast is shown by apiFetch
+                       showToast(error.message, 'error');
                     } finally {
                         fullPageLoader.classList.add('hidden');
                     }
@@ -2680,7 +2679,7 @@
                                     allStudents = updatedStudents;
                                     applyFilters();
                                 } catch (error) {
-                                    // Error toast is shown by apiFetch
+                                    showToast(error.message, 'error');
                                 } finally {
                                     fullPageLoader.classList.add('hidden');
                                 }
@@ -2712,7 +2711,7 @@
                         allStudents = updatedStudents;
                         applyFilters();
                     } catch (error) {
-                       // Error toast is shown by apiFetch
+                       showToast(error.message, 'error');
                     } finally {
                         fullPageLoader.classList.add('hidden');
                     }
@@ -2808,7 +2807,7 @@
                         // Refresh the page to show new data
                         handleFeatureClick('Class Management');
                     } catch(error) {
-                        // error handled by apiFetch
+                        showToast(error.message, 'error');
                     } finally {
                         fullPageLoader.classList.add('hidden');
                     }
@@ -2865,7 +2864,7 @@
                         await apiFetch('saveSchoolSettings', { method: 'POST', body: { settingsData } });
                         showToast('បានរក្សាទុកការកំណត់ដោយជោគជ័យ។', 'success');
                     } catch (error) {
-                        // error is handled by apiFetch, but you could add specific logic here if needed
+                        showToast(error.message, 'error');
                     } finally {
                         fullPageLoader.classList.add('hidden');
                     }
