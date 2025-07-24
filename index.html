@@ -95,7 +95,7 @@
             text-align: center; font-weight: 600; padding: 0.75rem; border-radius: 8px;
         }
         .login-button-wrapper { display: flex; justify-content: center; }
-        
+
         #login-button {
             width: 100%; height: 56px; padding: 1rem; border: none;
             background: linear-gradient(45deg, #fff, #f9f9f9);
@@ -195,7 +195,7 @@
         .menu-item:hover { transform: translateY(-4px); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .menu-item i { font-size: clamp(1.8rem, 4vh, 2.2rem); color: var(--primary-color); margin-bottom: 0.75rem; }
         .menu-item span { font-size: clamp(0.7rem, 1.8vh, 0.75rem); font-weight: 600; color: var(--text-secondary); }
-        
+
         .qr-page-button {
             width: 100%;
             max-width: 300px;
@@ -225,13 +225,14 @@
         }
         .placeholder-page i { font-size: 4rem; margin-bottom: 1rem; color: var(--border-color); }
         .placeholder-page h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-dark); }
-        
+
         .student-table { width: 100%; border-collapse: collapse; background: var(--secondary-color); border-radius: 12px; overflow: hidden; }
         .student-table th, .student-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .student-table td:first-child { text-align: center; }
         .student-table th { background-color: var(--primary-color); color: var(--text-light); font-weight: 600; }
         .student-table tr:nth-child(even) { background-color: #f9fafb; }
-        .student-table td:first-child { text-align: center; }
-        
+        .student-table .student-main-row { cursor: pointer; }
+
         .student-list-summary, .management-summary {
             margin-bottom: 1rem;
             padding: 1rem;
@@ -255,7 +256,7 @@
             margin-top: 1rem; background: var(--primary-color);
             padding: 0.5rem 1.5rem; border-radius: 8px;
         }
-        
+
         .bottom-nav {
             background: var(--secondary-color); display: flex; justify-content: space-around;
             align-items: center;
@@ -269,7 +270,7 @@
         .nav-item.active, .nav-item:hover { color: var(--primary-color); }
         .nav-item i { font-size: 1.2rem; margin-bottom: 0.25rem; }
         .nav-item span { font-size: 0.7rem; font-weight: 600; }
-        
+
         #qr-scan-button-nav {
             width: 60px; height: 60px; background: linear-gradient(45deg, var(--primary-color), #4a70e0);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -297,7 +298,7 @@
         .toast.show { opacity: 1; bottom: 110px; }
         .toast.success { background-color: var(--success-color); }
         .toast.error { background-color: var(--error-color); }
-        
+
         .update-banner {
             position: fixed;
             bottom: 90px;
@@ -452,7 +453,7 @@
         .score-input-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .score-input-card {
             display: grid;
-            grid-template-columns: auto 1fr auto auto; 
+            grid-template-columns: auto 1fr auto auto;
             align-items: center;
             gap: 1rem;
             background-color: white;
@@ -462,10 +463,10 @@
         }
         .score-input-card .student-no { font-weight: 700; color: var(--text-secondary); }
         .score-input-card .student-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .score-input-card .student-gender { 
+        .score-input-card .student-gender {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-right: 30px; 
+            margin-right: 30px;
         }
         .score-input-card .score-input {
             width: 60px;
@@ -493,7 +494,7 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             transition: all 0.2s ease-in-out;
         }
-        
+
         /* --- Ranking Page Styles --- */
         .ranking-page { display: flex; flex-direction: column; gap: 1rem; }
         .ranking-selectors { display: flex; gap: 1rem; }
@@ -514,7 +515,7 @@
         .ranking-list td.student-name-cell { text-align: left; }
         .ranking-list td.total-score-cell { color: var(--primary-color); font-weight: bold; }
         .ranking-list td.rank-cell { color: var(--error-color); font-weight: bold; }
-        
+
         .score-details-row { display: none; }
         .score-details-row.active { display: table-row; }
         .score-details-cell { padding: 1rem !important; background-color: #f0f2f5; text-align: left; }
@@ -570,7 +571,7 @@
         .student-attendance-card.status-present { border-left-color: var(--status-present-color); }
         .student-attendance-card.status-absent { border-left-color: var(--status-absent-color); }
         .student-attendance-card.status-leave { border-left-color: var(--status-leave-color); }
-        
+
         .student-attendance-card .student-no {
             font-weight: 700;
             color: var(--text-secondary);
@@ -641,12 +642,18 @@
         }
         .manage-header {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Changed to wrap for better responsiveness */
             gap: 1rem;
             align-items: center;
         }
         .manage-header.teacher-header {
             flex-wrap: nowrap;
+        }
+        /* UI FIX: Ensure search and add button are on one line */
+        .manage-header.student-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
         }
         .search-input-container {
             position: relative;
@@ -683,6 +690,8 @@
         }
         .class-filter-container {
             flex-grow: 1;
+            /* UI FIX: Ensure filter takes full width in its grid area */
+            grid-column: 1 / -1;
         }
         #class-filter {
              width: 100%;
@@ -916,7 +925,7 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-        .settings-card .form-group input {
+        .settings-card .form-group input, .settings-card .form-group button {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid var(--border-color);
@@ -976,7 +985,8 @@
             cursor: pointer;
             font-weight: 600;
         }
-        #teacher-setting-photo-upload {
+        /* UI FIX: Hide the actual file input */
+        #teacher-setting-photo-upload, #student-photo-upload {
             display: none;
         }
 
@@ -1076,7 +1086,7 @@
                             <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
                             <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
                             <div class="menu-item" data-feature="Score Input"><i class="fa-solid fa-file-pen"></i><span>បញ្ចូលពិន្ទុ</span></div>
-                            <div class="menu-item" data-feature="Homework"><i class="fa-solid fa-book-medical"></i><span>កិច្ចការផ្ទះ</span></div>
+                            <div class="menu-item" data-feature="Manage Students"><i class="fa-solid fa-users-gear"></i><span>គ្រប់គ្រងសិស្ស</span></div>
                             <div class="menu-item" data-feature="Month Ranking"><i class="fa-solid fa-trophy"></i><span>ចំណាត់ថ្នាក់</span></div>
                             <div class="menu-item" data-feature="Report"><i class="fa-solid fa-file-invoice"></i><span>របាយការណ៍</span></div>
                             <div class="menu-item" data-feature="Timetable"><i class="fa-solid fa-calendar-days"></i><span>កាលវិភាគ</span></div>
@@ -1084,9 +1094,10 @@
                             <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
                         </div>
                         <div id="admin-menu" class="feature-menu hidden">
-                             <div class="menu-item" data-feature="Teacher QR Attendance"><i class="fa-solid fa-chalkboard-user"></i><span>QR វត្តមានគ្រូ</span></div>
+                             <div class="menu-item" data-feature="Teacher QR Attendance"><i class="fa-solid fa-chalkboard-user"></i><span>QR ស្កេន វត្តមានគ្រូ</span></div>
                             <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
                             <div class="menu-item" data-feature="Manage Teachers"><i class="fa-solid fa-user-gear"></i><span>គ្រប់គ្រងគ្រូ</span></div>
+                            <div class="menu-item" data-feature="Teacher List"><i class="fa-solid fa-users-rectangle"></i><span>បញ្ជីឈ្មោះគ្រូ</span></div>
                             <div class="menu-item" data-feature="Manage Students"><i class="fa-solid fa-users-gear"></i><span>គ្រប់គ្រងសិស្ស</span></div>
                             <div class="menu-item" data-feature="Class Management"><i class="fa-solid fa-school"></i><span>គ្រប់គ្រងថ្នាក់</span></div>
                             <div class="menu-item" data-feature="School Settings"><i class="fa-solid fa-sliders"></i><span>ការកំណត់សាលា</span></div>
@@ -1102,8 +1113,8 @@
                     <div id="qr-scan-button-nav">
                         <i class="fa-solid fa-qrcode"></i>
                     </div>
-                    <a class="nav-item" data-nav="notifications"> 
-                        <i class="fa-regular fa-bell"></i> 
+                    <a class="nav-item" data-nav="notifications">
+                        <i class="fa-regular fa-bell"></i>
                         <span>ការជូនដំណឹង</span>
                         <div id="notification-badge" class="notification-badge hidden"></div>
                     </a>
@@ -1111,7 +1122,7 @@
                 </nav>
             </div>
         </div>
-        
+
         <div id="qr-scanner-container" class="hidden">
             <div id="qr-reader"></div>
             <button id="close-qr-scanner">បិទម៉ាស៊ីនស្កេន</button>
@@ -1147,11 +1158,11 @@
                             <input type="text" id="teacher-classgrade">
                         </div>
                          <div class="form-group">
-                            <label for="teacher-photourl">URL រូបថត (ស្រេចចិត្ត)</label>
+                            <label for="teacher-photourl">URL រូបថត (មិនដាក់ក៏បាន)</label>
                             <input type="text" id="teacher-photourl">
                         </div>
                          <div class="form-group">
-                            <label for="teacher-email">អ៊ីមែល (ស្រេចចិត្ត)</label>
+                            <label for="teacher-email">អ៊ីមែល (មិនដាក់ក៏បាន)</label>
                             <input type="email" id="teacher-email">
                         </div>
                     </div>
@@ -1172,6 +1183,19 @@
                 <form id="student-form">
                     <div class="modal-body">
                         <input type="hidden" id="is-new-student" value="true">
+                        <div class="form-group">
+                            <label>រូបថតសិស្ស</label>
+                            <div class="photo-upload-container">
+                                <div class="photo-preview" id="student-photo-preview">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="photo-upload-actions">
+                                    <input type="file" id="student-photo-upload" accept="image/*">
+                                    <button type="button" id="student-upload-photo-btn">ជ្រើសរើសរូបភាព</button>
+                                    <button type="button" id="student-remove-photo-btn">លុបរូបភាព</button>
+                                </div>
+                            </div>
+                        </div>
                          <div class="form-group">
                             <label for="student-id">អត្តលេខសិស្ស</label>
                             <input type="text" id="student-id" required>
@@ -1239,7 +1263,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="password-confirm-modal" class="modal-overlay">
             <div class="modal-content" style="max-width: 380px;">
                 <div class="modal-header">
@@ -1248,7 +1272,7 @@
                 </div>
                 <form id="password-confirm-form">
                     <div class="modal-body">
-                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">ដើម្បីរក្សាទុកការផ្លាស់ប្តូរ សូមបញ្ចូលពាក្យសម្ងាត់បច្ចុប្បន្នរបស់អ្នក។</p>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">ដើម្បីរក្សាទុកការផ្លាស់ប្តូរ សូមបញ្ចូលពាក្យសម្ងាត់បច្ចុប្បន្នរបស់អ្នក</p>
                         <div class="form-group">
                             <label for="password-confirm-input">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
                             <input type="password" id="password-confirm-input" required>
@@ -1262,6 +1286,29 @@
             </div>
         </div>
 
+        <div id="prepare-period-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 380px;">
+                <div class="modal-header">
+                    <h3>រៀបចំទិន្នន័យថ្មី</h3>
+                    <button class="modal-close-btn">&times;</button>
+                </div>
+                <form id="prepare-period-form">
+                    <div class="modal-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">ជ្រើសរើសខែដើម្បីបង្កើត Spreadsheet ទិន្នន័យ</p>
+                        <div class="form-group">
+                            <label for="prepare-period-select">កាលវិភាគ</label>
+                            <select id="prepare-period-select" required></select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn">បោះបង់</button>
+                        <button type="submit" class="save-btn">រៀបចំ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
     </div>
 
     <div id="toast-notification" class="toast"></div>
@@ -1269,12 +1316,36 @@
         <span>កំណែថ្មីបានត្រៀមរួចរាល់</span>
         <button id="reload-button">ធ្វើបច្ចុប្បន្នភាព</button>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             // !!! IMPORTANT !!! 
-             // THIS URL MUST BE UPDATED AFTER YOU DEPLOY THE SCRIPT
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeImyvb3eoMIlc2ZzkXe9Cry0mV65VE2660YyfExLSIbxUyPZXw023m-tMCr9N1b5vUQ/exec"
+             // !!! IMPORTANT !!!
+             // PASTE YOUR NEW SCRIPT DEPLOYMENT URL HERE
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkO3B5SDttfOL9g8AMlEI6ZaMFdqzsy_h0q5fQ1tpo2O1Bo5rSq9T0Did5Vw82lm0ccw/exec";
+
+             // --- App State (Cache) ---
+            let appData = {
+                user: null,
+                students: [],
+                teachers: [],
+                classes: [],
+                subjects: [],
+                periods: [],
+                periodData: {} // For lazy loading period-specific data
+            };
+            
+            const KHMER_FEATURE_NAMES = {
+                'Announcements': 'សេចក្តីជូនដំណឹង',
+                'Attendance': 'វត្តមាន',
+                'Teacher QR Attendance': 'QR ស្កេន វត្តមានគ្រូ',
+                'Student List': 'បញ្ជីឈ្មោះសិស្ស',
+                'Score Input': 'ការបញ្ចូលពិន្ទុ',
+                'Manage Students': 'ការគ្រប់គ្រងសិស្ស',
+                'Month Ranking': 'ចំណាត់ថ្នាក់ប្រចាំខែ',
+                'Teacher List': 'បញ្ជីឈ្មោះគ្រូ',
+                'default': 'ទិន្នន័យ'
+            };
+
              // --- UI Elements ---
             const loginContainer = document.getElementById('login-container');
             const appContainer = document.getElementById('app-container');
@@ -1284,13 +1355,12 @@
             const loginError = document.getElementById('login-error');
             const fullPageLoader = document.getElementById('full-page-loader');
             const loaderSubText = document.getElementById('loader-sub-text');
-            
+
             const mainContent = document.getElementById('main-content');
             const dashboardContent = document.getElementById('dashboard-content');
             const featurePageContent = document.getElementById('feature-page-content');
             const backButton = document.getElementById('back-button');
-            const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
-            
+
             const userProfileBar = document.getElementById('user-profile-bar');
             const userPhotoContainer = document.getElementById('user-photo');
             const userNameEl = document.getElementById('user-name');
@@ -1305,11 +1375,6 @@
             const closeQrScannerButton = document.getElementById('close-qr-scanner');
             let html5QrCode;
 
-            // --- PWA Update Elements ---
-            let newWorker;
-            const updateNotification = document.getElementById('update-notification');
-            const reloadButton = document.getElementById('reload-button');
-
             // --- Toast Notification ---
             const toast = document.getElementById('toast-notification');
             function showToast(message, type = 'success') {
@@ -1320,6 +1385,10 @@
 
             // --- API Fetch Utility ---
             async function apiFetch(action, options = {}) {
+                if (SCRIPT_URL === "YOUR_NEW_SCRIPT_URL_GOES_HERE") {
+                    showToast("សូមធ្វើបច្ចុប្បន្នភាព SCRIPT_URL នៅក្នុង index.html", "error");
+                    throw new Error("SCRIPT_URL is not set");
+                }
                 try {
                     let response;
                     if (options.method === 'POST') {
@@ -1348,7 +1417,6 @@
                     return result;
                 } catch (error) {
                     console.error(`API Fetch Error (${action}):`, error);
-                    // Let the calling function handle showing the toast for more specific messages
                     throw error;
                 }
             }
@@ -1361,13 +1429,12 @@
                     const { username, password } = JSON.parse(userCredentials);
                     await refreshAndShowDashboard(username, password);
                 } else {
-                    // Fetch settings to display on login page even when not logged in
                     try {
                         const { data: settings } = await apiFetch('getSchoolSettings');
                         const schoolName = settings.SchoolName || 'ប្រព័ន្ធគ្រប់គ្រងសាលារៀន';
                         document.getElementById('login-school-name').textContent = schoolName;
                     } catch (e) {
-                        console.error("Could not fetch settings for login page:", e);
+                        console.error("មិនអាចទាញយកការកំណត់សម្រាប់ទំព័រចូលបានទេ:", e);
                         document.getElementById('login-school-name').textContent = 'ប្រព័ន្ធគ្រប់គ្រងសាលារៀន';
                     }
                     loginContainer.classList.remove('hidden');
@@ -1384,42 +1451,67 @@
                 loginButton.classList.add('loading');
                 loginSpinner.classList.remove('hidden');
                 loginError.classList.add('hidden');
-                
+
                 try {
                     const result = await apiFetch('login', { params: { username, password } });
                     localStorage.setItem('schoolAppCredentials', JSON.stringify({ username, password }));
-                    localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
-                    await setupDashboard(result.data);
+
+                    fullPageLoader.classList.remove('hidden');
+                    loaderSubText.textContent = "កំពុងទាញយកទិន្នន័យដំបូង...";
+                    const { data: initialData } = await apiFetch('getInitialData');
+                    appData = initialData;
+                    appData.user = result.data;
+                    appData.periodData = {}; // Initialize period cache
+                    localStorage.setItem('schoolAppData', JSON.stringify(appData));
+
+                    await setupDashboard(appData);
+                    await checkNewAnnouncements(); // Check announcements on first login
                     loginContainer.classList.add('hidden');
                     appContainer.classList.remove('hidden');
                 } catch (error) {
-                    loginError.textContent = 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ';
+                    loginError.textContent = error.message || 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ';
                     loginError.classList.remove('hidden');
                 } finally {
                     loginButton.disabled = false;
                     loginButton.classList.remove('loading');
                     loginSpinner.classList.add('hidden');
+                    fullPageLoader.classList.add('hidden');
                 }
             });
-            
+
             function handleLogout() {
                 localStorage.clear();
+                appData = {};
                 appContainer.classList.add('hidden');
                 loginContainer.classList.remove('hidden');
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 loginError.classList.add('hidden');
-                checkSession(); // Re-run to fetch school name for login page
+                checkSession();
             }
-            
+
             async function refreshAndShowDashboard(username, password) {
                 fullPageLoader.classList.remove('hidden');
                 loginContainer.classList.add('hidden');
                 try {
-                    const result = await apiFetch('login', { params: { username, password } });
-                    localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
-                    await setupDashboard(result.data);
-                    appContainer.classList.remove('hidden');
+                    const cachedData = localStorage.getItem('schoolAppData');
+                    if (cachedData) {
+                        appData = JSON.parse(cachedData);
+                        if (!appData.periodData) {
+                            appData.periodData = {};
+                        }
+                        await setupDashboard(appData);
+                        appContainer.classList.remove('hidden');
+                    } else {
+                        const result = await apiFetch('login', { params: { username, password } });
+                        const { data: initialData } = await apiFetch('getInitialData');
+                        appData = initialData;
+                        appData.user = result.data;
+                        appData.periodData = {};
+                        localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                        await setupDashboard(appData);
+                        appContainer.classList.remove('hidden');
+                    }
                 } catch(error) {
                     handleLogout();
                 } finally {
@@ -1427,28 +1519,50 @@
                 }
             }
 
+            async function refreshData() {
+                fullPageLoader.classList.remove('hidden');
+                loaderSubText.textContent = "កំពុងធ្វើបច្ចុប្បន្នភាពទិន្នន័យ...";
+                try {
+                    const { data: initialData } = await apiFetch('getInitialData');
+                    appData.students = initialData.students;
+                    appData.teachers = initialData.teachers;
+                    appData.classes = initialData.classes;
+                    appData.subjects = initialData.subjects;
+                    appData.periods = initialData.periods;
+                    appData.periodData = {}; // Clear period-specific cache
+                    localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                    await setupDashboard(appData);
+                    showToast("ការធ្វើបច្ចុប្បន្នភាពទិន្នន័យបានជោគជ័យ", "success");
+                } catch (e) {
+                    showToast("ការធ្វើបច្ចុប្បន្នភាពទិន្នន័យបានបរាជ័យ", "error");
+                } finally {
+                    fullPageLoader.classList.add('hidden');
+                }
+            }
+
+
             async function setupDashboard(data) {
-                // Update school name and academic year from settings
-                if (data.schoolSettings) {
-                    const schoolName = data.schoolSettings.SchoolName || 'School Management System';
-                    const academicYear = data.schoolSettings.AcademicYear || '';
+                const user = data.user;
+                if (user.schoolSettings) {
+                    const schoolName = user.schoolSettings.SchoolName || 'School Management System';
+                    const academicYear = user.schoolSettings.AcademicYear || '';
                     document.getElementById('header-school-name').textContent = schoolName;
                     document.getElementById('login-school-name').textContent = schoolName;
                     document.getElementById('header-academic-year').textContent = academicYear ? `ឆ្នាំសិក្សា ${academicYear}` : '';
                 }
 
-                userNameEl.textContent = data.FullName;
+                userNameEl.textContent = user.FullName;
                 userPhotoContainer.innerHTML = '';
                 notificationBadge.classList.add('hidden');
 
-                if (data.Role === 'admin') {
+                if (user.Role === 'admin') {
                     userRoleEl.textContent = "អ្នកគ្រប់គ្រងប្រព័ន្ធ";
                     teacherStats.classList.add('hidden');
                     teacherMenu.classList.add('hidden');
                     adminMenu.classList.remove('hidden');
-                    if (data.PhotoURL) {
+                    if (user.PhotoURL) {
                         const img = document.createElement('img');
-                        img.src = data.PhotoURL;
+                        img.src = user.PhotoURL;
                         img.alt = "Profile Photo";
                         userPhotoContainer.appendChild(img);
                     } else {
@@ -1457,13 +1571,13 @@
                         userPhotoContainer.appendChild(icon);
                     }
                 } else { // Teacher role
-                    userRoleEl.textContent = `ថ្នាក់: ${data.ClassGrade}`;
+                    userRoleEl.textContent = `ថ្នាក់: ${user.ClassGrade}`;
                     teacherStats.classList.remove('hidden');
                     teacherMenu.classList.remove('hidden');
                     adminMenu.classList.add('hidden');
-                    if (data.PhotoURL) {
+                    if (user.PhotoURL) {
                         const img = document.createElement('img');
-                        img.src = data.PhotoURL;
+                        img.src = user.PhotoURL;
                         img.alt = "Profile Photo";
                         userPhotoContainer.appendChild(img);
                     } else {
@@ -1471,14 +1585,14 @@
                         icon.className = 'fa-solid fa-user-tie';
                         userPhotoContainer.appendChild(icon);
                     }
-                    document.getElementById('total-students').textContent = data.TotalStudents || '-';
-                    document.getElementById('female-students').textContent = data.FemaleStudents || '-';
+                    const myClass = data.classes.find(c => c.name === user.ClassGrade);
+                    document.getElementById('total-students').textContent = myClass ? myClass.studentCount : '-';
+                    document.getElementById('female-students').textContent = myClass ? myClass.femaleStudentCount : '-';
                     await checkNewAnnouncements();
                 }
                  history.replaceState({ page: 'dashboard' }, 'Dashboard', '#dashboard');
             }
 
-            // --- Notification Logic ---
             async function checkNewAnnouncements() {
                 try {
                     const { data: announcements } = await apiFetch('getAnnouncements');
@@ -1491,7 +1605,7 @@
                     } else {
                         notificationBadge.classList.add('hidden');
                     }
-                } catch (error) { console.error("Could not check for new announcements:", error); }
+                } catch (error) { console.error("មិនអាចពិនិត្យសេចក្តីជូនដំណឹងថ្មីបានទេ:", error); }
             }
 
             function markAnnouncementsAsRead() {
@@ -1504,7 +1618,6 @@
                 });
             }
 
-            // --- Page Navigation ---
             function showDashboard() {
                 dashboardContent.classList.remove('hidden');
                 featurePageContent.innerHTML = '';
@@ -1516,7 +1629,7 @@
                 const homeNav = document.querySelector('.nav-item[data-nav="home"]');
                 if(homeNav) homeNav.classList.add('active');
             }
-            
+
             function showFeaturePage(title, content) {
                 document.getElementById('page-title').textContent = title;
                 featurePageContent.innerHTML = '';
@@ -1527,18 +1640,17 @@
                 document.getElementById('page-title-block').classList.remove('hidden');
                 backButton.classList.remove('hidden');
             }
-            
+
             async function navigateTo(page, push = true) {
                 if (push) {
                      history.pushState({ page: page }, '', `#${page}`);
                 }
 
-                // Update nav-item active state
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
                 let targetNav = 'home';
                 if (page === 'Announcements') targetNav = 'notifications';
                 else if (page === 'User Profile') targetNav = 'profile';
-                
+
                 const activeNavItem = document.querySelector(`.nav-item[data-nav="${targetNav}"]`);
                 if(activeNavItem) activeNavItem.classList.add('active');
 
@@ -1547,51 +1659,46 @@
                     showDashboard();
                     return;
                 }
-                
+
                 await handleFeatureClick(page);
             }
 
-
             backButton.addEventListener('click', () => history.back());
 
-            // --- QR Scanner Logic ---
             const onScanSuccess = (decodedText, decodedResult) => {
                 stopQrScanner();
+                try {
+                    const qrData = JSON.parse(decodedText);
+                    if (qrData.type === 'TEACHER_ATTENDANCE' && qrData.secret) {
+                        showToast('កំពុងផ្ទៀងផ្ទាត់ទីតាំង...', 'success');
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const { latitude, longitude } = position.coords;
 
-                if (decodedText.startsWith('TEACHER_ATTENDANCE:')) {
-                    const qrSecret = decodedText.split(':')[1];
-                    
-                    showToast('កំពុងផ្ទៀងផ្ទាត់ទីតាំង...', 'success');
-
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const { latitude, longitude } = position.coords;
-                            const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
-                            
-                            apiFetch('recordTeacherAttendance', {
-                                method: 'POST',
-                                body: {
-                                    qrSecret: qrSecret,
-                                    userId: userData.Username,
-                                    latitude: latitude,
-                                    longitude: longitude
-                                }
-                            }).then(result => {
-                                showToast(result.message, 'success');
-                            }).catch(error => {
-                                showToast(error.message, 'error');
-                            });
-                        },
-                        (error) => {
-                            showToast('មិនអាចកំណត់ទីតាំងបានទេ។ សូមបើក GPS។', 'error');
-                            console.error("Geolocation error:", error);
-                        },
-                        { enableHighAccuracy: true }
-                    );
-
-                } else {
-                    // Fallback for other QR codes if needed in the future
-                    showToast(`QR Code មិនត្រឹមត្រូវ: ${decodedText}`, 'error');
+                                apiFetch('recordTeacherAttendance', {
+                                    method: 'POST',
+                                    body: {
+                                        qrSecret: qrData.secret,
+                                        userId: appData.user.Username,
+                                        latitude: latitude,
+                                        longitude: longitude
+                                    }
+                                }).then(result => {
+                                    showToast(result.message, 'success');
+                                }).catch(error => {
+                                    showToast(error.message, 'error');
+                                });
+                            },
+                            (error) => {
+                                showToast('មិនអាចកំណត់ទីតាំងបានទេ សូមបើក GPS', 'error');
+                            },
+                            { enableHighAccuracy: true }
+                        );
+                    } else {
+                        showToast(`QR Code មិនត្រឹមត្រូវ`, 'error');
+                    }
+                } catch (e) {
+                     showToast(`QR Code មិនត្រឹមត្រូវ`, 'error');
                 }
             };
 
@@ -1608,8 +1715,7 @@
                     onScanSuccess,
                     onScanFailure
                 ).catch(err => {
-                    showToast('មិនអាចបើកកាមេរ៉ាបានទេ។', 'error');
-                    console.error("Cannot start QR scanner", err);
+                    showToast('មិនអាចបើកកាមេរ៉ាបានទេ', 'error');
                     stopQrScanner();
                 });
             }
@@ -1620,111 +1726,114 @@
                 }
                 qrScannerContainer.classList.add('hidden');
             }
-            
+
             closeQrScannerButton.addEventListener('click', stopQrScanner);
 
-
-            // --- Feature Implementations ---
             async function handleFeatureClick(feature) {
-                const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
-                if (!userData) return;
+                const user = appData.user;
+                if (!user) return;
 
-                fullPageLoader.classList.remove('hidden');
-                try {
-                    let pageContent, pageTitle;
-                    loaderSubText.textContent = `កំពុងទាញយក ${feature}...`;
-                    switch (feature) {
-                        case 'User Profile':
-                            pageContent = createProfilePage(userData);
-                            pageTitle = 'ព័ត៌មានផ្ទាល់ខ្លួន';
-                            break;
-                        case 'Announcements':
-                            const { data: announcements } = await apiFetch('getAnnouncements');
-                            pageContent = createAnnouncementsPage(announcements, userData.Role);
-                            pageTitle = 'សេចក្តីជូនដំណឹង';
-                            if (userData.Role === 'teacher') markAnnouncementsAsRead();
-                            break;
-                        case 'Student List':
-                             const { data: students } = await apiFetch('getStudentInfo');
-                             pageContent = createStudentListPage(students, userData.ClassGrade);
-                             pageTitle = 'បញ្ជីឈ្មោះសិស្ស';
-                             break;
-                        case 'Attendance':
-                             const { data: studentInfo } = await apiFetch('getStudentInfo');
-                             const { data: attendanceRecords } = await apiFetch('getAttendanceData', { params: { classGrade: userData.ClassGrade } });
-                             const studentsForAttendance = studentInfo.filter(s => s.ClassGrade === userData.ClassGrade);
-                             pageContent = createAttendancePage(studentsForAttendance, attendanceRecords, userData.ClassGrade);
-                             pageTitle = 'វត្តមាន';
-                             break;
-                        case 'Score Input':
-                             const { data: scoreStudentList } = await apiFetch('getStudentInfo');
-                             const studentsForScores = scoreStudentList.filter(s => s.ClassGrade === userData.ClassGrade);
-                             
-                             const defaultMonthForScore = new Date().toLocaleString('en-US', { month: 'short' });
-                             const { data: subjectList } = await apiFetch('getSubjectListForMonth', { params: { month: defaultMonthForScore } });
-                             
-                             pageContent = createScoreInputPage(studentsForScores, subjectList, userData.ClassGrade);
-                             pageTitle = 'បញ្ចូលពិន្ទុ';
-                             break;
-                        case 'Month Ranking':
-                             const defaultMonthForRank = new Date().toLocaleString('en-US', { month: 'short' });
-                             const { data: rankingData } = await apiFetch('getMonthRanking', { params: { classGrade: userData.ClassGrade, month: defaultMonthForRank } });
-                             pageContent = createRankingPage(rankingData.students, rankingData.subjects, userData.ClassGrade);
-                             pageTitle = 'ចំណាត់ថ្នាក់ប្រចាំខែ';
-                             break;
-                        case 'Teacher QR Attendance':
-                             pageContent = createTeacherQrPage();
-                             pageTitle = 'QR វត្តមានគ្រូ';
-                             break;
-                        case 'Manage Teachers':
-                            const { data: teachers } = await apiFetch('getAllTeachers');
-                            pageContent = createManageTeachersPage(teachers);
-                            pageTitle = 'គ្រប់គ្រងគ្រូ';
-                            break;
-                        case 'Manage Students':
-                            const { data: studentsForManage } = await apiFetch('getAllStudents');
-                            pageContent = createManageStudentsPage(studentsForManage);
-                            pageTitle = 'គ្រប់គ្រងសិស្ស';
-                            break;
-                        case 'Class Management':
-                            const { data: classes } = await apiFetch('getAllClasses');
-                            const { data: allTeachers } = await apiFetch('getAllTeachers');
-                            pageContent = createClassManagementPage(classes, allTeachers);
-                            pageTitle = 'គ្រប់គ្រងថ្នាក់';
-                            break;
-                         case 'School Settings':
-                            const { data: settings } = await apiFetch('getSchoolSettings');
-                            pageContent = createSchoolSettingsPage(settings);
-                            pageTitle = 'ការកំណត់សាលា';
-                            break;
-                        case 'Settings': // Teacher Settings
-                            pageContent = createTeacherSettingsPage(userData);
-                            pageTitle = 'ការកំណត់គណនី';
-                            break;
-                        default:
-                            pageContent = createPlaceholderPage(feature);
-                            pageTitle = feature;
-                            break;
-                    }
-                    if(pageContent) {
-                        showFeaturePage(pageTitle, pageContent);
-                    }
-                } catch (error) {
-                    showToast('Failed to load feature.', 'error');
-                    showDashboard();
-                } finally {
-                    fullPageLoader.classList.add('hidden');
-                    loaderSubText.textContent = "ប្រព័ន្ធកំពុងទាញយកទិន្នន័យ...";
+                let pageContent, pageTitle;
+                
+                const featureNameKhmer = KHMER_FEATURE_NAMES[feature] || KHMER_FEATURE_NAMES['default'];
+                loaderSubText.textContent = `កំពុងទាញយក${featureNameKhmer}...`;
+
+                switch (feature) {
+                    case 'User Profile':
+                        pageContent = createProfilePage(user);
+                        pageTitle = 'ព័ត៌មានផ្ទាល់ខ្លួន';
+                        break;
+                    case 'Manage Teachers':
+                        pageContent = createManageTeachersPage(appData.teachers);
+                        pageTitle = 'គ្រប់គ្រងគ្រូ';
+                        break;
+                    case 'Manage Students':
+                        pageContent = createManageStudentsPage(appData.students, user.Role !== 'admin');
+                        pageTitle = 'គ្រប់គ្រងសិស្ស';
+                        break;
+                    case 'Class Management':
+                        pageContent = createClassManagementPage(appData.classes, appData.teachers);
+                        pageTitle = 'គ្រប់គ្រងថ្នាក់';
+                        break;
+                    case 'Student List':
+                         pageContent = createStudentListPage(appData.students.filter(s => s.ClassGrade === user.ClassGrade));
+                         pageTitle = `បញ្ជីឈ្មោះសិស្សថ្នាក់ ${user.ClassGrade}`;
+                         break;
+                    case 'Settings':
+                        pageContent = createTeacherSettingsPage(user);
+                        pageTitle = 'ការកំណត់គណនី';
+                        break;
+                    case 'School Settings':
+                        pageContent = createAdminSettingsPage(user, user.schoolSettings);
+                        pageTitle = 'ការកំណត់សាលា';
+                        break;
+                    case 'Score Input':
+                         pageContent = createScoreInputPage(user.ClassGrade);
+                         pageTitle = `បញ្ចូលពិន្ទុថ្នាក់ ${user.ClassGrade}`;
+                         break;
+                    case 'Month Ranking':
+                         pageContent = createRankingPage(user.ClassGrade);
+                         pageTitle = `ចំណាត់ថ្នាក់ក្នុងថ្នាក់ ${user.ClassGrade}`;
+                         break;
+                    default:
+                        fullPageLoader.classList.remove('hidden');
+                        try {
+                            const now = new Date();
+                            const currentMonthShort = now.toLocaleString('en-US', { month: 'short' });
+                            const currentYear = now.getFullYear();
+                            const currentPeriodForAttendance = appData.periods.find(p => p.PeriodValue === `${currentMonthShort}${currentYear}`);
+
+                            switch (feature) {
+                                case 'Announcements':
+                                    const { data: announcements } = await apiFetch('getAnnouncements');
+                                    pageContent = createAnnouncementsPage(announcements, user.Role);
+                                    pageTitle = 'សេចក្តីជូនដំណឹង';
+                                    if (user.Role === 'teacher') markAnnouncementsAsRead();
+                                    break;
+                                case 'Attendance':
+                                     if (!currentPeriodForAttendance) throw new Error("រកមិនឃើញកាលវិភាគសម្រាប់ខែបច្ចុប្បន្នទេ សូមពិនិត្យមើល Sheet 'Periods'");
+
+                                     const attendanceCacheKey = `att_${user.ClassGrade}_${currentPeriodForAttendance.PeriodValue}`;
+                                     let attendanceData;
+                                     if (appData.periodData[attendanceCacheKey]) {
+                                         attendanceData = appData.periodData[attendanceCacheKey];
+                                     } else {
+                                         const { data } = await apiFetch('getAttendanceData', { params: { classGrade: user.ClassGrade, periodValue: currentPeriodForAttendance.PeriodValue } });
+                                         attendanceData = data;
+                                         appData.periodData[attendanceCacheKey] = attendanceData;
+                                     }
+                                     pageContent = createAttendancePage(attendanceData, user.ClassGrade, currentPeriodForAttendance.PeriodValue);
+                                     pageTitle = `វត្តមានថ្នាក់ ${user.ClassGrade}`;
+                                     break;
+                                case 'Teacher QR Attendance':
+                                     pageContent = createTeacherQrPage();
+                                     pageTitle = 'QR ស្កេន វត្តមានគ្រូ';
+                                     break;
+                                default:
+                                    pageContent = createPlaceholderPage(feature);
+                                    pageTitle = feature;
+                                    break;
+                            }
+                        } catch (error) {
+                            showToast(error.message || 'ការទាញយកមុខងារបានបរាជ័យ', 'error');
+                            showDashboard();
+                        } finally {
+                            fullPageLoader.classList.add('hidden');
+                        }
+                        break;
+                }
+                if(pageContent) {
+                    showFeaturePage(pageTitle, pageContent);
                 }
             }
-            
+
             function createPlaceholderPage(featureName) {
                 const container = document.createElement('div');
                 container.className = 'feature-page placeholder-page';
                 container.innerHTML = `
                     <i class="fa-solid fa-person-digging"></i>
                     <h3>មុខងារ "${featureName}"</h3>
-                    <p>កំពុងតែត្រូវបានបង្កើតឡើង។ សូមអរគុណ!</p>
+                    <p>កំពុងតែត្រូវបានបង្កើតឡើង សូមអរគុណ!</p>
                 `;
                 return container;
             }
@@ -1733,15 +1842,24 @@
                 const container = document.createElement('div');
                 container.className = 'feature-page profile-page-v2';
 
-                const photoHTML = userData.PhotoURL 
-                    ? `<img src="${userData.PhotoURL}" alt="Profile Photo">` 
+                const photoHTML = userData.PhotoURL
+                    ? `<img src="${userData.PhotoURL}" alt="Profile Photo">`
                     : `<i class="fa-solid ${userData.Role === 'admin' ? 'fa-user-shield' : 'fa-user-tie'}"></i>`;
 
-                const roleText = userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ' : `គ្រូបង្រៀនថ្នាក់ ${userData.ClassGrade}`;
+                const roleText = userData.Role === 'admin' ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ' : `គ្រូបង្រៀន`;
 
-                let teacherDetails = '';
+                let teacherDetails = `
+                    <div class="detail-item">
+                        <i class="icon fa-solid fa-id-card"></i>
+                        <div class="text-content"><span>ឈ្មោះគណនី</span><div>${userData.Username}</div></div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="icon fa-solid fa-envelope"></i>
+                        <div class="text-content"><span>អ៊ីមែល</span><div>${userData.Email || 'មិនមាន'}</div></div>
+                    </div>
+                `;
                 if (userData.Role === 'teacher') {
-                    teacherDetails = `
+                    teacherDetails += `
                         <div class="detail-item">
                             <i class="icon fa-solid fa-book-open-reader"></i>
                             <div class="text-content"><span>មុខវិជ្ជា</span><div>${userData.Subject || 'N/A'}</div></div>
@@ -1749,18 +1867,6 @@
                         <div class="detail-item">
                             <i class="icon fa-solid fa-chalkboard-user"></i>
                             <div class="text-content"><span>ថ្នាក់បង្រៀន</span><div>${userData.ClassGrade || 'N/A'}</div></div>
-                        </div>
-                        <div class="detail-item">
-                            <i class="icon fa-solid fa-users"></i>
-                            <div class="text-content"><span>សិស្សសរុប</span><div>${userData.TotalStudents || 0} នាក់</div></div>
-                        </div>
-                        <div class="detail-item">
-                            <i class="icon fa-solid fa-venus"></i>
-                            <div class="text-content"><span>សិស្សស្រី</span><div>${userData.FemaleStudents || 0} នាក់</div></div>
-                        </div>
-                        <div class="detail-item">
-                            <i class="icon fa-solid fa-envelope"></i>
-                            <div class="text-content"><span>អ៊ីមែល</span><div>${userData.Email || 'មិនមាន'}</div></div>
                         </div>
                     `;
                 }
@@ -1786,7 +1892,7 @@
             function createAnnouncementsPage(announcements, role) {
                 const container = document.createElement('div');
                 container.className = 'feature-page announcements-page';
-                
+
                 const style = document.createElement('style');
                 style.textContent = `
                     .announcements-page { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -1833,7 +1939,7 @@
                         <h3><i class="fa-solid fa-bullhorn"></i> បង្កើតសេចក្តីជូនដំណឹងថ្មី</h3>
                         <div class="form-group">
                             <label for="announcement-subject">ប្រធានបទ</label>
-                            <input type="text" id="announcement-subject" placeholder="ឧ: កិច្ចប្រជុំមាតាបិតា" required>
+                            <input type="text" id="announcement-subject" placeholder="ឧ: លិខិតអញ្ជើញចូលរួមប្រជុំប្រចាំខែ" required>
                         </div>
                         <div class="form-group">
                             <label for="announcement-message">ខ្លឹមសារ</label>
@@ -1842,24 +1948,24 @@
                         <div class="form-actions">
                             <button type="submit">
                                 <i class="fa-solid fa-paper-plane"></i>
-                                <span>ផ្ញើសារ</span>
+                                <span>ជូនដំណឹង</span>
                             </button>
                         </div>
                     `;
                     container.appendChild(form);
                 }
-                
+
                 const listContainer = document.createElement('div');
                 listContainer.className = 'announcement-list';
                 container.appendChild(listContainer);
 
                 if (!announcements || announcements.length === 0) {
-                    listContainer.innerHTML = '<p>មិនមានសេចក្តីជូនដំណឹងថ្មីទេ។</p>';
+                    listContainer.innerHTML = '<p>មិនមានសេចក្តីជូនដំណឹងថ្មីទេ</p>';
                 } else {
                     announcements.forEach(ann => {
                         const item = document.createElement('div');
                         item.className = 'announcement-item';
-                        
+
                         const subject = ann.subject || ann.Subject || 'គ្មានប្រធានបទ';
                         const message = ann.message || ann.Message || '';
                         const sender = ann.sender || ann.Sender || 'មិនស្គាល់';
@@ -1869,21 +1975,20 @@
                         const dateString = dateObj.toLocaleDateString('km-KH', { day: 'numeric', month: 'long', year: 'numeric' });
                         const timeString = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                         const dateTime = `${dateString}, ${timeString}`;
-                        
+
                         item.innerHTML = `<div class="announcement-subject">${subject}</div><p class="announcement-message">${message}</p><div class="announcement-meta">ដោយ: ${sender} - ${dateTime}</div>`;
                         listContainer.appendChild(item);
                     });
                 }
                 return container;
             }
-            
-            function createStudentListPage(allStudents, teacherClassGrade) {
+
+            function createStudentListPage(studentsInClass) {
                 const container = document.createElement('div');
                 container.className = 'feature-page';
-                
-                const studentsInClass = allStudents.filter(s => s.ClassGrade === teacherClassGrade);
+
                 const totalStudents = studentsInClass.length;
-                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'ស').length;
+                const femaleStudents = studentsInClass.filter(s => String(s.Gender).trim() === 'ស្រី').length;
 
                 const summary = document.createElement('div');
                 summary.className = 'student-list-summary';
@@ -1894,45 +1999,59 @@
                 container.appendChild(summary);
 
                 if (!studentsInClass || studentsInClass.length === 0) {
-                    container.innerHTML += `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
+                    container.innerHTML += `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ</p></div>`;
                     return container;
                 }
+
+                studentsInClass.sort((a, b) => a['Student Name'].localeCompare(b['Student Name']));
+
                 const table = document.createElement('table');
                 table.className = 'student-table';
                 table.innerHTML = `
                     <thead>
                         <tr>
                             <th>ល.រ.</th>
-                            <th>ឈ្មោះសិស្ស</th>
+                            <th style="text-align: left;">ឈ្មោះសិស្ស</th>
                             <th>ភេទ</th>
                             <th>ថ្ងៃខែឆ្នាំកំណើត</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ${studentsInClass.map((student, index) => {
-                            let dob = student['Date of Birth'];
-                            if (dob && typeof dob === 'string' && dob.includes('T')) {
-                                try {
-                                    const date = new Date(dob);
-                                    if (!isNaN(date.getTime())) {
-                                        dob = new Intl.DateTimeFormat('en-GB').format(date);
-                                    }
-                                } catch (e) { console.error("Could not parse date:", dob); }
-                            }
-                            return `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${student['Student Name']}</td>
-                                <td>${student.Gender}</td>
-                                <td>${dob}</td>
-                            </tr>
-                        `}).join('')}
-                    </tbody>
+                    <tbody></tbody>
                 `;
-                container.appendChild(table);
+                const tableBody = table.querySelector('tbody');
 
+                studentsInClass.forEach((student, index) => {
+                    const mainRow = tableBody.insertRow();
+                    mainRow.className = 'student-main-row';
+                    
+                    const dobDisplay = student['Date of Birth'] || '';
+
+                    mainRow.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td style="text-align: left;">${student['Student Name']}</td>
+                        <td>${student.Gender}</td>
+                        <td>${dobDisplay}</td>
+                    `;
+
+                    const detailsRow = tableBody.insertRow();
+                    detailsRow.className = 'score-details-row'; // Reuse ranking page style
+                    const detailsCell = detailsRow.insertCell();
+                    detailsCell.colSpan = 4;
+                    detailsCell.innerHTML = `
+                        <div class="score-details-grid">
+                            <span>អត្តលេខ: <strong>${student.No}</strong></span>
+                        </div>
+                    `;
+
+                    mainRow.addEventListener('click', () => {
+                        detailsRow.classList.toggle('active');
+                    });
+                });
+
+                container.appendChild(table);
                 return container;
             }
+
 
             function toKhmerDateString(date) {
                 const days = ['អាទិត្យ', 'ច័ន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
@@ -1949,7 +2068,7 @@
                 return `ថ្ងៃ${dayOfWeek} ទី${dayOfMonth} ខែ${month} ឆ្នាំ${year}`;
             }
 
-            function createAttendancePage(students, attendanceRecords, classGrade) {
+            function createAttendancePage(attendanceRecords, classGrade, periodValue) {
                 const container = document.createElement('div');
                 container.className = 'attendance-page';
 
@@ -1963,27 +2082,24 @@
 
                 const list = document.createElement('div');
                 list.className = 'student-attendance-list';
-                
-                if (!students || students.length === 0) {
-                    list.innerHTML = `<div class="placeholder-page"><i class="fa-solid fa-users-slash"></i><h3>មិនមានសិស្ស</h3><p>មិនមានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ។</p></div>`;
-                } else {
-                    students.forEach((student, index) => {
-                        if (!student || !student['Student Name']) {
-                            return; 
-                        }
 
+                if (!attendanceRecords || attendanceRecords.length === 0) {
+                    list.innerHTML = `<div class="placeholder-page" style="padding-top: 2rem;"><i class="fa-solid fa-calendar-times"></i><h3>មិនមានទិន្នន័យ</h3><p>ទិន្នន័យសម្រាប់កាលវិភាគនេះមិនទាន់បានរៀបចំទេ សូមទាក់ទងអ្នកគ្រប់គ្រង</p></div>`;
+                } else {
+                    attendanceRecords.sort((a, b) => a['Student Name'].localeCompare(b['Student Name']));
+
+                    attendanceRecords.forEach((student, index) => {
                         const card = document.createElement('div');
                         card.className = 'student-attendance-card';
-                        card.dataset.studentId = student['Student Name']; 
-                        
+                        card.dataset.studentId = student['Student Name'];
+
                         const dayOfMonth = today.getDate();
-                        const record = attendanceRecords.find(r => r['Student Name'] === student['Student Name']);
-                        let statusFromServer = record ? record[dayOfMonth.toString()] : 'P';
-                        
+                        const statusFromServer = student[dayOfMonth.toString()] || 'P';
+
                         let activeStatus = 'មក';
                         if (statusFromServer === 'A') activeStatus = 'អវ';
                         else if (statusFromServer === 'L') activeStatus = 'ច្បាប់';
-                        
+
                         let statusClass = 'present';
                         if (activeStatus === 'អវ') statusClass = 'absent';
                         else if (activeStatus === 'ច្បាប់') statusClass = 'leave';
@@ -2012,17 +2128,15 @@
                     if (!button) return;
 
                     const card = button.closest('.student-attendance-card');
-                    
-                    card.querySelectorAll('.attendance-btn').forEach(btn => btn.classList.remove('active', 'present', 'absent', 'leave'));
-                    
+                    card.querySelectorAll('.attendance-btn').forEach(btn => btn.classList.remove('active'));
+
                     const status = button.dataset.status;
-                    let statusClass = '';
-                    if (status === 'មក') statusClass = 'present';
-                    else if (status === 'អវ') statusClass = 'absent';
+                    let statusClass = 'present';
+                    if (status === 'អវ') statusClass = 'absent';
                     else if (status === 'ច្បាប់') statusClass = 'leave';
 
-                    button.classList.add('active', statusClass);
-                    
+                    button.classList.add('active');
+
                     card.classList.remove('status-present', 'status-absent', 'status-leave');
                     card.classList.add(`status-${statusClass}`);
                 });
@@ -2039,59 +2153,39 @@
                         const status = activeBtn ? activeBtn.dataset.status : 'មក';
                         attendanceData.push({ studentId, status });
                     });
-                    
-                    saveBulkAttendance(attendanceData, classGrade, submitBtn);
+
+                    saveBulkAttendance(attendanceData, classGrade, periodValue, submitBtn);
                 });
 
                 return container;
             }
-            
-            function createScoreInputPage(students, subjects, classGrade) {
+
+            function createScoreInputPage(classGrade) {
                 const container = document.createElement('div');
                 container.className = 'feature-page score-input-page';
 
-                const monthOptions = [
-                    { value: 'Jan', text: 'មករា' }, { value: 'Feb', text: 'កុម្ភៈ' },
-                    { value: 'Mar', text: 'មីនា' }, { value: 'Apr', text: 'មេសា' },
-                    { value: 'May', text: 'ឧសភា' }, { value: 'Jun', text: 'មិថុនា' },
-                    { value: 'Jul', text: 'កក្កដា' }, { value: 'Aug', text: 'សីហា' },
-                    { value: 'Sep', text: 'កញ្ញា' }, { value: 'Oct', text: 'តុលា' },
-                    { value: 'Nov', text: 'វិច្ឆិកា' }, { value: 'Dec', text: 'ធ្នូ' },
-                    { value: 'S1_Final', text: 'ប្រឡងឆមាសទី១' },
-                    { value: 'S2_Final', text: 'ប្រឡងឆមាសទី២' },
-                ];
-                
                 let selectorsHTML = `
                     <div class="score-export-section">
-                         <select id="export-month-selector">
-                            <option value="" disabled selected>ជ្រើសរើសខែទាញយក</option>
-                            ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
-                        </select>
+                         <select id="export-period-selector">
+                             <option value="" disabled selected>ជ្រើសរើសខែដើម្បីទាញយក</option>
+                             ${appData.periods.map(p => `<option value="${p.PeriodValue}">${p.PeriodName}</option>`).join('')}
+                         </select>
                         <button id="export-scores-btn">ទាញយក</button>
                     </div>
                     <div class="score-selectors">
-                        <select id="month-selector">
+                        <select id="period-selector">
                             <option value="" disabled selected>ជ្រើសរើសខែ</option>
-                            ${monthOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+                            ${appData.periods.map(p => `<option value="${p.PeriodValue}">${p.PeriodName}</option>`).join('')}
                         </select>
                         <select id="subject-selector">
                              <option value="" disabled selected>ជ្រើសរើសមុខវិជ្ជា</option>
-                            ${subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
+                            ${appData.subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
                         </select>
                     </div>
                 `;
-                
+
                 let studentListHTML = '<div class="score-input-list">';
-                students.forEach((student, index) => {
-                    studentListHTML += `
-                        <div class="score-input-card" data-student-id="${student['Student Name']}">
-                            <span class="student-no">${index + 1}</span>
-                            <span class="student-name">${student['Student Name']}</span>
-                            <span class="student-gender">${student.Gender}</span>
-                            <input type="number" class="score-input" placeholder="ពិន្ទុ">
-                        </div>
-                    `;
-                });
+                studentListHTML += `<div class="placeholder-page" style="padding-top: 2rem;"><i class="fa-solid fa-arrow-up"></i><h3>សូមជ្រើសរើសខែ និងមុខវិជ្ជា</h3><p>ជ្រើសរើសខែ និងមុខវិជ្ជាដើម្បីចាប់ផ្តើមបញ្ចូលពិន្ទុ</p></div>`;
                 studentListHTML += '</div>';
 
                 const submitHTML = `
@@ -2125,24 +2219,22 @@
 
                 container.querySelector('#export-scores-btn').addEventListener('click', async (event) => {
                     const exportBtn = event.target;
-                    const exportMonth = container.querySelector('#export-month-selector').value;
-                    if (!exportMonth) {
+                    const periodValue = container.querySelector('#export-period-selector').value;
+                    if (!periodValue) {
                         showToast('សូមជ្រើសរើសខែសម្រាប់ទាញយក', 'error');
                         return;
                     }
-                    
+
                     exportBtn.textContent = 'កំពុងទាញយក...';
                     exportBtn.disabled = true;
-                    
-                    const sheetName = `Scores_${exportMonth}`;
-                    
+
                     try {
-                        const { data } = await apiFetch('exportScoresByClass', { params: { sheetName, classGrade } });
+                        const { data } = await apiFetch('exportScoresByClass', { params: { periodValue, classGrade } });
                         if (data.url) {
                             window.open(data.url, '_blank');
                             showToast('ទាញយកជោគជ័យ!', 'success');
                         } else {
-                            showToast('Could not get export URL.', 'error');
+                            showToast('មិនអាចទទួលបាន URL សម្រាប់ទាញយកទេ', 'error');
                         }
                     } catch(e) {
                         showToast(e.message, 'error');
@@ -2152,30 +2244,62 @@
                     }
                 });
 
+                async function updateStudentListForScores() {
+                    const periodValue = container.querySelector('#period-selector').value;
+                    if (!periodValue) return;
+
+                    fullPageLoader.classList.remove('hidden');
+                    try {
+                         const cacheKey = `scores_${classGrade}_${periodValue}`;
+                         let rankingData;
+                         if(appData.periodData[cacheKey]) {
+                           rankingData = appData.periodData[cacheKey];
+                         } else {
+                           const { data } = await apiFetch('getPeriodRanking', { params: { classGrade, periodValue, sortBy: 'name' } });
+                           rankingData = data;
+                           appData.periodData[cacheKey] = rankingData;
+                         }
+
+                         rankingData.students.sort((a, b) => a['Student Name'].localeCompare(b['Student Name']));
+
+                         const newStudentList = container.querySelector('.score-input-list');
+                         newStudentList.innerHTML = '';
+                         if (!rankingData.students || rankingData.students.length === 0) {
+                             newStudentList.innerHTML = `<div class="placeholder-page" style="padding-top: 2rem;"><i class="fa-solid fa-calendar-times"></i><h3>មិនមានទិន្នន័យ</h3><p>ទិន្នន័យសម្រាប់ខែនេះមិនទាន់បានរៀបចំទេ សូមទាក់ទងអ្នកគ្រប់គ្រងប្រព័ន្ធ</p></div>`;
+                         } else {
+                             rankingData.students.forEach((student, index) => {
+                                 newStudentList.innerHTML += `
+                                     <div class="score-input-card" data-student-id="${student['Student Name']}">
+                                         <span class="student-no">${index + 1}</span>
+                                         <span class="student-name">${student['Student Name']}</span>
+                                         <span class="student-gender">${student.Gender}</span>
+                                         <input type="number" class="score-input" placeholder="ពិន្ទុ">
+                                     </div>
+                                 `;
+                             });
+                         }
+                    } catch (e) {
+                        showToast(e.message, 'error');
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
+                    }
+                }
+
+                container.querySelector('#period-selector').addEventListener('change', updateStudentListForScores);
+
+
                 return container;
             }
-            
-            function createRankingPage(students, subjects, classGrade) {
+
+            function createRankingPage(classGrade) {
                 const container = document.createElement('div');
                 container.className = 'feature-page ranking-page';
-                
-                const monthOptions = [
-                    { value: 'Jan', text: 'មករា' }, { value: 'Feb', text: 'កុម្ភៈ' },
-                    { value: 'Mar', text: 'មីនា' }, { value: 'Apr', text: 'មេសា' },
-                    { value: 'May', text: 'ឧសភា' }, { value: 'Jun', text: 'មិថុនា' },
-                    { value: 'Jul', text: 'កក្កដា' }, { value: 'Aug', text: 'សីហា' },
-                    { value: 'Sep', text: 'កញ្ញា' }, { value: 'Oct', text: 'តុលា' },
-                    { value: 'Nov', text: 'វិច្ឆិកា' }, { value: 'Dec', text: 'ធ្នូ' },
-                    { value: 'S1_Final', text: 'ឆមាសទី១' },
-                    { value: 'S2_Final', text: 'ឆមាសទី២' },
-                ];
-                
-                const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
 
                 let selectorsHTML = `
                     <div class="ranking-selectors">
-                        <select id="ranking-month-selector">
-                            ${monthOptions.map(opt => `<option value="${opt.value}" ${opt.value === currentMonth ? 'selected' : ''}>${opt.text}</option>`).join('')}
+                        <select id="ranking-period-selector">
+                             <option value="" disabled selected>ជ្រើសរើសខែ</option>
+                            ${appData.periods.map(p => `<option value="${p.PeriodValue}">${p.PeriodName}</option>`).join('')}
                         </select>
                         <select id="ranking-sort-selector">
                             <option value="rank">តម្រៀបចំណាត់ថ្នាក់</option>
@@ -2191,25 +2315,26 @@
                             <tr>
                                 <th>ល.រ</th>
                                 <th style="text-align: left;">ឈ្មោះសិស្ស</th>
-                                <th>ភេទ</th>
-                                <th>សរុប</th>
+                                <th>ពិន្ទុសរុប</th>
                                 <th>ចំណាត់ថ្នាក់</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                           <tr><td colspan="4"><div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-arrow-up"></i><h3>សូមជ្រើសរើសខែ</h3><p>ជ្រើសរើសខែដើម្បីមើលចំណាត់ថ្នាក់</p></div></td></tr>
+                        </tbody>
                     </table>
                 `;
                 const tableBody = tableContainer.querySelector('tbody');
-                
-                function renderList(data) {
+
+                function renderList(data, subjectList) {
                     tableBody.innerHTML = '';
                      if (!data || data.length === 0) {
-                        const row = tableBody.insertRow();
-                        const cell = row.insertCell();
-                        cell.colSpan = 5;
-                        cell.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>No Ranking Data</h3><p>No scores have been entered for this month.</p></div>`;
-                        return;
-                    }
+                         const row = tableBody.insertRow();
+                         const cell = row.insertCell();
+                         cell.colSpan = 4;
+                         cell.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>មិនមានទិន្នន័យ</h3><p>មិនមានពិន្ទុសម្រាប់ខែនេះទេ</p></div>`;
+                         return;
+                     }
 
                     data.forEach((student, index) => {
                         const mainRow = tableBody.insertRow();
@@ -2218,7 +2343,6 @@
                         mainRow.innerHTML = `
                             <td>${index + 1}</td>
                             <td class="student-name-cell">${student['Student Name']}</td>
-                            <td>${student.Gender}</td>
                             <td class="total-score-cell">${student.Total || '-'}</td>
                             <td class="rank-cell">${student.Rank || '-'}</td>
                         `;
@@ -2226,13 +2350,12 @@
                         const detailsRow = tableBody.insertRow();
                         detailsRow.className = 'score-details-row';
                         const detailsCell = detailsRow.insertCell();
-                        detailsCell.colSpan = 5;
-                        
+                        detailsCell.colSpan = 4;
+
                         let scoreDetailsHTML = '<div class="score-details-grid">';
-                        scoreDetailsHTML += `<span class="detail-item average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
-                        scoreDetailsHTML += `<span class="detail-item rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
-                        
-                        subjects.forEach(subject => {
+                        scoreDetailsHTML += `<span class="average">មធ្យមភាគ: <strong>${student.Average ? parseFloat(student.Average).toFixed(2) : '-'}</strong></span>`;
+                        scoreDetailsHTML += `<span class="rank">ចំណាត់ថ្នាក់: <strong>${student.Rank || '-'}</strong></span>`;
+                        (subjectList || []).forEach(subject => {
                             const score = student.Scores[subject] || '-';
                             scoreDetailsHTML += `<span>${subject}: <strong>${score}</strong></span>`;
                         });
@@ -2245,53 +2368,74 @@
                     });
                 }
 
-                renderList(students);
                 container.innerHTML = selectorsHTML;
                 container.appendChild(tableContainer);
-                
+
                 async function updateRankingView() {
-                    const month = container.querySelector('#ranking-month-selector').value;
+                    const periodValue = container.querySelector('#ranking-period-selector').value;
                     const sortBy = container.querySelector('#ranking-sort-selector').value;
+                    if (!periodValue) return;
+
+                    fullPageLoader.classList.remove('hidden');
                     try {
-                        const { data } = await apiFetch('getMonthRanking', { params: { classGrade, month, sortBy } });
-                        renderList(data.students);
+                        const cacheKey = `scores_${classGrade}_${periodValue}`;
+                        let rankingData;
+                        if(appData.periodData[cacheKey]) {
+                            rankingData = appData.periodData[cacheKey];
+                        } else {
+                            const { data } = await apiFetch('getPeriodRanking', { params: { classGrade, periodValue } });
+                            rankingData = data;
+                            appData.periodData[cacheKey] = rankingData; // Cache it
+                        }
+
+                        // Re-sort if needed without re-fetching
+                        if (sortBy === 'name') {
+                            rankingData.students.sort((a, b) => a['Student Name'].localeCompare(b['Student Name']));
+                        } else {
+                            rankingData.students.sort((a, b) => (parseInt(a.Rank, 10) || 999) - (parseInt(b.Rank, 10) || 999));
+                        }
+                        renderList(rankingData.students, rankingData.subjects);
                     } catch (e) {
-                         tableBody.innerHTML = `<tr><td colspan="5"><div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>No Ranking Data</h3><p>${e.message}</p></div></td></tr>`;
+                         tableBody.innerHTML = `<tr><td colspan="4"><div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chart-simple"></i><h3>មិនមានទិន្នន័យ</h3><p>${e.message}</p></div></td></tr>`;
+                    } finally {
+                        fullPageLoader.classList.add('hidden');
                     }
                 }
 
-                container.querySelector('#ranking-month-selector').addEventListener('change', updateRankingView);
+                container.querySelector('#ranking-period-selector').addEventListener('change', updateRankingView);
                 container.querySelector('#ranking-sort-selector').addEventListener('change', updateRankingView);
 
                 return container;
             }
 
 
-            async function saveBulkAttendance(attendanceData, classGrade, submitBtn) {
+            async function saveBulkAttendance(attendanceData, classGrade, periodValue, submitBtn) {
                 try {
                     await apiFetch('recordBulkAttendance', {
                         method: 'POST',
-                        body: { attendanceData, classGrade }
+                        body: { attendanceData, classGrade, periodValue }
                     });
+                    const attendanceCacheKey = `att_${classGrade}_${periodValue}`;
+                    delete appData.periodData[attendanceCacheKey];
                     showToast('បានរក្សាទុកវត្តមានដោយជោគជ័យ!', 'success');
                 } catch (error) {
-                    showToast('Error saving attendance.', 'error');
+                    showToast(error.message, 'error');
                 } finally {
                     submitBtn.textContent = 'ចុះវត្តមាន';
                     submitBtn.disabled = false;
                 }
             }
-            
+
             async function saveScores(container, classGrade) {
                 const submitBtn = container.querySelector('#submit-scores-btn');
                 submitBtn.textContent = 'កំពុងរក្សាទុក...';
                 submitBtn.disabled = true;
 
                 const scoresData = [];
-                const month = container.querySelector('#month-selector').value;
+                const periodValue = container.querySelector('#period-selector').value;
                 const subject = container.querySelector('#subject-selector').value;
 
-                if (!month || !subject) {
+                if (!periodValue || !subject) {
                     showToast('សូមជ្រើសរើសខែ និងមុខវិជ្ជា', 'error');
                     submitBtn.textContent = 'រក្សាទុកពិន្ទុ';
                     submitBtn.disabled = false;
@@ -2301,20 +2445,20 @@
                 container.querySelectorAll('.score-input-card').forEach(card => {
                     const studentId = card.dataset.studentId;
                     const score = card.querySelector('.score-input').value;
-                    if (score) {
-                        scoresData.push({ studentId, score });
-                    }
+                    scoresData.push({ studentId, score });
                 });
 
                 try {
                     await apiFetch('saveScores', {
                         method: 'POST',
-                        body: { month, subject, classGrade, scores: scoresData }
+                        body: { periodValue, subject, classGrade, scores: scoresData }
                     });
+                    const rankingCacheKey = `scores_${classGrade}_${periodValue}`;
+                    delete appData.periodData[rankingCacheKey];
                     showToast('ពិន្ទុត្រូវបានរក្សាទុកដោយជោគជ័យ!', 'success');
                     container.querySelectorAll('.score-input').forEach(input => input.value = '');
                 } catch (error) {
-                    showToast('Error saving scores.', 'error');
+                    showToast(error.message, 'error');
                 } finally {
                     submitBtn.textContent = 'រក្សាទុកពិន្ទុ';
                     submitBtn.disabled = false;
@@ -2327,36 +2471,36 @@
                 const button = event.target.querySelector('button');
                 const subjectInput = document.getElementById('announcement-subject');
                 const messageInput = document.getElementById('announcement-message');
-                const userData = JSON.parse(localStorage.getItem('schoolAppUser'));
+                const user = appData.user;
                 button.disabled = true;
                 button.innerHTML = '<span>កំពុងផ្ញើ...</span>';
                 try {
                     await apiFetch('saveNotification', {
                         method: 'POST',
-                        body: { 
-                            subject: subjectInput.value, 
-                            message: messageInput.value, 
-                            sender: userData.FullName 
+                        body: {
+                            subject: subjectInput.value,
+                            message: messageInput.value,
+                            sender: user.FullName
                         }
                     });
                     showToast('បានផ្ញើសេចក្តីជូនដំណឹងដោយជោគជ័យ!', 'success');
                     subjectInput.value = '';
                     messageInput.value = '';
-                    handleFeatureClick('Announcements');
+                    navigateTo('Announcements');
                 } catch (error) {
-                    showToast('ការផ្ញើបានបរាជ័យ។', 'error');
+                    showToast('ការផ្ញើបានបរាជ័យ', 'error');
                 } finally {
                     button.disabled = false;
                     button.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>ផ្ញើសារ</span>';
                 }
             }
-            
+
             function createTeacherQrPage() {
                 const container = document.createElement('div');
                 container.className = 'feature-page';
                 container.innerHTML = `
                     <div style="text-align: center; padding: 2rem;">
-                        <h3>QR Code សម្រាប់វត្តមានគ្រូ</h3>
+                        <h3>QR ស្កេន វត្តមានគ្រូ</h3>
                         <div id="teacher-qrcode-display" style="margin: 2rem auto; width: 256px; height: 256px; background: white; padding: 1rem; border-radius: 12px; display:flex; align-items:center; justify-content:center;">
                            <p>សូមមេត្តារង់ចាំ...</p>
                         </div>
@@ -2370,11 +2514,12 @@
                 `;
 
                 const qrContainer = container.querySelector('#teacher-qrcode-display');
-                
+
                 function generateQR(secret) {
                     qrContainer.innerHTML = '';
+                    const qrPayload = JSON.stringify({ type: 'TEACHER_ATTENDANCE', secret: secret });
                     new QRCode(qrContainer, {
-                        text: `TEACHER_ATTENDANCE:${secret}`,
+                        text: qrPayload,
                         width: 240,
                         height: 240,
                         colorDark : "#000000",
@@ -2386,22 +2531,22 @@
                 apiFetch('getTeacherQRSettings').then(response => {
                     generateQR(response.data.secret);
                 }).catch(err => {
-                    showToast('Could not load QR settings.', 'error');
+                    showToast('មិនអាចទាញយកការកំណត់ QR បានទេ', 'error');
                 });
 
                 container.querySelector('#save-qr-btn').addEventListener('click', () => {
                     const qrElement = container.querySelector('#teacher-qrcode-display');
                     showToast('កំពុងបង្កើតរូបភាព...', 'success');
-                    html2canvas(qrElement, { 
+                    html2canvas(qrElement, {
                         backgroundColor: null,
-                        scale: 2 
+                        scale: 2
                     }).then(canvas => {
                         const link = document.createElement('a');
                         link.download = 'Teacher-Attendance-QR.png';
                         link.href = canvas.toDataURL('image/png');
                         link.click();
                     }).catch(err => {
-                        showToast('Error creating image.', 'error');
+                        showToast('ការបង្កើតរូបភាពបានបរាជ័យ', 'error');
                         console.error('html2canvas error:', err);
                     });
                 });
@@ -2409,13 +2554,13 @@
                 container.querySelector('#regen-qr-btn').addEventListener('click', () => {
                     showConfirmModal(
                         'បង្កើត QR Code ថ្មី?',
-                        'ការបង្កើត QR Code ថ្មីនឹងធ្វើឱ្យ QR Code ចាស់ប្រើការលែងកើត។ តើអ្នកពិតជាចង់បន្តមែនទេ?',
+                        'ការបង្កើត QR Code ថ្មីនឹងធ្វើឱ្យ QR Code ចាស់ប្រើការលែងកើត <br> តើអ្នកពិតជាចង់បន្តមែនទេ?',
                         async () => {
                             fullPageLoader.classList.remove('hidden');
                             try {
                                 const response = await apiFetch('regenerateTeacherQRSecret');
                                 generateQR(response.data.newSecret);
-                                showToast('បានបង្កើត QR Code ថ្មីដោយជោគជ័យ!', 'success');
+                                showToast('ការបង្កើត QR Code ថ្មីបានជោគជ័យ!', 'success');
                             } catch(e) {
                                 showToast(e.message, 'error');
                             } finally {
@@ -2431,7 +2576,7 @@
             function createManageTeachersPage(teachers) {
                 const container = document.createElement('div');
                 container.className = 'feature-page manage-page';
-                
+
                 const header = document.createElement('div');
                 header.className = 'manage-header teacher-header';
                 header.innerHTML = `
@@ -2445,17 +2590,14 @@
 
                 const summary = document.createElement('div');
                 summary.className = 'management-summary';
-                const totalTeachers = teachers.length;
-                summary.innerHTML = `<span>គ្រូសរុប: ${totalTeachers}នាក់</span>`;
                 container.appendChild(summary);
 
                 const teacherListContainer = document.createElement('div');
                 teacherListContainer.className = 'item-list';
                 container.appendChild(teacherListContainer);
 
-                let allTeachers = teachers;
-
                 function renderTeacherList(filteredTeachers) {
+                    summary.innerHTML = `<span>គ្រូសរុប: ${filteredTeachers.length}នាក់</span>`;
                     teacherListContainer.innerHTML = '';
                     if (!filteredTeachers || filteredTeachers.length === 0) {
                         teacherListContainer.innerHTML = `<div class="placeholder-page" style="height: 200px;"><i class="fa-solid fa-chalkboard-user"></i><h3>មិនមានទិន្នន័យគ្រូទេ</h3></div>`;
@@ -2466,7 +2608,7 @@
                         card.className = 'item-card';
                         card.dataset.username = teacher.Username;
 
-                        const photoHTML = teacher.PhotoURL 
+                        const photoHTML = teacher.PhotoURL
                             ? `<img src="${teacher.PhotoURL}" alt="Photo">`
                             : `<i class="fa-solid fa-user-tie"></i>`;
 
@@ -2474,7 +2616,7 @@
                             <div class="item-card-photo">${photoHTML}</div>
                             <div class="item-card-details">
                                 <h4 style="margin-bottom: 3px;">${teacher.FullName}</h4>
-                                <p>មុខវិជ្ជា: ${teacher.Subject || 'មិនមាន'} &nbsp;&nbsp; ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
+                                <p>ថ្នាក់: ${teacher.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="item-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
@@ -2485,20 +2627,18 @@
                     });
                 }
 
-                renderTeacherList(allTeachers);
+                renderTeacherList(appData.teachers);
 
-                // Search functionality
                 container.querySelector('#teacher-search-input').addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
-                    const filtered = allTeachers.filter(t => t.FullName.toLowerCase().includes(searchTerm));
+                    const filtered = appData.teachers.filter(t => t.FullName.toLowerCase().includes(searchTerm));
                     renderTeacherList(filtered);
                 });
 
-                // Modal Handling
                 const modal = document.getElementById('teacher-modal');
                 const modalTitle = document.getElementById('teacher-modal-title');
                 const teacherForm = document.getElementById('teacher-form');
-                
+
                 function showModal() { modal.classList.add('show'); }
                 function hideModal() { modal.classList.remove('show'); }
 
@@ -2512,18 +2652,18 @@
 
                 modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
                 modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
-                
+
                 teacherListContainer.addEventListener('click', async (e) => {
                     const editBtn = e.target.closest('.edit-btn');
                     const deleteBtn = e.target.closest('.delete-btn');
 
                     if (editBtn) {
                         const username = editBtn.closest('.item-card').dataset.username;
-                        const teacher = allTeachers.find(t => t.Username === username);
-                        
+                        const teacher = appData.teachers.find(t => t.Username === username);
+
                         document.getElementById('is-new-teacher').value = 'false';
                         modalTitle.textContent = 'កែប្រែព័ត៌មានគ្រូ';
-                        
+
                         document.getElementById('teacher-fullname').value = teacher.FullName || '';
                         document.getElementById('teacher-username').value = teacher.Username || '';
                         document.getElementById('teacher-username').readOnly = true;
@@ -2545,11 +2685,11 @@
                             async () => {
                                 fullPageLoader.classList.remove('hidden');
                                 try {
-                                    await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
-                                    showToast('បានលុបគ្រូដោយជោគជ័យ។', 'success');
-                                    const { data: updatedTeachers } = await apiFetch('getAllTeachers');
-                                    allTeachers = updatedTeachers;
-                                    renderTeacherList(allTeachers);
+                                    const { data: updatedTeachers } = await apiFetch('deleteTeacher', { method: 'POST', body: { username } });
+                                    appData.teachers = updatedTeachers; // Update cache
+                                    localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                                    renderTeacherList(appData.teachers); // Re-render from cache
+                                    showToast('បានលុបគ្រូដោយជោគជ័យ', 'success');
                                 } catch (error) {
                                     showToast(error.message, 'error');
                                 } finally {
@@ -2573,23 +2713,23 @@
                         ClassGrade: document.getElementById('teacher-classgrade').value,
                         PhotoURL: document.getElementById('teacher-photourl').value,
                         Email: document.getElementById('teacher-email').value,
-                        Role: 'teacher' // Always set role to teacher
+                        Role: 'teacher'
                     };
 
                     if (isNew && !teacherData.Password) {
-                        showToast('ត្រូវតែបញ្ចូលពាក្យសម្ងាត់សម្រាប់គ្រូថ្មី។', 'error');
+                        showToast('ត្រូវតែបញ្ចូលពាក្យសម្ងាត់សម្រាប់គ្រូថ្មី', 'error');
                         fullPageLoader.classList.add('hidden');
                         return;
                     }
 
                     try {
-                        await apiFetch('saveTeacher', { method: 'POST', body: { teacherData, isNew } });
-                        const successMessage = isNew ? 'បានបន្ថែមគ្រូថ្មីដោយជោគជ័យ។' : 'បានកែប្រែព័ត៌មានគ្រូដោយជោគជ័យ។';
-                        showToast(successMessage, 'success');
+                        const { data: updatedTeachers } = await apiFetch('saveTeacher', { method: 'POST', body: { teacherData, isNew } });
+                        appData.teachers = updatedTeachers; // Update cache
+                        localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                        renderTeacherList(appData.teachers); // Re-render from cache
                         hideModal();
-                        const { data: updatedTeachers } = await apiFetch('getAllTeachers');
-                        allTeachers = updatedTeachers;
-                        renderTeacherList(allTeachers);
+                        const successMessage = isNew ? 'បានបន្ថែមគ្រូថ្មីដោយជោគជ័យ' : 'បានកែប្រែព័ត៌មានគ្រូដោយជោគជ័យ';
+                        showToast(successMessage, 'success');
                     } catch (error) {
                        showToast(error.message, 'error');
                     } finally {
@@ -2601,28 +2741,38 @@
                 return container;
             }
 
-             function createManageStudentsPage(students) {
+             function createManageStudentsPage(students, isTeacherView = false) {
                 const container = document.createElement('div');
                 container.className = 'feature-page manage-page';
-                
-                const header = document.createElement('div');
-                header.className = 'manage-header';
-                
-                const uniqueClasses = [...new Set(students.map(s => s.ClassGrade).filter(Boolean))].sort();
 
-                header.innerHTML = `
+                const header = document.createElement('div');
+                header.className = 'manage-header student-header';
+
+                // FIX: For admins, get class list from appData.classes for a complete list.
+                const classList = isTeacherView 
+                    ? [...new Set(students.map(s => s.ClassGrade).filter(Boolean))].sort()
+                    : appData.classes.map(c => c.name).sort();
+
+                let headerHTML = `
                     <div class="search-input-container">
                         <i class="fa-solid fa-search"></i>
                         <input type="text" id="student-search-input" placeholder="ស្វែងរកឈ្មោះសិស្ស...">
                     </div>
-                    <div class="class-filter-container">
-                        <select id="class-filter">
-                            <option value="">គ្រប់ថ្នាក់</option>
-                            ${uniqueClasses.map(c => `<option value="${c}">${c}</option>`).join('')}
-                        </select>
-                    </div>
                     <button class="add-btn" id="add-student-btn"><i class="fa-solid fa-plus"></i> បន្ថែមសិស្ស</button>
                 `;
+
+                if (!isTeacherView) {
+                    headerHTML += `
+                        <div class="class-filter-container">
+                            <select id="class-filter">
+                                <option value="">គ្រប់ថ្នាក់</option>
+                                ${classList.map(c => `<option value="${c}">${c}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                }
+
+                header.innerHTML = headerHTML;
                 container.appendChild(header);
 
                 const summary = document.createElement('div');
@@ -2632,8 +2782,6 @@
                 const studentListContainer = document.createElement('div');
                 studentListContainer.className = 'item-list';
                 container.appendChild(studentListContainer);
-
-                let allStudents = students;
 
                 function renderStudentList(filteredStudents) {
                     studentListContainer.innerHTML = '';
@@ -2647,16 +2795,22 @@
                         return;
                     }
 
+                    filteredStudents.sort((a, b) => a['Student Name'].localeCompare(b['Student Name']));
+
                     filteredStudents.forEach(student => {
                         const card = document.createElement('div');
                         card.className = 'item-card';
                         card.dataset.studentNo = student.No;
 
+                        const photoHTML = student.PhotoURL
+                            ? `<img src="${student.PhotoURL}" alt="Photo">`
+                            : `<i class="fa-solid fa-user"></i>`;
+
                         card.innerHTML = `
-                            <div class="item-card-photo"><i class="fa-solid fa-user"></i></div>
+                            <div class="item-card-photo">${photoHTML}</div>
                             <div class="item-card-details">
                                 <h4 style="margin-bottom: 3px;">${student['Student Name']}</h4>
-                                <p>ភេទ: ${student.Gender || 'មិនមាន'} &nbsp;&nbsp; ថ្នាក់: ${student.ClassGrade || 'មិនមាន'}</p>
+                                <p>អត្តលេខ: ${student.No} &nbsp;&nbsp; ថ្នាក់: ${student.ClassGrade || 'មិនមាន'}</p>
                             </div>
                             <div class="item-card-actions">
                                 <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
@@ -2666,47 +2820,64 @@
                         studentListContainer.appendChild(card);
                     });
                 }
-                
+
                 const searchInput = container.querySelector('#student-search-input');
                 const classFilter = container.querySelector('#class-filter');
 
                 function applyFilters() {
+                    let filtered = appData.students;
+
+                    if (classFilter && classFilter.value) {
+                         filtered = appData.students.filter(s => s.ClassGrade === classFilter.value);
+                    } else if (isTeacherView) {
+                        const user = appData.user;
+                        filtered = appData.students.filter(s => s.ClassGrade === user.ClassGrade);
+                    }
+
                     const searchTerm = searchInput.value.toLowerCase();
-                    const selectedClass = classFilter.value;
-
-                    let filtered = allStudents;
-
-                    if (selectedClass) {
-                        filtered = filtered.filter(s => s.ClassGrade === selectedClass);
-                    }
-
                     if (searchTerm) {
-                        filtered = filtered.filter(s => s['Student Name'].toLowerCase().includes(searchTerm));
+                        filtered = filtered.filter(s => s['Student Name'].toLowerCase().includes(searchTerm) || String(s.No).includes(searchTerm));
                     }
-                    
+
                     renderStudentList(filtered);
                 }
-
+                
                 searchInput.addEventListener('input', applyFilters);
-                classFilter.addEventListener('change', applyFilters);
+                if (classFilter) {
+                    classFilter.addEventListener('change', applyFilters);
+                }
 
-                applyFilters(); // Initial render
+                applyFilters();
 
-                // Modal Handling
                 const modal = document.getElementById('student-modal');
                 const modalTitle = document.getElementById('student-modal-title');
                 const studentForm = document.getElementById('student-form');
-                
+                let studentPhotoBase64 = null;
+
                 function showModal() { modal.classList.add('show'); }
                 function hideModal() { modal.classList.remove('show'); }
 
-                container.querySelector('#add-student-btn').addEventListener('click', () => {
-                    studentForm.reset();
-                    document.getElementById('is-new-student').value = 'true';
-                    document.getElementById('student-id').readOnly = false;
-                    modalTitle.textContent = 'បន្ថែមសិស្សថ្មី';
-                    showModal();
-                });
+                const addStudentBtn = container.querySelector('#add-student-btn');
+                if (addStudentBtn) {
+                    addStudentBtn.addEventListener('click', () => {
+                        studentForm.reset();
+                        studentPhotoBase64 = null;
+                        document.getElementById('student-photo-preview').innerHTML = '<i class="fa-solid fa-user"></i>';
+                        document.getElementById('is-new-student').value = 'true';
+                        document.getElementById('student-id').readOnly = false;
+                        modalTitle.textContent = 'បន្ថែមសិស្សថ្មី';
+
+                        if (isTeacherView) {
+                            const user = appData.user;
+                            document.getElementById('student-classgrade').value = user.ClassGrade;
+                            document.getElementById('student-classgrade').readOnly = true;
+                        } else {
+                            document.getElementById('student-classgrade').readOnly = false;
+                        }
+
+                        showModal();
+                    });
+                }
 
                 modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
                 modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
@@ -2717,45 +2888,56 @@
 
                     if (editBtn) {
                         const studentNo = editBtn.closest('.item-card').dataset.studentNo;
-                        const student = allStudents.find(s => s.No == studentNo);
-                        
+                        const student = appData.students.find(s => s.No == studentNo);
+
+                        studentForm.reset();
+                        studentPhotoBase64 = null;
                         document.getElementById('is-new-student').value = 'false';
                         modalTitle.textContent = 'កែប្រែព័ត៌មានសិស្ស';
-                        
+
+                        const studentPhotoPreview = document.getElementById('student-photo-preview');
+                        studentPhotoPreview.innerHTML = student.PhotoURL
+                            ? `<img src="${student.PhotoURL}" alt="Preview">`
+                            : '<i class="fa-solid fa-user"></i>';
+
                         document.getElementById('student-id').value = student.No || '';
                         document.getElementById('student-id').readOnly = true;
                         document.getElementById('student-fullname').value = student['Student Name'] || '';
                         document.getElementById('student-gender').value = student.Gender || 'ប្រុស';
-                        
-                        let dob = '';
+
+                        let dobForInput = '';
                         if (student['Date of Birth']) {
-                            try {
-                                const date = new Date(student['Date of Birth']);
-                                if (!isNaN(date.getTime())) {
-                                    dob = date.toISOString().split('T')[0];
-                                }
-                            } catch(err) {}
+                            const parts = student['Date of Birth'].split('-');
+                            if (parts.length === 3) {
+                                dobForInput = `${parts[2]}-${parts[1]}-${parts[0]}`; // Convert dd-MM-yyyy to yyyy-MM-dd
+                            }
                         }
-                        document.getElementById('student-dob').value = dob;
+                        document.getElementById('student-dob').value = dobForInput;
+
                         document.getElementById('student-classgrade').value = student.ClassGrade || '';
+                        document.getElementById('student-classgrade').readOnly = isTeacherView;
+
 
                         showModal();
                     }
 
                     if (deleteBtn) {
                         const studentNo = deleteBtn.closest('.item-card').dataset.studentNo;
-                        const student = allStudents.find(s => s.No == studentNo);
+                        const student = appData.students.find(s => s.No == studentNo);
                         showConfirmModal(
                             'បញ្ជាក់ការលុប',
-                            `តើអ្នកពិតជាចង់លុបសិស្សឈ្មោះ "${student['Student Name']}" មែនទេ? ទិន្នន័យពិន្ទុ និងវត្តមានទាំងអស់នឹងត្រូវលុបដែរ។`,
+                            `តើអ្នកពិតជាចង់លុបសិស្សឈ្មោះ "${student['Student Name']}" មែនទេ? ទិន្នន័យពិន្ទុ និងវត្តមានទាំងអស់នឹងត្រូវលុបដែរ`,
                             async () => {
                                 fullPageLoader.classList.remove('hidden');
                                 try {
-                                    await apiFetch('deleteStudent', { method: 'POST', body: { studentNo } });
-                                    showToast('បានលុបសិស្សដោយជោគជ័យ។', 'success');
-                                    const { data: updatedStudents } = await apiFetch('getAllStudents');
-                                    allStudents = updatedStudents;
+                                    const { data: refreshedData } = await apiFetch('deleteStudent', { method: 'POST', body: { studentNo } });
+                                    appData.students = refreshedData.students;
+                                    appData.classes = refreshedData.classes;
+                                    appData.periodData = {};
+                                    localStorage.setItem('schoolAppData', JSON.stringify(appData));
                                     applyFilters();
+                                    await setupDashboard(appData); // FIX: Refresh dashboard stats
+                                    showToast('បានលុបសិស្សដោយជោគជ័យ', 'success');
                                 } catch (error) {
                                     showToast(error.message, 'error');
                                 } finally {
@@ -2766,8 +2948,30 @@
                     }
                 });
 
+                const studentPhotoUploadInput = document.getElementById('student-photo-upload');
+                const studentPhotoPreview = document.getElementById('student-photo-preview');
+                document.getElementById('student-upload-photo-btn').addEventListener('click', () => studentPhotoUploadInput.click());
+                document.getElementById('student-remove-photo-btn').addEventListener('click', () => {
+                    studentPhotoBase64 = null;
+                    studentPhotoUploadInput.value = '';
+                    studentPhotoPreview.innerHTML = '<i class="fa-solid fa-user"></i>';
+                });
+                studentPhotoUploadInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            studentPhotoBase64 = e.target.result;
+                            studentPhotoPreview.innerHTML = `<img src="${studentPhotoBase64}" alt="Preview">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
                 studentForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    const saveBtn = studentForm.querySelector('.save-btn');
+                    saveBtn.disabled = true; // FIX: Prevent double-clicking
                     fullPageLoader.classList.remove('hidden');
 
                     const isNew = document.getElementById('is-new-student').value === 'true';
@@ -2778,20 +2982,26 @@
                         'Gender': document.getElementById('student-gender').value,
                         'Date of Birth': dobValue ? new Date(dobValue) : '',
                         'ClassGrade': document.getElementById('student-classgrade').value,
+                        'photoBase64': studentPhotoBase64,
+                        'PhotoURL': studentPhotoBase64 === null ? '' : undefined
                     };
 
                     try {
-                        await apiFetch('saveStudent', { method: 'POST', body: { studentData, isNew } });
-                        const successMessage = isNew ? 'បានបន្ថែមសិស្សថ្មីដោយជោគជ័យ។' : 'បានកែប្រែព័ត៌មានសិស្សដោយជោគជ័យ។';
-                        showToast(successMessage, 'success');
-                        hideModal();
-                        const { data: updatedStudents } = await apiFetch('getAllStudents');
-                        allStudents = updatedStudents;
+                        const { data: refreshedData } = await apiFetch('saveStudent', { method: 'POST', body: { studentData, isNew } });
+                        appData.students = refreshedData.students;
+                        appData.classes = refreshedData.classes;
+                        appData.periodData = {};
+                        localStorage.setItem('schoolAppData', JSON.stringify(appData));
                         applyFilters();
+                        await setupDashboard(appData); // FIX: Refresh dashboard stats
+                        hideModal();
+                        const successMessage = isNew ? 'បានបន្ថែមសិស្សថ្មីដោយជោគជ័យ' : 'បានកែប្រែព័ត៌មានសិស្សដោយជោគជ័យ';
+                        showToast(successMessage, 'success');
                     } catch (error) {
                        showToast(error.message, 'error');
                     } finally {
                         fullPageLoader.classList.add('hidden');
+                        saveBtn.disabled = false; // Re-enable button
                     }
                 });
 
@@ -2816,7 +3026,7 @@
 
                     const teacherInfo = cls.teacher
                         ? `<i class="fa-solid fa-chalkboard-user"></i> គ្រូបន្ទុកថ្នាក់: ${cls.teacher}`
-                        : `<i class="fa-solid fa-chalkboard-user"></i> <span style="color: var(--error-color);">មិនទាន់មានគ្រូប្រចាំថ្នាក់</span>`;
+                        : `<i class="fa-solid fa-chalkboard-user"></i> <span style="color: var(--error-color);">មិនទាន់មានគ្រូបន្ទុកថ្នាក់</span>`;
 
                     card.innerHTML = `
                         <h3>ថ្នាក់ទី ${cls.name}</h3>
@@ -2831,7 +3041,7 @@
                     `;
                     container.appendChild(card);
                 });
-                
+
                 const modal = document.getElementById('assign-teacher-modal');
                 const modalTitle = document.getElementById('assign-teacher-modal-title');
                 const assignForm = document.getElementById('assign-teacher-form');
@@ -2839,20 +3049,20 @@
 
                 function showModal() { modal.classList.add('show'); }
                 function hideModal() { modal.classList.remove('show'); }
-                
+
                 modal.querySelector('.modal-close-btn').addEventListener('click', hideModal);
                 modal.querySelector('.cancel-btn').addEventListener('click', hideModal);
-                
+
                 container.addEventListener('click', (e) => {
                     const assignBtn = e.target.closest('.assign-teacher-btn');
                     if (assignBtn) {
                         const card = assignBtn.closest('.class-card');
                         const className = card.dataset.className;
                         const currentTeacher = card.dataset.teacherUsername;
-                        
+
                         document.getElementById('assign-class-name').value = className;
-                        modalTitle.textContent = `ចាត់តាំងគ្រូប្រចាំថ្នាក់ ${className}`;
-                        
+                        modalTitle.textContent = `ចាត់តាំងគ្រូបន្ទុកថ្នាក់ ${className}`;
+
                         teacherSelect.innerHTML = '<option value="">-- មិនចាត់តាំង --</option>';
                         allTeachers.forEach(teacher => {
                             const option = document.createElement('option');
@@ -2863,7 +3073,7 @@
                             }
                             teacherSelect.appendChild(option);
                         });
-                        
+
                         showModal();
                     }
                 });
@@ -2871,19 +3081,21 @@
                 assignForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     fullPageLoader.classList.remove('hidden');
-                    
+
                     const classGrade = document.getElementById('assign-class-name').value;
                     const teacherUsername = teacherSelect.value;
 
                     try {
-                        await apiFetch('assignTeacherToClass', {
+                        const { data: updatedData } = await apiFetch('assignTeacherToClass', {
                             method: 'POST',
                             body: { classGrade, teacherUsername }
                         });
-                        showToast('បានចាត់តាំងគ្រូដោយជោគជ័យ', 'success');
+                        appData.classes = updatedData.classes; // Update cache
+                        appData.teachers = updatedData.teachers;
+                        localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                        navigateTo('Class Management'); // Re-render page
                         hideModal();
-                        // Refresh the page to show new data
-                        handleFeatureClick('Class Management');
+                        showToast('បានចាត់តាំងគ្រូដោយជោគជ័យ', 'success');
                     } catch(error) {
                         showToast(error.message, 'error');
                     } finally {
@@ -2895,37 +3107,47 @@
                 return container;
             }
 
-            function createSchoolSettingsPage(settings) {
+            function createAdminSettingsPage(user, schoolSettings) {
                 const container = document.createElement('div');
                 container.className = 'feature-page settings-page';
-                container.innerHTML = `
-                    <div class="settings-card">
-                        <form id="school-settings-form">
-                            <h3>ការកំណត់សាលា</h3>
-                            <div class="form-group">
-                                <label for="school-name">ឈ្មោះសាលា</label>
-                                <input type="text" id="school-name" value="${settings.SchoolName || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="academic-year">ឆ្នាំសិក្សា</label>
-                                <input type="text" id="academic-year" value="${settings.AcademicYear || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="school-lat">School Latitude</label>
-                                <input type="text" id="school-lat" value="${settings.SchoolLatitude || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="school-lon">School Longitude</label>
-                                <input type="text" id="school-lon" value="${settings.SchoolLongitude || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="qr-distance">ចម្ងាយស្កេន QR (ម៉ែត្រ)</label>
-                                <input type="number" id="qr-distance" value="${settings.QRScanDistance || '150'}">
-                                <small>ចម្ងាយដែលអនុញ្ញាតឱ្យគ្រូអាចចុះវត្តមានបាន</small>
-                            </div>
-                            <button type="submit" class="save-btn">រក្សាទុកការកំណត់</button>
-                        </form>
-                    </div>`;
+
+                const personalSettingsCard = createTeacherSettingsPage(user);
+
+                const schoolSettingsCard = document.createElement('div');
+                schoolSettingsCard.className = 'settings-card';
+                schoolSettingsCard.innerHTML = `
+                    <form id="school-settings-form">
+                        <h3>ការកំណត់សាលា</h3>
+                        <div class="form-group">
+                            <label for="school-name">ឈ្មោះសាលា</label>
+                            <input type="text" id="school-name" value="${schoolSettings.SchoolName || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="academic-year">ឆ្នាំសិក្សា</label>
+                            <input type="text" id="academic-year" value="${schoolSettings.AcademicYear || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="school-lat">School Latitude</label>
+                            <input type="text" id="school-lat" value="${schoolSettings.SchoolLatitude || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="school-lon">School Longitude</label>
+                            <input type="text" id="school-lon" value="${schoolSettings.SchoolLongitude || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="qr-distance">ចម្ងាយស្កេន QR (ម៉ែត្រ)</label>
+                            <input type="number" id="qr-distance" value="${schoolSettings.QRScanDistance || '150'}">
+                            <small>ចម្ងាយដែលអនុញ្ញាតឱ្យគ្រូអាចចុះវត្តមានបាន</small>
+                        </div>
+                        <button type="submit" class="save-btn">រក្សាទុកការកំណត់សាលា</button>
+                    </form>
+                    <div class="settings-card" style="margin-top: 1.5rem; padding: 0;">
+                         <button id="prepare-period-btn" class="save-btn" style="background-color: var(--success-color);">រៀបចំទិន្នន័យកាលវិភាគ</button>
+                    </div>
+                `;
+
+                container.appendChild(personalSettingsCard);
+                container.appendChild(schoolSettingsCard);
 
                 container.querySelector('#school-settings-form').addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -2941,7 +3163,11 @@
 
                     try {
                         await apiFetch('saveSchoolSettings', { method: 'POST', body: { settingsData } });
-                        showToast('បានរក្សាទុកការកំណត់ដោយជោគជ័យ។', 'success');
+                        // Update cache
+                        appData.user.schoolSettings = settingsData;
+                        localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                        await setupDashboard(appData);
+                        showToast('បានរក្សាទុកការកំណត់ដោយជោគជ័យ', 'success');
                     } catch (error) {
                         showToast(error.message, 'error');
                     } finally {
@@ -2949,59 +3175,67 @@
                     }
                 });
 
+                container.querySelector('#prepare-period-btn').addEventListener('click', () => {
+                    const modal = document.getElementById('prepare-period-modal');
+                    const select = document.getElementById('prepare-period-select');
+
+                    select.innerHTML = appData.periods.map(p => `<option value="${p.PeriodValue}">${p.PeriodName}</option>`).join('');
+
+                    modal.classList.add('show');
+                });
+
                 return container;
             }
-            
+
             function createTeacherSettingsPage(userData) {
                 const container = document.createElement('div');
-                container.className = 'feature-page settings-page';
+                container.className = 'settings-card';
+
+                const iconClass = userData.Role === 'admin' ? 'fa-user-shield' : 'fa-user-tie';
 
                 container.innerHTML = `
-                    <div class="settings-card">
-                        <form id="teacher-info-form">
-                            <h3>ព័ត៌មានផ្ទាល់ខ្លួន</h3>
-                             <div class="form-group">
-                                <label>រូបថត Profile</label>
-                                <div class="photo-upload-container">
-                                    <div class="photo-preview" id="photo-preview">
-                                        ${userData.PhotoURL ? `<img src="${userData.PhotoURL}" alt="Preview">` : '<i class="fa-solid fa-user-tie"></i>'}
-                                    </div>
-                                    <div class="photo-upload-actions">
-                                        <input type="file" id="teacher-setting-photo-upload" accept="image/*">
-                                        <button type="button" id="upload-photo-btn">ជ្រើសរើសរូបភាព</button>
-                                        <button type="button" id="remove-photo-btn">លុបរូបភាព</button>
-                                    </div>
+                    <form id="teacher-info-form">
+                        <h3>ព័ត៌មានផ្ទាល់ខ្លួន</h3>
+                         <div class="form-group">
+                            <label>រូបថត Profile</label>
+                            <div class="photo-upload-container">
+                                <div class="photo-preview" id="photo-preview">
+                                    ${userData.PhotoURL ? `<img src="${userData.PhotoURL}" alt="Preview">` : `<i class="fa-solid ${iconClass}"></i>`}
+                                </div>
+                                <div class="photo-upload-actions">
+                                    <input type="file" id="teacher-setting-photo-upload" accept="image/*">
+                                    <button type="button" id="upload-photo-btn">ជ្រើសរើសរូបភាព</button>
+                                    <button type="button" id="remove-photo-btn">លុបរូបភាព</button>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="teacher-setting-fullname">ឈ្មោះពេញ</label>
-                                <input type="text" id="teacher-setting-fullname" value="${userData.FullName || ''}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="teacher-setting-subject">មុខវិជ្ជា</label>
-                                <input type="text" id="teacher-setting-subject" value="${userData.Subject || ''}">
-                            </div>
-                            <button type="submit" class="save-btn">រក្សាទុកព័ត៌មាន</button>
-                        </form>
-                    </div>
-                    <div class="settings-card">
-                        <form id="change-password-form">
-                            <h3>ផ្លាស់ប្តូរពាក្យសម្ងាត់</h3>
-                            <div class="form-group">
-                                <label for="current-password">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
-                                <input type="password" id="current-password" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-password">ពាក្យសម្ងាត់ថ្មី</label>
-                                <input type="password" id="new-password" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="confirm-password">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
-                                <input type="password" id="confirm-password" required>
-                            </div>
-                            <button type="submit" class="save-btn">ផ្លាស់ប្តូរពាក្យសម្ងាត់</button>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-setting-fullname">ឈ្មោះពេញ</label>
+                            <input type="text" id="teacher-setting-fullname" value="${userData.FullName || ''}" required>
+                        </div>
+                        <div class="form-group" ${userData.Role === 'admin' ? 'style="display:none;"' : ''}>
+                            <label for="teacher-setting-subject">មុខវិជ្ជា</label>
+                            <input type="text" id="teacher-setting-subject" value="${userData.Subject || ''}">
+                        </div>
+                        <button type="submit" class="save-btn">រក្សាទុកព័ត៌មាន</button>
+                    </form>
+                    <br>
+                    <form id="change-password-form">
+                        <h3>ផ្លាស់ប្តូរពាក្យសម្ងាត់</h3>
+                        <div class="form-group">
+                            <label for="current-password">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
+                            <input type="password" id="current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">ពាក្យសម្ងាត់ថ្មី</label>
+                            <input type="password" id="new-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
+                            <input type="password" id="confirm-password" required>
+                        </div>
+                        <button type="submit" class="save-btn">ផ្លាស់ប្តូរពាក្យសម្ងាត់</button>
+                    </form>
                 `;
 
                 const photoUploadInput = container.querySelector('#teacher-setting-photo-upload');
@@ -3009,11 +3243,11 @@
                 let photoBase64 = null;
 
                 container.querySelector('#upload-photo-btn').addEventListener('click', () => photoUploadInput.click());
-                
+
                 container.querySelector('#remove-photo-btn').addEventListener('click', () => {
                     photoBase64 = null;
-                    photoUploadInput.value = ''; // Clear the file input
-                    photoPreview.innerHTML = '<i class="fa-solid fa-user-tie"></i>';
+                    photoUploadInput.value = '';
+                    photoPreview.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
                 });
 
                 photoUploadInput.addEventListener('change', (event) => {
@@ -3028,7 +3262,6 @@
                     }
                 });
 
-                // Handle personal info update
                 container.querySelector('#teacher-info-form').addEventListener('submit', (e) => {
                     e.preventDefault();
                     showPasswordConfirmModal(async (currentPassword) => {
@@ -3039,15 +3272,16 @@
                             fullName: document.getElementById('teacher-setting-fullname').value,
                             subject: document.getElementById('teacher-setting-subject').value,
                             photoBase64: photoBase64,
-                            photoURL: photoBase64 === null ? '' : undefined // Send empty string to clear, undefined to ignore
+                            photoURL: photoBase64 === null ? '' : undefined
                         };
 
                         try {
-                            await apiFetch('updateTeacherSettings', { method: 'POST', body: { settingsData } });
-                            showToast('ព័ត៌មានត្រូវបានរក្សាទុកដោយជោគជ័យ។', 'success');
-                            const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
-                            await refreshAndShowDashboard(userCredentials.username, userCredentials.password);
+                            const { data: updatedUser } = await apiFetch('updateTeacherSettings', { method: 'POST', body: { settingsData } });
+                            appData.user = updatedUser; // Update user in cache
+                            localStorage.setItem('schoolAppData', JSON.stringify(appData));
+                            await setupDashboard(appData);
                             showDashboard();
+                            showToast('ព័ត៌មានត្រូវបានរក្សាទុកដោយជោគជ័យ', 'success');
                         } catch (error) {
                             showToast(error.message, 'error');
                         } finally {
@@ -3056,7 +3290,6 @@
                     });
                 });
 
-                // Handle password change
                 container.querySelector('#change-password-form').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const currentPassword = document.getElementById('current-password').value;
@@ -3064,11 +3297,11 @@
                     const confirmPassword = document.getElementById('confirm-password').value;
 
                     if (newPassword !== confirmPassword) {
-                        showToast('ពាក្យសម្ងាត់ថ្មីមិនตรงគ្នាទេ។', 'error');
+                        showToast('ពាក្យសម្ងាត់ថ្មីមិនត្រូវគ្នាទេ', 'error');
                         return;
                     }
                     if (newPassword.length < 1) {
-                        showToast('សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី។', 'error');
+                        showToast('សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី', 'error');
                         return;
                     }
 
@@ -3081,8 +3314,8 @@
 
                     try {
                         await apiFetch('updateTeacherSettings', { method: 'POST', body: { settingsData } });
-                        showToast('ពាក្យសម្ងាត់ត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ។', 'success');
-                        e.target.reset(); // Clear the form
+                        showToast('ពាក្យសម្ងាត់ត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ', 'success');
+                        e.target.reset();
                         const userCredentials = JSON.parse(localStorage.getItem('schoolAppCredentials'));
                         userCredentials.password = newPassword;
                         localStorage.setItem('schoolAppCredentials', JSON.stringify(userCredentials));
@@ -3096,8 +3329,6 @@
                 return container;
             }
 
-
-            // --- Confirm & Password Modals ---
             const confirmModal = document.getElementById('confirm-modal');
             const confirmModalTitle = document.getElementById('confirm-modal-title');
             const confirmModalText = document.getElementById('confirm-modal-text');
@@ -3106,7 +3337,7 @@
 
             function showConfirmModal(title, text, onConfirm) {
                 confirmModalTitle.textContent = title;
-                confirmModalText.textContent = text;
+                confirmModalText.innerHTML = text; // Use innerHTML to support <br>
                 confirmCallback = onConfirm;
                 confirmModal.classList.add('show');
             }
@@ -3118,9 +3349,7 @@
 
             confirmModal.querySelector('.cancel-btn').addEventListener('click', hideConfirmModal);
             confirmModalBtn.addEventListener('click', () => {
-                if (confirmCallback) {
-                    confirmCallback();
-                }
+                if (confirmCallback) confirmCallback();
                 hideConfirmModal();
             });
 
@@ -3140,15 +3369,33 @@
                 passwordConfirmModal.classList.remove('show');
                 passwordConfirmCallback = null;
             }
-            
+
             passwordConfirmModal.querySelector('.modal-close-btn').addEventListener('click', hidePasswordConfirmModal);
             passwordConfirmModal.querySelector('.cancel-btn').addEventListener('click', hidePasswordConfirmModal);
             passwordConfirmForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                if (passwordConfirmCallback) {
-                    passwordConfirmCallback(passwordConfirmInput.value);
-                }
+                if (passwordConfirmCallback) passwordConfirmCallback(passwordConfirmInput.value);
                 hidePasswordConfirmModal();
+            });
+
+            const preparePeriodModal = document.getElementById('prepare-period-modal');
+            const preparePeriodForm = document.getElementById('prepare-period-form');
+            preparePeriodModal.querySelector('.modal-close-btn').addEventListener('click', () => preparePeriodModal.classList.remove('show'));
+            preparePeriodModal.querySelector('.cancel-btn').addEventListener('click', () => preparePeriodModal.classList.remove('show'));
+            preparePeriodForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const periodValue = document.getElementById('prepare-period-select').value;
+                fullPageLoader.classList.remove('hidden');
+                loaderSubText.textContent = `កំពុងរៀបចំទិន្នន័យសម្រាប់ ${periodValue}...`;
+                try {
+                    await apiFetch('prepareNewPeriod', { method: 'POST', body: { periodValue } });
+                    showToast(`ទិន្នន័យសម្រាប់ ${periodValue} បានរៀបចំដោយជោគជ័យ!`, 'success');
+                    preparePeriodModal.classList.remove('show');
+                } catch(err) {
+                    showToast(err.message, 'error');
+                } finally {
+                    fullPageLoader.classList.add('hidden');
+                }
             });
 
 
@@ -3156,20 +3403,18 @@
             document.querySelectorAll('.menu-item, #user-profile-bar').forEach(element => {
                 element.addEventListener('click', () => navigateTo(element.dataset.feature));
             });
-            
+
             document.querySelectorAll('.nav-item').forEach(element => {
                  if(element.id === 'logout-button-nav') return;
                 element.addEventListener('click', (e) => {
                     const navAction = e.currentTarget.dataset.nav;
                      let page;
                      switch(navAction) {
-                        case 'home': page = 'dashboard'; break;
-                        case 'notifications': page = 'Announcements'; break;
-                        case 'profile': page = 'User Profile'; break;
-                    }
-                    if (page) {
-                       navigateTo(page);
-                    }
+                         case 'home': page = 'dashboard'; break;
+                         case 'notifications': page = 'Announcements'; break;
+                         case 'profile': page = 'User Profile'; break;
+                     }
+                    if (page) navigateTo(page);
                 });
             });
 
@@ -3177,21 +3422,14 @@
             document.getElementById('qr-scan-button-nav').addEventListener('click', startQrScanner);
             document.getElementById('qr-scan-button-header').addEventListener('click', startQrScanner);
 
-            document.getElementById('refresh-button').addEventListener('click', async () => {
-                const userCredentials = localStorage.getItem('schoolAppCredentials');
-                if (userCredentials) {
-                    const { username, password } = JSON.parse(userCredentials);
-                    await refreshAndShowDashboard(username, password);
-                }
-            });
-            
+            document.getElementById('refresh-button').addEventListener('click', refreshData);
+
             window.addEventListener('popstate', (event) => {
                 navigateTo(event.state ? event.state.page : 'dashboard', false);
             });
 
-            // --- Initial Load ---
             checkSession();
         });
     </script>
 </body>
-</ht
+</html>
